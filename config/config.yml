@@ -1,0 +1,55 @@
+# GRPC management's server settings.
+management:
+  # IP address to serve
+  ip: 127.0.0.1
+  # Port to serve
+  port: 51233
+
+# GRPC operator's server settings.
+operator:
+  # IP address to serve
+  ip: 127.0.0.1
+  # Port to serve
+  port: 51234
+
+# GRPC listener's server settings.
+listener:
+  # IP address to serve
+  ip: 127.0.0.1
+  # Port to serve
+  port: 51235
+
+# Database settings.
+db:
+  sqlite:
+    path: /tmp/server.db
+
+# PKI parameters.
+# This section is optional, as there are defaults
+pki:
+  ca:
+    serial: 1
+    subject:
+      ou: Google Inc. CA
+      o: google.com
+      cn: google.com
+      c: USA
+      l: California
+  listener:
+    serial: 2
+    subject:
+      ou: Google Inc. CA
+      o: google.com
+      cn: google.com
+      c: USA
+      p: California
+      l: California
+  management:
+    serial: 3
+    subject:
+      ou: Google Inc. CA
+      o: google.com
+      cn: google.com
+      c: USA
+      p: California
+      l: California
