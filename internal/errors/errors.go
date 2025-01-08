@@ -8,7 +8,7 @@ const (
 	NotHelloMsg            = "first message must be hello"
 	SendListener           = "send listener"
 	SendOperator           = "send operator"
-	SendAgent                = "send agent"
+	SendAgent              = "send agent"
 	SendChatMessage        = "send chat message"
 	SendCredential         = "send credential"
 	SendCommandMessage     = "send command's message"
