@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/task"
@@ -30,9 +30,9 @@ func (tc *TaskCreate) SetCommandID(i int64) *TaskCreate {
 	return tc
 }
 
-// SetAntID sets the "ant_id" field.
-func (tc *TaskCreate) SetAntID(u uint32) *TaskCreate {
-	tc.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (tc *TaskCreate) SetAgentID(u uint32) *TaskCreate {
+	tc.mutation.SetAgentID(u)
 	return tc
 }
 
@@ -135,9 +135,9 @@ func (tc *TaskCreate) SetCommand(c *Command) *TaskCreate {
 	return tc.SetCommandID(c.ID)
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (tc *TaskCreate) SetAnt(a *Ant) *TaskCreate {
-	return tc.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (tc *TaskCreate) SetAgent(a *Agent) *TaskCreate {
+	return tc.SetAgentID(a.ID)
 }
 
 // SetBlobberArgsID sets the "blobber_args" edge to the Blobber entity by ID.
@@ -216,8 +216,8 @@ func (tc *TaskCreate) check() error {
 	if _, ok := tc.mutation.CommandID(); !ok {
 		return &ValidationError{Name: "command_id", err: errors.New(`ent: missing required field "Task.command_id"`)}
 	}
-	if _, ok := tc.mutation.AntID(); !ok {
-		return &ValidationError{Name: "ant_id", err: errors.New(`ent: missing required field "Task.ant_id"`)}
+	if _, ok := tc.mutation.AgentID(); !ok {
+		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "Task.agent_id"`)}
 	}
 	if _, ok := tc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Task.created_at"`)}
@@ -244,8 +244,8 @@ func (tc *TaskCreate) check() error {
 	if len(tc.mutation.CommandIDs()) == 0 {
 		return &ValidationError{Name: "command", err: errors.New(`ent: missing required edge "Task.command"`)}
 	}
-	if len(tc.mutation.AntIDs()) == 0 {
-		return &ValidationError{Name: "ant", err: errors.New(`ent: missing required edge "Task.ant"`)}
+	if len(tc.mutation.AgentIDs()) == 0 {
+		return &ValidationError{Name: "agent", err: errors.New(`ent: missing required edge "Task.agent"`)}
 	}
 	if len(tc.mutation.BlobberArgsIDs()) == 0 {
 		return &ValidationError{Name: "blobber_args", err: errors.New(`ent: missing required edge "Task.blobber_args"`)}
@@ -323,21 +323,21 @@ func (tc *TaskCreate) createSpec() (*Task, *sqlgraph.CreateSpec) {
 		_node.CommandID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tc.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := tc.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   task.AntTable,
-			Columns: []string{task.AntColumn},
+			Table:   task.AgentTable,
+			Columns: []string{task.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.AntID = nodes[0]
+		_node.AgentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tc.mutation.BlobberArgsIDs(); len(nodes) > 0 {

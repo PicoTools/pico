@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// AntColumns holds the columns for the "ant" table.
-	AntColumns = []*schema.Column{
+	// AgentColumns holds the columns for the "agent" table.
+	AgentColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -35,15 +35,15 @@ var (
 		{Name: "color", Type: field.TypeUint32, Default: 0},
 		{Name: "listener_id", Type: field.TypeInt64},
 	}
-	// AntTable holds the schema information for the "ant" table.
-	AntTable = &schema.Table{
-		Name:       "ant",
-		Columns:    AntColumns,
-		PrimaryKey: []*schema.Column{AntColumns[0]},
+	// AgentTable holds the schema information for the "agent" table.
+	AgentTable = &schema.Table{
+		Name:       "agent",
+		Columns:    AgentColumns,
+		PrimaryKey: []*schema.Column{AgentColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "ant_listener_ant",
-				Columns:    []*schema.Column{AntColumns[22]},
+				Symbol:     "agent_listener_agent",
+				Columns:    []*schema.Column{AgentColumns[22]},
 				RefColumns: []*schema.Column{ListenerColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -94,7 +94,7 @@ var (
 		{Name: "visible", Type: field.TypeBool},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "closed_at", Type: field.TypeTime, Nullable: true},
-		{Name: "ant_id", Type: field.TypeUint32},
+		{Name: "agent_id", Type: field.TypeUint32},
 		{Name: "author_id", Type: field.TypeInt64},
 	}
 	// CommandTable holds the schema information for the "command" table.
@@ -104,9 +104,9 @@ var (
 		PrimaryKey: []*schema.Column{CommandColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "command_ant_command",
+				Symbol:     "command_agent_command",
 				Columns:    []*schema.Column{CommandColumns[5]},
-				RefColumns: []*schema.Column{AntColumns[0]},
+				RefColumns: []*schema.Column{AgentColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
@@ -218,9 +218,9 @@ var (
 		{Name: "pushed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "done_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"new", "in-progress", "cancelled", "success", "error"}},
-		{Name: "cap", Type: field.TypeEnum, Enums: []string{"c_sleep", "c_ls", "c_pwd", "c_cd", "c_whoami", "c_ps", "c_cat", "c_exec", "c_cp", "c_jobs", "c_jobkill", "c_kill", "c_mv", "c_mkdir", "c_rm", "c_exec_assembly", "c_shell", "c_ppid", "c_exec_detach", "c_shellcode_injection", "c_download", "c_upload", "c_pause", "c_destruct", "c_exit"}},
+		{Name: "cap", Type: field.TypeEnum, Enums: []string{"c_sleep", "c_ls", "c_pwd", "c_cd", "c_whoami", "c_ps", "c_cat", "c_exec", "c_cp", "c_jobs", "c_jobkill", "c_kill", "c_mv", "c_mkdir", "c_rm", "c_exec_assembly", "c_shell", "c_ppid", "c_exec_detach", "c_shellcode_injection", "c_download", "c_upload", "c_pause", "c_destroy", "c_exit"}},
 		{Name: "output_big", Type: field.TypeBool, Nullable: true},
-		{Name: "ant_id", Type: field.TypeUint32},
+		{Name: "agent_id", Type: field.TypeUint32},
 		{Name: "args_id", Type: field.TypeInt},
 		{Name: "output_id", Type: field.TypeInt, Nullable: true},
 		{Name: "command_id", Type: field.TypeInt64},
@@ -232,9 +232,9 @@ var (
 		PrimaryKey: []*schema.Column{TaskColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "task_ant_task",
+				Symbol:     "task_agent_task",
 				Columns:    []*schema.Column{TaskColumns[7]},
-				RefColumns: []*schema.Column{AntColumns[0]},
+				RefColumns: []*schema.Column{AgentColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
@@ -259,7 +259,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		AntTable,
+		AgentTable,
 		BlobberTable,
 		ChatTable,
 		CommandTable,
@@ -273,9 +273,9 @@ var (
 )
 
 func init() {
-	AntTable.ForeignKeys[0].RefTable = ListenerTable
-	AntTable.Annotation = &entsql.Annotation{
-		Table: "ant",
+	AgentTable.ForeignKeys[0].RefTable = ListenerTable
+	AgentTable.Annotation = &entsql.Annotation{
+		Table: "agent",
 	}
 	BlobberTable.Annotation = &entsql.Annotation{
 		Table: "blobber",
@@ -284,7 +284,7 @@ func init() {
 	ChatTable.Annotation = &entsql.Annotation{
 		Table: "chat",
 	}
-	CommandTable.ForeignKeys[0].RefTable = AntTable
+	CommandTable.ForeignKeys[0].RefTable = AgentTable
 	CommandTable.ForeignKeys[1].RefTable = OperatorTable
 	CommandTable.Annotation = &entsql.Annotation{
 		Table: "command",
@@ -305,7 +305,7 @@ func init() {
 	PkiTable.Annotation = &entsql.Annotation{
 		Table: "pki",
 	}
-	TaskTable.ForeignKeys[0].RefTable = AntTable
+	TaskTable.ForeignKeys[0].RefTable = AgentTable
 	TaskTable.ForeignKeys[1].RefTable = BlobberTable
 	TaskTable.ForeignKeys[2].RefTable = BlobberTable
 	TaskTable.ForeignKeys[3].RefTable = CommandTable

@@ -12,8 +12,8 @@ import (
 type Capability uint32
 
 const (
-	CapSleep              Capability = 0
-	CapKill               Capability = 1
+	CapExit               Capability = 0
+	CapSleep              Capability = 1
 	CapCp                 Capability = 2 << 0
 	CapCd                 Capability = 2 << 1
 	CapWhoami             Capability = 2 << 2
@@ -30,9 +30,9 @@ const (
 	CapShell              Capability = 2 << 13
 	CapShellcodeInjection Capability = 2 << 14
 	CapUpload             Capability = 2 << 15
-	CapExit               Capability = 2 << 16
+	CapKill               Capability = 2 << 16
 	CapMv                 Capability = 2 << 17
-	CapDestruct           Capability = 2 << 18
+	CapDestroy            Capability = 2 << 18
 	CapExecDetach         Capability = 2 << 19
 	CapExecAssembly       Capability = 2 << 20
 	CapPpid               Capability = 2 << 21
@@ -65,7 +65,7 @@ func (Capability) Values() []string {
 		CapDownload.String(),
 		CapUpload.String(),
 		CapPause.String(),
-		CapDestruct.String(),
+		CapDestroy.String(),
 		CapExit.String(),
 	}
 }
@@ -124,8 +124,8 @@ func (c Capability) String() string {
 		return "c_upload"
 	case CapPause:
 		return "c_pause"
-	case CapDestruct:
-		return "c_destruct"
+	case CapDestroy:
+		return "c_destroy"
 	case CapExit:
 		return "c_exit"
 	default:
@@ -193,8 +193,8 @@ func (c *Capability) Scan(val any) error {
 		*c = CapUpload
 	case CapPause.String():
 		*c = CapPause
-	case CapDestruct.String():
-		*c = CapDestruct
+	case CapDestroy.String():
+		*c = CapDestroy
 	case CapExit.String():
 		*c = CapExit
 	}
@@ -342,8 +342,8 @@ func (c Capability) Marshal(data any) ([]byte, error) {
 			return nil, fmt.Errorf("%s: invalid argument to marshal", c.String())
 		}
 		return proto.Marshal(v)
-	case CapDestruct:
-		v, ok := data.(*commonv1.CapDestruct)
+	case CapDestroy:
+		v, ok := data.(*commonv1.CapDestroy)
 		if !ok {
 			return nil, fmt.Errorf("%s: invalid argument to marshal", c.String())
 		}
@@ -431,8 +431,8 @@ func (c Capability) Unmarshal(data []byte) (any, error) {
 	case CapPause:
 		v := new(commonv1.CapPause)
 		return v, proto.Unmarshal(data, v)
-	case CapDestruct:
-		v := new(commonv1.CapDestruct)
+	case CapDestroy:
+		v := new(commonv1.CapDestroy)
 		return v, proto.Unmarshal(data, v)
 	case CapExit:
 		v := new(commonv1.CapExit)
@@ -510,8 +510,8 @@ func SupportedCaps(mask uint32) []Capability {
 	if mask&uint32(CapPause) == uint32(CapPause) {
 		t = append(t, CapPause)
 	}
-	if mask&uint32(CapDestruct) == uint32(CapDestruct) {
-		t = append(t, CapDestruct)
+	if mask&uint32(CapDestroy) == uint32(CapDestroy) {
+		t = append(t, CapDestroy)
 	}
 	if mask&uint32(CapExecDetach) == uint32(CapExecDetach) {
 		t = append(t, CapExecDetach)

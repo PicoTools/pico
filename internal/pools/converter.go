@@ -76,72 +76,72 @@ func ToListenerInfoResponse(listener *ent.Listener) *operatorv1.ListenerInfoResp
 	}
 }
 
-// ToAntColorResponse converts DB model Ant to protobuf AntColorResponse
-func ToAntColorResponse(ant *ent.Ant) *operatorv1.AntColorResponse {
-	return &operatorv1.AntColorResponse{
-		Id:    ant.ID,
-		Color: wrapperspb.UInt32(ant.Color),
+// ToAgentColorResponse converts DB model Agent to protobuf AgentColorResponse
+func ToAgentColorResponse(agent *ent.Agent) *operatorv1.AgentColorResponse {
+	return &operatorv1.AgentColorResponse{
+		Id:    agent.ID,
+		Color: wrapperspb.UInt32(agent.Color),
 	}
 }
 
-// ToAntNoteResponse converts DB model Ant to protobuf AntColorResponse
-func ToAntNoteResponse(ant *ent.Ant) *operatorv1.AntNoteResponse {
-	return &operatorv1.AntNoteResponse{
-		Id:   ant.ID,
-		Note: wrapperspb.String(ant.Note),
+// ToAgentNoteResponse converts DB model Agent to protobuf AgentColorResponse
+func ToAgentNoteResponse(agent *ent.Agent) *operatorv1.AgentNoteResponse {
+	return &operatorv1.AgentNoteResponse{
+		Id:   agent.ID,
+		Note: wrapperspb.String(agent.Note),
 	}
 }
 
-// ToAntResponse converts DB model Ant to protobuf AntResponse
-func ToAntResponse(ant *ent.Ant) (*operatorv1.AntResponse, error) {
-	listener, err := ant.Edges.ListenerOrErr()
+// ToAgentResponse converts DB model Agent to protobuf AgentResponse
+func ToAgentResponse(agent *ent.Agent) (*operatorv1.AgentResponse, error) {
+	listener, err := agent.Edges.ListenerOrErr()
 	if err != nil {
 		return nil, err
 	}
-	return &operatorv1.AntResponse{
-		Id:         ant.ID,
+	return &operatorv1.AgentResponse{
+		Id:         agent.ID,
 		Lid:        listener.ID,
-		ExtIp:      wrapperspb.String(ant.ExtIP.String()),
-		IntIp:      wrapperspb.String(ant.IntIP.String()),
-		Os:         uint32(ant.Os),
-		OsMeta:     wrapperspb.String(ant.OsMeta),
-		Hostname:   wrapperspb.String(ant.Hostname),
-		Username:   wrapperspb.String(ant.Username),
-		Domain:     wrapperspb.String(ant.Domain),
-		Privileged: wrapperspb.Bool(ant.Privileged),
-		ProcName:   wrapperspb.String(ant.ProcessName),
-		Pid:        wrapperspb.UInt64(uint64(ant.Pid)),
-		Arch:       uint32(ant.Arch),
-		Sleep:      ant.Sleep,
-		Jitter:     uint32(ant.Jitter),
-		Caps:       ant.Caps,
-		Color:      wrapperspb.UInt32(ant.Color),
-		Note:       wrapperspb.String(ant.Note),
-		First:      timestamppb.New(ant.First),
-		Last:       timestamppb.New(ant.Last),
+		ExtIp:      wrapperspb.String(agent.ExtIP.String()),
+		IntIp:      wrapperspb.String(agent.IntIP.String()),
+		Os:         uint32(agent.Os),
+		OsMeta:     wrapperspb.String(agent.OsMeta),
+		Hostname:   wrapperspb.String(agent.Hostname),
+		Username:   wrapperspb.String(agent.Username),
+		Domain:     wrapperspb.String(agent.Domain),
+		Privileged: wrapperspb.Bool(agent.Privileged),
+		ProcName:   wrapperspb.String(agent.ProcessName),
+		Pid:        wrapperspb.UInt64(uint64(agent.Pid)),
+		Arch:       uint32(agent.Arch),
+		Sleep:      agent.Sleep,
+		Jitter:     uint32(agent.Jitter),
+		Caps:       agent.Caps,
+		Color:      wrapperspb.UInt32(agent.Color),
+		Note:       wrapperspb.String(agent.Note),
+		First:      timestamppb.New(agent.First),
+		Last:       timestamppb.New(agent.Last),
 	}, nil
 }
 
-// ToAntsResponse converts list of DB model Ant to protobuf AntsResponse
-func ToAntsResponse(ants []*ent.Ant) *operatorv1.AntsResponse {
-	result := make([]*operatorv1.AntResponse, 0)
-	for _, ant := range ants {
-		antResponse, err := ToAntResponse(ant)
+// ToAgentsResponse converts list of DB model Agent to protobuf AgentsResponse
+func ToAgentsResponse(agents []*ent.Agent) *operatorv1.AgentsResponse {
+	result := make([]*operatorv1.AgentResponse, 0)
+	for _, agent := range agents {
+		agentResponse, err := ToAgentResponse(agent)
 		if err != nil {
 			continue
 		}
-		result = append(result, antResponse)
+		result = append(result, agentResponse)
 	}
-	return &operatorv1.AntsResponse{
-		Ants: result,
+	return &operatorv1.AgentsResponse{
+		Agents: result,
 	}
 }
 
-// ToAntLastResponse converts DB model Ant to protobuf AntLastResponse
-func ToAntLastResponse(ant *ent.Ant) *operatorv1.AntLastResponse {
-	return &operatorv1.AntLastResponse{
-		Id:   ant.ID,
-		Last: timestamppb.New(ant.Last),
+// ToAgentLastResponse converts DB model Agent to protobuf AgentLastResponse
+func ToAgentLastResponse(agent *ent.Agent) *operatorv1.AgentLastResponse {
+	return &operatorv1.AgentLastResponse{
+		Id:   agent.ID,
+		Last: timestamppb.New(agent.Last),
 	}
 }
 

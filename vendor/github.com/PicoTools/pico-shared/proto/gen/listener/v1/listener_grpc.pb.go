@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ListenerService_UpdateListener_FullMethodName = "/listener.v1.ListenerService/UpdateListener"
-	ListenerService_RegisterAnt_FullMethodName    = "/listener.v1.ListenerService/RegisterAnt"
+	ListenerService_RegisterAgent_FullMethodName  = "/listener.v1.ListenerService/RegisterAgent"
 	ListenerService_GetTask_FullMethodName        = "/listener.v1.ListenerService/GetTask"
 	ListenerService_PutResult_FullMethodName      = "/listener.v1.ListenerService/PutResult"
 )
@@ -32,9 +32,9 @@ type ListenerServiceClient interface {
 	// Update listener's information. Can be used to set location and meta infromation
 	// of where listener works
 	UpdateListener(ctx context.Context, in *UpdateListenerRequest, opts ...grpc.CallOption) (*UpdateListenerResponse, error)
-	// Register new ant with collected information from compromised OS
-	RegisterAnt(ctx context.Context, in *RegisterAntRequest, opts ...grpc.CallOption) (*RegisterAntResponse, error)
-	// Get task for ant from queue
+	// Register new agent with collected information from compromised OS
+	RegisterAgent(ctx context.Context, in *RegisterAgentRequest, opts ...grpc.CallOption) (*RegisterAgentResponse, error)
+	// Get task for agent from queue
 	GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error)
 	// Save task's results
 	PutResult(ctx context.Context, in *PutResultRequest, opts ...grpc.CallOption) (*PutResultResponse, error)
@@ -58,10 +58,10 @@ func (c *listenerServiceClient) UpdateListener(ctx context.Context, in *UpdateLi
 	return out, nil
 }
 
-func (c *listenerServiceClient) RegisterAnt(ctx context.Context, in *RegisterAntRequest, opts ...grpc.CallOption) (*RegisterAntResponse, error) {
+func (c *listenerServiceClient) RegisterAgent(ctx context.Context, in *RegisterAgentRequest, opts ...grpc.CallOption) (*RegisterAgentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterAntResponse)
-	err := c.cc.Invoke(ctx, ListenerService_RegisterAnt_FullMethodName, in, out, cOpts...)
+	out := new(RegisterAgentResponse)
+	err := c.cc.Invoke(ctx, ListenerService_RegisterAgent_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,9 +95,9 @@ type ListenerServiceServer interface {
 	// Update listener's information. Can be used to set location and meta infromation
 	// of where listener works
 	UpdateListener(context.Context, *UpdateListenerRequest) (*UpdateListenerResponse, error)
-	// Register new ant with collected information from compromised OS
-	RegisterAnt(context.Context, *RegisterAntRequest) (*RegisterAntResponse, error)
-	// Get task for ant from queue
+	// Register new agent with collected information from compromised OS
+	RegisterAgent(context.Context, *RegisterAgentRequest) (*RegisterAgentResponse, error)
+	// Get task for agent from queue
 	GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error)
 	// Save task's results
 	PutResult(context.Context, *PutResultRequest) (*PutResultResponse, error)
@@ -114,8 +114,8 @@ type UnimplementedListenerServiceServer struct{}
 func (UnimplementedListenerServiceServer) UpdateListener(context.Context, *UpdateListenerRequest) (*UpdateListenerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateListener not implemented")
 }
-func (UnimplementedListenerServiceServer) RegisterAnt(context.Context, *RegisterAntRequest) (*RegisterAntResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterAnt not implemented")
+func (UnimplementedListenerServiceServer) RegisterAgent(context.Context, *RegisterAgentRequest) (*RegisterAgentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterAgent not implemented")
 }
 func (UnimplementedListenerServiceServer) GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTask not implemented")
@@ -162,20 +162,20 @@ func _ListenerService_UpdateListener_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ListenerService_RegisterAnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterAntRequest)
+func _ListenerService_RegisterAgent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterAgentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ListenerServiceServer).RegisterAnt(ctx, in)
+		return srv.(ListenerServiceServer).RegisterAgent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ListenerService_RegisterAnt_FullMethodName,
+		FullMethod: ListenerService_RegisterAgent_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ListenerServiceServer).RegisterAnt(ctx, req.(*RegisterAntRequest))
+		return srv.(ListenerServiceServer).RegisterAgent(ctx, req.(*RegisterAgentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -228,8 +228,8 @@ var ListenerService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ListenerService_UpdateListener_Handler,
 		},
 		{
-			MethodName: "RegisterAnt",
-			Handler:    _ListenerService_RegisterAnt_Handler,
+			MethodName: "RegisterAgent",
+			Handler:    _ListenerService_RegisterAgent_Handler,
 		},
 		{
 			MethodName: "GetTask",

@@ -4,11 +4,11 @@ import (
 	"database/sql/driver"
 )
 
-// represents custom type to hold ant's architecture type
-type AntArch uint8
+// represents custom type to hold agent's architecture type
+type AgentArch uint8
 
 const (
-	ArchUnknown AntArch = iota
+	ArchUnknown AgentArch = iota
 	ArchX86
 	ArchX64
 	ArchArm32
@@ -16,7 +16,7 @@ const (
 )
 
 // Values returns list of strings represented names of arch types
-func (AntArch) Values() []string {
+func (AgentArch) Values() []string {
 	return []string{
 		ArchUnknown.String(),
 		ArchX86.String(),
@@ -27,12 +27,12 @@ func (AntArch) Values() []string {
 }
 
 // Value return database ready value for further processing
-func (a AntArch) Value() (driver.Value, error) {
+func (a AgentArch) Value() (driver.Value, error) {
 	return a.String(), nil
 }
 
 // String returns string representation of arch types
-func (a AntArch) String() string {
+func (a AgentArch) String() string {
 	switch a {
 	case ArchX86:
 		return "x86"
@@ -48,7 +48,7 @@ func (a AntArch) String() string {
 }
 
 // Scan converts value to arch type
-func (a *AntArch) Scan(val any) error {
+func (a *AgentArch) Scan(val any) error {
 	var s string
 
 	switch v := val.(type) {

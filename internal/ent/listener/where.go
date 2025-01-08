@@ -671,21 +671,21 @@ func LastLTE(v time.Time) predicate.Listener {
 	return predicate.Listener(sql.FieldLTE(FieldLast, v))
 }
 
-// HasAnt applies the HasEdge predicate on the "ant" edge.
-func HasAnt() predicate.Listener {
+// HasAgent applies the HasEdge predicate on the "agent" edge.
+func HasAgent() predicate.Listener {
 	return predicate.Listener(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AntTable, AntColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, AgentTable, AgentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasAntWith applies the HasEdge predicate on the "ant" edge with a given conditions (other predicates).
-func HasAntWith(preds ...predicate.Ant) predicate.Listener {
+// HasAgentWith applies the HasEdge predicate on the "agent" edge with a given conditions (other predicates).
+func HasAgentWith(preds ...predicate.Agent) predicate.Listener {
 	return predicate.Listener(func(s *sql.Selector) {
-		step := newAntStep()
+		step := newAgentStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/predicate"
 )
@@ -25,7 +25,7 @@ type ListenerQuery struct {
 	order      []listener.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Listener
-	withAnt    *AntQuery
+	withAgent  *AgentQuery
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -63,9 +63,9 @@ func (lq *ListenerQuery) Order(o ...listener.OrderOption) *ListenerQuery {
 	return lq
 }
 
-// QueryAnt chains the current query on the "ant" edge.
-func (lq *ListenerQuery) QueryAnt() *AntQuery {
-	query := (&AntClient{config: lq.config}).Query()
+// QueryAgent chains the current query on the "agent" edge.
+func (lq *ListenerQuery) QueryAgent() *AgentQuery {
+	query := (&AgentClient{config: lq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := lq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +76,8 @@ func (lq *ListenerQuery) QueryAnt() *AntQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listener.Table, listener.FieldID, selector),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, listener.AntTable, listener.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, listener.AgentTable, listener.AgentColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -277,21 +277,21 @@ func (lq *ListenerQuery) Clone() *ListenerQuery {
 		order:      append([]listener.OrderOption{}, lq.order...),
 		inters:     append([]Interceptor{}, lq.inters...),
 		predicates: append([]predicate.Listener{}, lq.predicates...),
-		withAnt:    lq.withAnt.Clone(),
+		withAgent:  lq.withAgent.Clone(),
 		// clone intermediate query.
 		sql:  lq.sql.Clone(),
 		path: lq.path,
 	}
 }
 
-// WithAnt tells the query-builder to eager-load the nodes that are connected to
-// the "ant" edge. The optional arguments are used to configure the query builder of the edge.
-func (lq *ListenerQuery) WithAnt(opts ...func(*AntQuery)) *ListenerQuery {
-	query := (&AntClient{config: lq.config}).Query()
+// WithAgent tells the query-builder to eager-load the nodes that are connected to
+// the "agent" edge. The optional arguments are used to configure the query builder of the edge.
+func (lq *ListenerQuery) WithAgent(opts ...func(*AgentQuery)) *ListenerQuery {
+	query := (&AgentClient{config: lq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	lq.withAnt = query
+	lq.withAgent = query
 	return lq
 }
 
@@ -374,7 +374,7 @@ func (lq *ListenerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Lis
 		nodes       = []*Listener{}
 		_spec       = lq.querySpec()
 		loadedTypes = [1]bool{
-			lq.withAnt != nil,
+			lq.withAgent != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -398,17 +398,17 @@ func (lq *ListenerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Lis
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := lq.withAnt; query != nil {
-		if err := lq.loadAnt(ctx, query, nodes,
-			func(n *Listener) { n.Edges.Ant = []*Ant{} },
-			func(n *Listener, e *Ant) { n.Edges.Ant = append(n.Edges.Ant, e) }); err != nil {
+	if query := lq.withAgent; query != nil {
+		if err := lq.loadAgent(ctx, query, nodes,
+			func(n *Listener) { n.Edges.Agent = []*Agent{} },
+			func(n *Listener, e *Agent) { n.Edges.Agent = append(n.Edges.Agent, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (lq *ListenerQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*Listener, init func(*Listener), assign func(*Listener, *Ant)) error {
+func (lq *ListenerQuery) loadAgent(ctx context.Context, query *AgentQuery, nodes []*Listener, init func(*Listener), assign func(*Listener, *Agent)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Listener)
 	for i := range nodes {
@@ -419,10 +419,10 @@ func (lq *ListenerQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(ant.FieldListenerID)
+		query.ctx.AppendFieldOnce(agent.FieldListenerID)
 	}
-	query.Where(predicate.Ant(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(listener.AntColumn), fks...))
+	query.Where(predicate.Agent(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(listener.AgentColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

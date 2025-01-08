@@ -10,7 +10,7 @@ import (
 type SubscribeTasks struct {
 	username   string
 	disconnect chan struct{}
-	// map of ant's ids
+	// map of agent's ids
 	ids    map[uint32]struct{}
 	data   chan any
 	err    chan error
@@ -43,15 +43,15 @@ func (p *PoolTasks) Add(cookie, username string, stream operatorv1.OperatorServi
 	})
 }
 
-// AddAnt saves ID of ant for operator's polling
-func (p *PoolTasks) AddAnt(cookie string, id uint32) {
+// AddAgent saves ID of agent for operator's polling
+func (p *PoolTasks) AddAgent(cookie string, id uint32) {
 	if s, ok := p.pool.Load(cookie); ok {
 		s.ids[id] = struct{}{}
 	}
 }
 
-// DeleteAnt removes ID of ant from operator's polling
-func (p *PoolTasks) DeleteAnt(cookie string, id uint32) {
+// DeleteAgent removes ID of agent from operator's polling
+func (p *PoolTasks) DeleteAgent(cookie string, id uint32) {
 	if s, ok := p.pool.Load(cookie); ok {
 		delete(s.ids, id)
 	}

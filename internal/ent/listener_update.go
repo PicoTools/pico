@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/predicate"
 	"github.com/PicoTools/pico/internal/types"
@@ -198,19 +198,19 @@ func (lu *ListenerUpdate) SetNillableLast(t *time.Time) *ListenerUpdate {
 	return lu
 }
 
-// AddAntIDs adds the "ant" edge to the Ant entity by IDs.
-func (lu *ListenerUpdate) AddAntIDs(ids ...uint32) *ListenerUpdate {
-	lu.mutation.AddAntIDs(ids...)
+// AddAgentIDs adds the "agent" edge to the Agent entity by IDs.
+func (lu *ListenerUpdate) AddAgentIDs(ids ...uint32) *ListenerUpdate {
+	lu.mutation.AddAgentIDs(ids...)
 	return lu
 }
 
-// AddAnt adds the "ant" edges to the Ant entity.
-func (lu *ListenerUpdate) AddAnt(a ...*Ant) *ListenerUpdate {
+// AddAgent adds the "agent" edges to the Agent entity.
+func (lu *ListenerUpdate) AddAgent(a ...*Agent) *ListenerUpdate {
 	ids := make([]uint32, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return lu.AddAntIDs(ids...)
+	return lu.AddAgentIDs(ids...)
 }
 
 // Mutation returns the ListenerMutation object of the builder.
@@ -218,25 +218,25 @@ func (lu *ListenerUpdate) Mutation() *ListenerMutation {
 	return lu.mutation
 }
 
-// ClearAnt clears all "ant" edges to the Ant entity.
-func (lu *ListenerUpdate) ClearAnt() *ListenerUpdate {
-	lu.mutation.ClearAnt()
+// ClearAgent clears all "agent" edges to the Agent entity.
+func (lu *ListenerUpdate) ClearAgent() *ListenerUpdate {
+	lu.mutation.ClearAgent()
 	return lu
 }
 
-// RemoveAntIDs removes the "ant" edge to Ant entities by IDs.
-func (lu *ListenerUpdate) RemoveAntIDs(ids ...uint32) *ListenerUpdate {
-	lu.mutation.RemoveAntIDs(ids...)
+// RemoveAgentIDs removes the "agent" edge to Agent entities by IDs.
+func (lu *ListenerUpdate) RemoveAgentIDs(ids ...uint32) *ListenerUpdate {
+	lu.mutation.RemoveAgentIDs(ids...)
 	return lu
 }
 
-// RemoveAnt removes "ant" edges to Ant entities.
-func (lu *ListenerUpdate) RemoveAnt(a ...*Ant) *ListenerUpdate {
+// RemoveAgent removes "agent" edges to Agent entities.
+func (lu *ListenerUpdate) RemoveAgent(a ...*Agent) *ListenerUpdate {
 	ids := make([]uint32, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return lu.RemoveAntIDs(ids...)
+	return lu.RemoveAgentIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -374,28 +374,28 @@ func (lu *ListenerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := lu.mutation.Last(); ok {
 		_spec.SetField(listener.FieldLast, field.TypeTime, value)
 	}
-	if lu.mutation.AntCleared() {
+	if lu.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := lu.mutation.RemovedAntIDs(); len(nodes) > 0 && !lu.mutation.AntCleared() {
+	if nodes := lu.mutation.RemovedAgentIDs(); len(nodes) > 0 && !lu.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -403,15 +403,15 @@ func (lu *ListenerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := lu.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := lu.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -607,19 +607,19 @@ func (luo *ListenerUpdateOne) SetNillableLast(t *time.Time) *ListenerUpdateOne {
 	return luo
 }
 
-// AddAntIDs adds the "ant" edge to the Ant entity by IDs.
-func (luo *ListenerUpdateOne) AddAntIDs(ids ...uint32) *ListenerUpdateOne {
-	luo.mutation.AddAntIDs(ids...)
+// AddAgentIDs adds the "agent" edge to the Agent entity by IDs.
+func (luo *ListenerUpdateOne) AddAgentIDs(ids ...uint32) *ListenerUpdateOne {
+	luo.mutation.AddAgentIDs(ids...)
 	return luo
 }
 
-// AddAnt adds the "ant" edges to the Ant entity.
-func (luo *ListenerUpdateOne) AddAnt(a ...*Ant) *ListenerUpdateOne {
+// AddAgent adds the "agent" edges to the Agent entity.
+func (luo *ListenerUpdateOne) AddAgent(a ...*Agent) *ListenerUpdateOne {
 	ids := make([]uint32, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return luo.AddAntIDs(ids...)
+	return luo.AddAgentIDs(ids...)
 }
 
 // Mutation returns the ListenerMutation object of the builder.
@@ -627,25 +627,25 @@ func (luo *ListenerUpdateOne) Mutation() *ListenerMutation {
 	return luo.mutation
 }
 
-// ClearAnt clears all "ant" edges to the Ant entity.
-func (luo *ListenerUpdateOne) ClearAnt() *ListenerUpdateOne {
-	luo.mutation.ClearAnt()
+// ClearAgent clears all "agent" edges to the Agent entity.
+func (luo *ListenerUpdateOne) ClearAgent() *ListenerUpdateOne {
+	luo.mutation.ClearAgent()
 	return luo
 }
 
-// RemoveAntIDs removes the "ant" edge to Ant entities by IDs.
-func (luo *ListenerUpdateOne) RemoveAntIDs(ids ...uint32) *ListenerUpdateOne {
-	luo.mutation.RemoveAntIDs(ids...)
+// RemoveAgentIDs removes the "agent" edge to Agent entities by IDs.
+func (luo *ListenerUpdateOne) RemoveAgentIDs(ids ...uint32) *ListenerUpdateOne {
+	luo.mutation.RemoveAgentIDs(ids...)
 	return luo
 }
 
-// RemoveAnt removes "ant" edges to Ant entities.
-func (luo *ListenerUpdateOne) RemoveAnt(a ...*Ant) *ListenerUpdateOne {
+// RemoveAgent removes "agent" edges to Agent entities.
+func (luo *ListenerUpdateOne) RemoveAgent(a ...*Agent) *ListenerUpdateOne {
 	ids := make([]uint32, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return luo.RemoveAntIDs(ids...)
+	return luo.RemoveAgentIDs(ids...)
 }
 
 // Where appends a list predicates to the ListenerUpdate builder.
@@ -813,28 +813,28 @@ func (luo *ListenerUpdateOne) sqlSave(ctx context.Context) (_node *Listener, err
 	if value, ok := luo.mutation.Last(); ok {
 		_spec.SetField(listener.FieldLast, field.TypeTime, value)
 	}
-	if luo.mutation.AntCleared() {
+	if luo.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := luo.mutation.RemovedAntIDs(); len(nodes) > 0 && !luo.mutation.AntCleared() {
+	if nodes := luo.mutation.RemovedAgentIDs(); len(nodes) > 0 && !luo.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -842,15 +842,15 @@ func (luo *ListenerUpdateOne) sqlSave(ctx context.Context) (_node *Listener, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := luo.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := luo.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {

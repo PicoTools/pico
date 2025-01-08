@@ -35,17 +35,17 @@ const (
 	FieldNote = "note"
 	// FieldLast holds the string denoting the last field in the database.
 	FieldLast = "last"
-	// EdgeAnt holds the string denoting the ant edge name in mutations.
-	EdgeAnt = "ant"
+	// EdgeAgent holds the string denoting the agent edge name in mutations.
+	EdgeAgent = "agent"
 	// Table holds the table name of the listener in the database.
 	Table = "listener"
-	// AntTable is the table that holds the ant relation/edge.
-	AntTable = "ant"
-	// AntInverseTable is the table name for the Ant entity.
-	// It exists in this package in order to avoid circular dependency with the "ant" package.
-	AntInverseTable = "ant"
-	// AntColumn is the table column denoting the ant relation/edge.
-	AntColumn = "listener_id"
+	// AgentTable is the table that holds the agent relation/edge.
+	AgentTable = "agent"
+	// AgentInverseTable is the table name for the Agent entity.
+	// It exists in this package in order to avoid circular dependency with the "agent" package.
+	AgentInverseTable = "agent"
+	// AgentColumn is the table column denoting the agent relation/edge.
+	AgentColumn = "listener_id"
 )
 
 // Columns holds all SQL columns for listener fields.
@@ -161,23 +161,23 @@ func ByLast(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLast, opts...).ToFunc()
 }
 
-// ByAntCount orders the results by ant count.
-func ByAntCount(opts ...sql.OrderTermOption) OrderOption {
+// ByAgentCount orders the results by agent count.
+func ByAgentCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAntStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newAgentStep(), opts...)
 	}
 }
 
-// ByAnt orders the results by ant terms.
-func ByAnt(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByAgent orders the results by agent terms.
+func ByAgent(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAntStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newAgentStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newAntStep() *sqlgraph.Step {
+func newAgentStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AntInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AntTable, AntColumn),
+		sqlgraph.To(AgentInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AgentTable, AgentColumn),
 	)
 }

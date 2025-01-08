@@ -27,8 +27,8 @@ func (Command) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
 			Unique(),
-		field.Uint32("ant_id").
-			Comment("ant ID"),
+		field.Uint32("agent_id").
+			Comment("agent ID"),
 		field.String("cmd").
 			MinLen(shared.TaskGroupCmdMinLength).
 			MaxLen(shared.TaskGroupCmdMaxLength).
@@ -48,9 +48,9 @@ func (Command) Fields() []ent.Field {
 
 func (Command) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("ant", Ant.Type).
+		edge.From("agent", Agent.Type).
 			Ref("command").
-			Field("ant_id").
+			Field("agent_id").
 			Unique().
 			Required(),
 		edge.From("operator", Operator.Type).

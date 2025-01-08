@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/predicate"
@@ -46,16 +46,16 @@ func (tu *TaskUpdate) SetNillableCommandID(i *int64) *TaskUpdate {
 	return tu
 }
 
-// SetAntID sets the "ant_id" field.
-func (tu *TaskUpdate) SetAntID(u uint32) *TaskUpdate {
-	tu.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (tu *TaskUpdate) SetAgentID(u uint32) *TaskUpdate {
+	tu.mutation.SetAgentID(u)
 	return tu
 }
 
-// SetNillableAntID sets the "ant_id" field if the given value is not nil.
-func (tu *TaskUpdate) SetNillableAntID(u *uint32) *TaskUpdate {
+// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
+func (tu *TaskUpdate) SetNillableAgentID(u *uint32) *TaskUpdate {
 	if u != nil {
-		tu.SetAntID(*u)
+		tu.SetAgentID(*u)
 	}
 	return tu
 }
@@ -201,9 +201,9 @@ func (tu *TaskUpdate) SetCommand(c *Command) *TaskUpdate {
 	return tu.SetCommandID(c.ID)
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (tu *TaskUpdate) SetAnt(a *Ant) *TaskUpdate {
-	return tu.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (tu *TaskUpdate) SetAgent(a *Agent) *TaskUpdate {
+	return tu.SetAgentID(a.ID)
 }
 
 // SetBlobberArgsID sets the "blobber_args" edge to the Blobber entity by ID.
@@ -247,9 +247,9 @@ func (tu *TaskUpdate) ClearCommand() *TaskUpdate {
 	return tu
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (tu *TaskUpdate) ClearAnt() *TaskUpdate {
-	tu.mutation.ClearAnt()
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (tu *TaskUpdate) ClearAgent() *TaskUpdate {
+	tu.mutation.ClearAgent()
 	return tu
 }
 
@@ -307,8 +307,8 @@ func (tu *TaskUpdate) check() error {
 	if tu.mutation.CommandCleared() && len(tu.mutation.CommandIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Task.command"`)
 	}
-	if tu.mutation.AntCleared() && len(tu.mutation.AntIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Task.ant"`)
+	if tu.mutation.AgentCleared() && len(tu.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Task.agent"`)
 	}
 	if tu.mutation.BlobberArgsCleared() && len(tu.mutation.BlobberArgsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Task.blobber_args"`)
@@ -384,28 +384,28 @@ func (tu *TaskUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tu.mutation.AntCleared() {
+	if tu.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   task.AntTable,
-			Columns: []string{task.AntColumn},
+			Table:   task.AgentTable,
+			Columns: []string{task.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := tu.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   task.AntTable,
-			Columns: []string{task.AntColumn},
+			Table:   task.AgentTable,
+			Columns: []string{task.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -505,16 +505,16 @@ func (tuo *TaskUpdateOne) SetNillableCommandID(i *int64) *TaskUpdateOne {
 	return tuo
 }
 
-// SetAntID sets the "ant_id" field.
-func (tuo *TaskUpdateOne) SetAntID(u uint32) *TaskUpdateOne {
-	tuo.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (tuo *TaskUpdateOne) SetAgentID(u uint32) *TaskUpdateOne {
+	tuo.mutation.SetAgentID(u)
 	return tuo
 }
 
-// SetNillableAntID sets the "ant_id" field if the given value is not nil.
-func (tuo *TaskUpdateOne) SetNillableAntID(u *uint32) *TaskUpdateOne {
+// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
+func (tuo *TaskUpdateOne) SetNillableAgentID(u *uint32) *TaskUpdateOne {
 	if u != nil {
-		tuo.SetAntID(*u)
+		tuo.SetAgentID(*u)
 	}
 	return tuo
 }
@@ -660,9 +660,9 @@ func (tuo *TaskUpdateOne) SetCommand(c *Command) *TaskUpdateOne {
 	return tuo.SetCommandID(c.ID)
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (tuo *TaskUpdateOne) SetAnt(a *Ant) *TaskUpdateOne {
-	return tuo.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (tuo *TaskUpdateOne) SetAgent(a *Agent) *TaskUpdateOne {
+	return tuo.SetAgentID(a.ID)
 }
 
 // SetBlobberArgsID sets the "blobber_args" edge to the Blobber entity by ID.
@@ -706,9 +706,9 @@ func (tuo *TaskUpdateOne) ClearCommand() *TaskUpdateOne {
 	return tuo
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (tuo *TaskUpdateOne) ClearAnt() *TaskUpdateOne {
-	tuo.mutation.ClearAnt()
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (tuo *TaskUpdateOne) ClearAgent() *TaskUpdateOne {
+	tuo.mutation.ClearAgent()
 	return tuo
 }
 
@@ -779,8 +779,8 @@ func (tuo *TaskUpdateOne) check() error {
 	if tuo.mutation.CommandCleared() && len(tuo.mutation.CommandIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Task.command"`)
 	}
-	if tuo.mutation.AntCleared() && len(tuo.mutation.AntIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Task.ant"`)
+	if tuo.mutation.AgentCleared() && len(tuo.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Task.agent"`)
 	}
 	if tuo.mutation.BlobberArgsCleared() && len(tuo.mutation.BlobberArgsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Task.blobber_args"`)
@@ -873,28 +873,28 @@ func (tuo *TaskUpdateOne) sqlSave(ctx context.Context) (_node *Task, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tuo.mutation.AntCleared() {
+	if tuo.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   task.AntTable,
-			Columns: []string{task.AntColumn},
+			Table:   task.AgentTable,
+			Columns: []string{task.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := tuo.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   task.AntTable,
-			Columns: []string{task.AntColumn},
+			Table:   task.AgentTable,
+			Columns: []string{task.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {

@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/message"
 	"github.com/PicoTools/pico/internal/ent/operator"
@@ -28,7 +28,7 @@ type CommandQuery struct {
 	order        []command.OrderOption
 	inters       []Interceptor
 	predicates   []predicate.Command
-	withAnt      *AntQuery
+	withAgent    *AgentQuery
 	withOperator *OperatorQuery
 	withMessage  *MessageQuery
 	withTask     *TaskQuery
@@ -69,9 +69,9 @@ func (cq *CommandQuery) Order(o ...command.OrderOption) *CommandQuery {
 	return cq
 }
 
-// QueryAnt chains the current query on the "ant" edge.
-func (cq *CommandQuery) QueryAnt() *AntQuery {
-	query := (&AntClient{config: cq.config}).Query()
+// QueryAgent chains the current query on the "agent" edge.
+func (cq *CommandQuery) QueryAgent() *AgentQuery {
+	query := (&AgentClient{config: cq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -82,8 +82,8 @@ func (cq *CommandQuery) QueryAnt() *AntQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(command.Table, command.FieldID, selector),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, command.AntTable, command.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, command.AgentTable, command.AgentColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -349,7 +349,7 @@ func (cq *CommandQuery) Clone() *CommandQuery {
 		order:        append([]command.OrderOption{}, cq.order...),
 		inters:       append([]Interceptor{}, cq.inters...),
 		predicates:   append([]predicate.Command{}, cq.predicates...),
-		withAnt:      cq.withAnt.Clone(),
+		withAgent:    cq.withAgent.Clone(),
 		withOperator: cq.withOperator.Clone(),
 		withMessage:  cq.withMessage.Clone(),
 		withTask:     cq.withTask.Clone(),
@@ -359,14 +359,14 @@ func (cq *CommandQuery) Clone() *CommandQuery {
 	}
 }
 
-// WithAnt tells the query-builder to eager-load the nodes that are connected to
-// the "ant" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CommandQuery) WithAnt(opts ...func(*AntQuery)) *CommandQuery {
-	query := (&AntClient{config: cq.config}).Query()
+// WithAgent tells the query-builder to eager-load the nodes that are connected to
+// the "agent" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CommandQuery) WithAgent(opts ...func(*AgentQuery)) *CommandQuery {
+	query := (&AgentClient{config: cq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	cq.withAnt = query
+	cq.withAgent = query
 	return cq
 }
 
@@ -409,12 +409,12 @@ func (cq *CommandQuery) WithTask(opts ...func(*TaskQuery)) *CommandQuery {
 // Example:
 //
 //	var v []struct {
-//		AntID uint32 `json:"ant_id,omitempty"`
+//		AgentID uint32 `json:"agent_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Command.Query().
-//		GroupBy(command.FieldAntID).
+//		GroupBy(command.FieldAgentID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CommandQuery) GroupBy(field string, fields ...string) *CommandGroupBy {
@@ -432,11 +432,11 @@ func (cq *CommandQuery) GroupBy(field string, fields ...string) *CommandGroupBy 
 // Example:
 //
 //	var v []struct {
-//		AntID uint32 `json:"ant_id,omitempty"`
+//		AgentID uint32 `json:"agent_id,omitempty"`
 //	}
 //
 //	client.Command.Query().
-//		Select(command.FieldAntID).
+//		Select(command.FieldAgentID).
 //		Scan(ctx, &v)
 func (cq *CommandQuery) Select(fields ...string) *CommandSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
@@ -482,7 +482,7 @@ func (cq *CommandQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comm
 		nodes       = []*Command{}
 		_spec       = cq.querySpec()
 		loadedTypes = [4]bool{
-			cq.withAnt != nil,
+			cq.withAgent != nil,
 			cq.withOperator != nil,
 			cq.withMessage != nil,
 			cq.withTask != nil,
@@ -509,9 +509,9 @@ func (cq *CommandQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comm
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := cq.withAnt; query != nil {
-		if err := cq.loadAnt(ctx, query, nodes, nil,
-			func(n *Command, e *Ant) { n.Edges.Ant = e }); err != nil {
+	if query := cq.withAgent; query != nil {
+		if err := cq.loadAgent(ctx, query, nodes, nil,
+			func(n *Command, e *Agent) { n.Edges.Agent = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -538,11 +538,11 @@ func (cq *CommandQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comm
 	return nodes, nil
 }
 
-func (cq *CommandQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*Command, init func(*Command), assign func(*Command, *Ant)) error {
+func (cq *CommandQuery) loadAgent(ctx context.Context, query *AgentQuery, nodes []*Command, init func(*Command), assign func(*Command, *Agent)) error {
 	ids := make([]uint32, 0, len(nodes))
 	nodeids := make(map[uint32][]*Command)
 	for i := range nodes {
-		fk := nodes[i].AntID
+		fk := nodes[i].AgentID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -551,7 +551,7 @@ func (cq *CommandQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*C
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(ant.IDIn(ids...))
+	query.Where(agent.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -559,7 +559,7 @@ func (cq *CommandQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*C
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "ant_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "agent_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -685,8 +685,8 @@ func (cq *CommandQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if cq.withAnt != nil {
-			_spec.Node.AddColumnOnce(command.FieldAntID)
+		if cq.withAgent != nil {
+			_spec.Node.AddColumnOnce(command.FieldAgentID)
 		}
 		if cq.withOperator != nil {
 			_spec.Node.AddColumnOnce(command.FieldAuthorID)

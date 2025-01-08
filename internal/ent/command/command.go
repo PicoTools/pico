@@ -14,8 +14,8 @@ const (
 	Label = "command"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldAntID holds the string denoting the ant_id field in the database.
-	FieldAntID = "ant_id"
+	// FieldAgentID holds the string denoting the agent_id field in the database.
+	FieldAgentID = "agent_id"
 	// FieldCmd holds the string denoting the cmd field in the database.
 	FieldCmd = "cmd"
 	// FieldVisible holds the string denoting the visible field in the database.
@@ -26,8 +26,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldClosedAt holds the string denoting the closed_at field in the database.
 	FieldClosedAt = "closed_at"
-	// EdgeAnt holds the string denoting the ant edge name in mutations.
-	EdgeAnt = "ant"
+	// EdgeAgent holds the string denoting the agent edge name in mutations.
+	EdgeAgent = "agent"
 	// EdgeOperator holds the string denoting the operator edge name in mutations.
 	EdgeOperator = "operator"
 	// EdgeMessage holds the string denoting the message edge name in mutations.
@@ -36,13 +36,13 @@ const (
 	EdgeTask = "task"
 	// Table holds the table name of the command in the database.
 	Table = "command"
-	// AntTable is the table that holds the ant relation/edge.
-	AntTable = "command"
-	// AntInverseTable is the table name for the Ant entity.
-	// It exists in this package in order to avoid circular dependency with the "ant" package.
-	AntInverseTable = "ant"
-	// AntColumn is the table column denoting the ant relation/edge.
-	AntColumn = "ant_id"
+	// AgentTable is the table that holds the agent relation/edge.
+	AgentTable = "command"
+	// AgentInverseTable is the table name for the Agent entity.
+	// It exists in this package in order to avoid circular dependency with the "agent" package.
+	AgentInverseTable = "agent"
+	// AgentColumn is the table column denoting the agent relation/edge.
+	AgentColumn = "agent_id"
 	// OperatorTable is the table that holds the operator relation/edge.
 	OperatorTable = "command"
 	// OperatorInverseTable is the table name for the Operator entity.
@@ -69,7 +69,7 @@ const (
 // Columns holds all SQL columns for command fields.
 var Columns = []string{
 	FieldID,
-	FieldAntID,
+	FieldAgentID,
 	FieldCmd,
 	FieldVisible,
 	FieldAuthorID,
@@ -102,9 +102,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByAntID orders the results by the ant_id field.
-func ByAntID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAntID, opts...).ToFunc()
+// ByAgentID orders the results by the agent_id field.
+func ByAgentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAgentID, opts...).ToFunc()
 }
 
 // ByCmd orders the results by the cmd field.
@@ -132,10 +132,10 @@ func ByClosedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldClosedAt, opts...).ToFunc()
 }
 
-// ByAntField orders the results by ant field.
-func ByAntField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByAgentField orders the results by agent field.
+func ByAgentField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAntStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newAgentStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -173,11 +173,11 @@ func ByTask(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newTaskStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newAntStep() *sqlgraph.Step {
+func newAgentStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AntInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, AntTable, AntColumn),
+		sqlgraph.To(AgentInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AgentTable, AgentColumn),
 	)
 }
 func newOperatorStep() *sqlgraph.Step {

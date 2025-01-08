@@ -78,20 +78,20 @@ func (s *server) UpdateListener(ctx context.Context, req *listenerv1.UpdateListe
 	return &listenerv1.UpdateListenerResponse{}, nil
 }
 
-// Register new ant
-func (s *server) RegisterAnt(ctx context.Context, req *listenerv1.RegisterAntRequest) (*listenerv1.RegisterAntResponse, error) {
+// Register new agent
+func (s *server) RegisterAgent(ctx context.Context, req *listenerv1.RegisterAgentRequest) (*listenerv1.RegisterAgentResponse, error) {
 	listenerId := grpcauth.ListenerFromCtx(ctx)
-	lg := s.lg.Named("RegisterAnt").With(zap.Int64("listener-id", listenerId))
+	lg := s.lg.Named("RegisterAgent").With(zap.Int64("listener-id", listenerId))
 
-	// check if ant with such ID already exists
-	if _, err := s.db.Ant.Get(ctx, req.GetId()); err != nil {
+	// check if agent with such ID already exists
+	if _, err := s.db.Agent.Get(ctx, req.GetId()); err != nil {
 		if !ent.IsNotFound(err) {
-			lg.Error(errors.QueryAnt, zap.Error(err))
+			lg.Error(errors.QueryAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, errors.Internal)
 		}
 	} else {
-		lg.Warn(errors.AntAlreadyExists)
-		return nil, status.Error(codes.AlreadyExists, errors.AntAlreadyExists)
+		lg.Warn(errors.AgentAlreadyExists)
+		return nil, status.Error(codes.AlreadyExists, errors.AgentAlreadyExists)
 	}
 
 	// get listener
@@ -101,12 +101,12 @@ func (s *server) RegisterAnt(ctx context.Context, req *listenerv1.RegisterAntReq
 		return nil, status.Errorf(codes.Internal, errors.Internal)
 	}
 
-	ant := s.db.Ant.Create()
+	agent := s.db.Agent.Create()
 
 	// id
-	ant.SetID(req.GetId())
+	agent.SetID(req.GetId())
 	// listener_id
-	ant.SetListener(listener)
+	agent.SetListener(listener)
 	// ext_ip
 	if req.GetExtIp() != nil {
 		ip := types.Inet{}
@@ -114,7 +114,7 @@ func (s *server) RegisterAnt(ctx context.Context, req *listenerv1.RegisterAntReq
 			// skip if IP is not scaned
 			lg.Warn(errors.ParseExtIP, zap.Error(err))
 		} else {
-			ant.SetExtIP(ip)
+			agent.SetExtIP(ip)
 		}
 	}
 	// int_ip
@@ -124,92 +124,92 @@ func (s *server) RegisterAnt(ctx context.Context, req *listenerv1.RegisterAntReq
 			// skip if IP is not scaned
 			lg.Warn(errors.ParseIntIP, zap.Error(err))
 		} else {
-			ant.SetIntIP(ip)
+			agent.SetIntIP(ip)
 		}
 	}
 	// os
-	ant.SetOs(shared.AntOs(req.GetOs()))
+	agent.SetOs(shared.AgentOs(req.GetOs()))
 	// os_meta
 	if req.GetOsMeta() != nil {
-		if len(req.GetOsMeta().GetValue()) > shared.AntOsMetaMaxLength {
-			ant.SetOsMeta(req.GetOsMeta().GetValue()[:shared.AntOsMetaMaxLength])
+		if len(req.GetOsMeta().GetValue()) > shared.AgentOsMetaMaxLength {
+			agent.SetOsMeta(req.GetOsMeta().GetValue()[:shared.AgentOsMetaMaxLength])
 		} else {
-			ant.SetOsMeta(req.GetOsMeta().GetValue())
+			agent.SetOsMeta(req.GetOsMeta().GetValue())
 		}
 	}
 	// hostname
 	if req.GetHostname() != nil {
-		if len(req.GetHostname().GetValue()) > shared.AntHostnameMaxLength {
-			ant.SetHostname(req.GetHostname().GetValue()[:shared.AntHostnameMaxLength])
+		if len(req.GetHostname().GetValue()) > shared.AgentHostnameMaxLength {
+			agent.SetHostname(req.GetHostname().GetValue()[:shared.AgentHostnameMaxLength])
 		} else {
-			ant.SetHostname(req.GetHostname().GetValue())
+			agent.SetHostname(req.GetHostname().GetValue())
 		}
 	}
 	// username
 	if req.GetUsername() != nil {
-		if len(req.GetUsername().GetValue()) > shared.AntUsernameMaxLength {
-			ant.SetUsername(req.GetUsername().GetValue()[:shared.AntUsernameMaxLength])
+		if len(req.GetUsername().GetValue()) > shared.AgentUsernameMaxLength {
+			agent.SetUsername(req.GetUsername().GetValue()[:shared.AgentUsernameMaxLength])
 		} else {
-			ant.SetUsername(req.GetUsername().GetValue())
+			agent.SetUsername(req.GetUsername().GetValue())
 		}
 	}
 	// domain
 	if req.GetDomain() != nil {
-		if len(req.GetDomain().GetValue()) > shared.AntDomainMaxLength {
-			ant.SetDomain(req.GetDomain().GetValue()[:shared.AntDomainMaxLength])
+		if len(req.GetDomain().GetValue()) > shared.AgentDomainMaxLength {
+			agent.SetDomain(req.GetDomain().GetValue()[:shared.AgentDomainMaxLength])
 		} else {
-			ant.SetDomain(req.GetDomain().GetValue())
+			agent.SetDomain(req.GetDomain().GetValue())
 		}
 	}
 	// privileged
 	if req.GetPrivileged() != nil {
-		ant.SetPrivileged(req.GetPrivileged().GetValue())
+		agent.SetPrivileged(req.GetPrivileged().GetValue())
 	}
 	// proc_name
 	if req.GetProcName() != nil {
-		if len(req.GetProcName().GetValue()) > shared.AntProcessNameMaxLength {
-			ant.SetProcessName(req.GetProcName().GetValue()[:shared.AntProcessNameMaxLength])
+		if len(req.GetProcName().GetValue()) > shared.AgentProcessNameMaxLength {
+			agent.SetProcessName(req.GetProcName().GetValue()[:shared.AgentProcessNameMaxLength])
 		} else {
-			ant.SetProcessName(req.GetProcName().GetValue())
+			agent.SetProcessName(req.GetProcName().GetValue())
 		}
 	}
 	// pid
 	if req.GetPid() != nil {
-		ant.SetPid(int64(req.GetPid().GetValue()))
+		agent.SetPid(int64(req.GetPid().GetValue()))
 	}
 	// arch
-	ant.SetArch(shared.AntArch(req.GetArch()))
+	agent.SetArch(shared.AgentArch(req.GetArch()))
 	// sleep
-	ant.SetSleep(req.GetSleep())
+	agent.SetSleep(req.GetSleep())
 	// jitter
-	ant.SetJitter(uint8(req.GetJitter()))
+	agent.SetJitter(uint8(req.GetJitter()))
 	// caps
-	ant.SetCaps(req.GetCaps())
+	agent.SetCaps(req.GetCaps())
 
-	// save ant
-	var antObj *ent.Ant
-	if antObj, err = ant.Save(ctx); err != nil {
-		lg.Error(errors.SaveAnt, zap.Error(err))
+	// save agent
+	var agentObj *ent.Agent
+	if agentObj, err = agent.Save(ctx); err != nil {
+		lg.Error(errors.SaveAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, errors.Internal)
 	}
 
 	// prepare message to chat with notification
-	hostname := antObj.Hostname
+	hostname := agentObj.Hostname
 	if hostname == "" {
-		hostname = hex.EncodeToString([]byte(strconv.Itoa(int(antObj.ID))))
+		hostname = hex.EncodeToString([]byte(strconv.Itoa(int(agentObj.ID))))
 	}
-	username := antObj.Username
+	username := agentObj.Username
 	if username == "" {
 		username = "[unknown]"
 	}
-	intIp := antObj.IntIP.String()
+	intIp := agentObj.IntIP.String()
 	if intIp == "" {
 		intIp = "[unknown]"
 	}
 	ch, err := s.db.Chat.
 		Create().
 		SetIsServer(true).
-		SetMessage(fmt.Sprintf("new ant [%s] %s@%s (%s)", fmt.Sprintf("%08x", antObj.ID), username, intIp, hostname)).
+		SetMessage(fmt.Sprintf("new agent [%s] %s@%s (%s)", fmt.Sprintf("%08x", agentObj.ID), username, intIp, hostname)).
 		Save(ctx)
 	if err != nil {
 		lg.Error(errors.SaveChatMessage, zap.Error(err))
@@ -223,67 +223,67 @@ func (s *server) RegisterAnt(ctx context.Context, req *listenerv1.RegisterAntReq
 		IsServer:  true,
 	})
 
-	// notify operators with new ant
-	go pools.Pool.Ants.Send(&operatorv1.AntResponse{
-		Id:         antObj.ID,
+	// notify operators with new agent
+	go pools.Pool.Agents.Send(&operatorv1.AgentResponse{
+		Id:         agentObj.ID,
 		Lid:        listener.ID,
-		ExtIp:      wrapperspb.String(antObj.ExtIP.String()),
-		IntIp:      wrapperspb.String(antObj.IntIP.String()),
-		Os:         uint32(antObj.Os),
-		OsMeta:     wrapperspb.String(antObj.OsMeta),
-		Hostname:   wrapperspb.String(antObj.Hostname),
-		Username:   wrapperspb.String(antObj.Username),
-		Domain:     wrapperspb.String(antObj.Domain),
-		Privileged: wrapperspb.Bool(antObj.Privileged),
-		ProcName:   wrapperspb.String(antObj.ProcessName),
-		Pid:        wrapperspb.UInt64(uint64(antObj.Pid)),
-		Arch:       uint32(antObj.Arch),
-		Sleep:      antObj.Sleep,
-		Jitter:     uint32(antObj.Jitter),
-		Caps:       antObj.Caps,
-		Color:      wrapperspb.UInt32(antObj.Color),
-		Note:       wrapperspb.String(antObj.Note),
-		First:      timestamppb.New(antObj.First),
-		Last:       timestamppb.New(antObj.Last),
+		ExtIp:      wrapperspb.String(agentObj.ExtIP.String()),
+		IntIp:      wrapperspb.String(agentObj.IntIP.String()),
+		Os:         uint32(agentObj.Os),
+		OsMeta:     wrapperspb.String(agentObj.OsMeta),
+		Hostname:   wrapperspb.String(agentObj.Hostname),
+		Username:   wrapperspb.String(agentObj.Username),
+		Domain:     wrapperspb.String(agentObj.Domain),
+		Privileged: wrapperspb.Bool(agentObj.Privileged),
+		ProcName:   wrapperspb.String(agentObj.ProcessName),
+		Pid:        wrapperspb.UInt64(uint64(agentObj.Pid)),
+		Arch:       uint32(agentObj.Arch),
+		Sleep:      agentObj.Sleep,
+		Jitter:     uint32(agentObj.Jitter),
+		Caps:       agentObj.Caps,
+		Color:      wrapperspb.UInt32(agentObj.Color),
+		Note:       wrapperspb.String(agentObj.Note),
+		First:      timestamppb.New(agentObj.First),
+		Last:       timestamppb.New(agentObj.Last),
 	})
 
-	return &listenerv1.RegisterAntResponse{}, nil
+	return &listenerv1.RegisterAgentResponse{}, nil
 }
 
-// GetTask returns task for ant from queue
+// GetTask returns task for agent from queue
 func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*listenerv1.GetTaskResponse, error) {
 	listenerId := grpcauth.ListenerFromCtx(ctx)
-	lg := s.lg.Named("GetTask").With(zap.Int64("listener-id", listenerId), zap.Uint32("ant-id", req.GetId()))
+	lg := s.lg.Named("GetTask").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()))
 
-	// get ant by ID
-	ant, err := s.db.Ant.Get(ctx, req.GetId())
+	// get agent by ID
+	agent, err := s.db.Agent.Get(ctx, req.GetId())
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			lg.Error(picoErrors.QueryAnt, zap.Error(err))
+			lg.Error(picoErrors.QueryAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			lg.Error("attempt to fetch task for unknown ant")
-			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Error("attempt to fetch task for unknown agent")
+			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
 	}
 
-	// update ant's last checkout
-	ant, err = ant.Update().
+	// update agent's last checkout
+	agent, err = agent.Update().
 		SetLast(time.Now()).
 		Save(ctx)
 	if err != nil {
-		lg.Error(picoErrors.UpdateLastAnt, zap.Error(err))
+		lg.Error(picoErrors.UpdateLastAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
-	// notify operators with ant's last checkout update
-	go pools.Pool.Ants.Send(pools.ToAntLastResponse(ant))
+	// notify operators with agent's last checkout update
+	go pools.Pool.Agents.Send(pools.ToAgentLastResponse(agent))
 
-	// get first in queue task for ant
+	// get first in queue task for agent
 	task, err := s.db.Task.
 		Query().
 		WithBlobberArgs().
-		Where(task.AntIDEQ(ant.ID)).
+		Where(task.AgentIDEQ(agent.ID)).
 		Where(task.StatusEQ(shared.StatusNew)).
 		Order(task.ByCreatedAt()).
 		First(ctx)
@@ -488,13 +488,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Pause: v.(*commonv1.CapPause),
 			}
 		}
-	case shared.CapDestruct:
+	case shared.CapDestroy:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Destruct{
-				Destruct: v.(*commonv1.CapDestruct),
+			response.Body = &listenerv1.GetTaskResponse_Destroy{
+				Destroy: v.(*commonv1.CapDestroy),
 			}
 		}
 	case shared.CapExecDetach:
@@ -552,43 +552,43 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 	go pools.Pool.Tasks.Send(&operatorv1.TaskStatusResponse{
 		Id:     task.CommandID,
 		Tid:    task.ID,
-		Aid:    ant.ID,
+		Aid:    agent.ID,
 		Status: uint32(task.Status),
 	})
 
 	return response, nil
 }
 
-// Save task's result from ant
+// Save task's result from agent
 func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest) (*listenerv1.PutResultResponse, error) {
 	listenerId := grpcauth.ListenerFromCtx(ctx)
-	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("ant-id", req.GetId()))
+	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()))
 
-	// get ant by ID
-	ant, err := s.db.Ant.Get(ctx, req.GetId())
+	// get agent by ID
+	agent, err := s.db.Agent.Get(ctx, req.GetId())
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			lg.Error(picoErrors.QueryAnt, zap.Error(err))
+			lg.Error(picoErrors.QueryAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			lg.Error(picoErrors.UnknownAnt)
-			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Error(picoErrors.UnknownAgent)
+			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
 	}
 
-	// update ant's last checkout timestamp
-	ant, err = ant.Update().
+	// update agent's last checkout timestamp
+	agent, err = agent.Update().
 		SetLast(time.Now()).
 		Save(ctx)
 	if err != nil {
-		lg.Error(picoErrors.UpdateLastAnt, zap.Error(err))
+		lg.Error(picoErrors.UpdateLastAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
-	// notify operators with ant's last checkout update
-	go pools.Pool.Ants.Send(pools.ToAntLastResponse(ant))
+	// notify operators with agent's last checkout update
+	go pools.Pool.Agents.Send(pools.ToAgentLastResponse(agent))
 
-	// get task for ant by ID
+	// get task for agent by ID
 	task, err := s.db.Task.Get(ctx, req.GetTid())
 	if err != nil {
 		if !ent.IsNotFound(err) {
@@ -606,7 +606,7 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 	}
 
 	if shared.TaskStatus(req.GetStatus()) == shared.StatusNew {
-		// if ant's task status is "NEW" -> drop saving (logical error)
+		// if agent's task status is "NEW" -> drop saving (logical error)
 		lg.Warn("attempt to update task with invalid status")
 		return nil, status.Error(codes.InvalidArgument, "invalid task status")
 	}
@@ -614,7 +614,7 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 	n := constants.TempTaskOutputPrefix + fmt.Sprintf("%d", task.ID)
 
 	if shared.TaskStatus(req.GetStatus()) == shared.StatusInProgress {
-		// if ant's task status is "IN PROGRESS" -> save output in temporary file
+		// if agent's task status is "IN PROGRESS" -> save output in temporary file
 		if req.GetOutput() != nil {
 			if err := os.WriteFile(n, req.GetOutput().GetValue(), os.FileMode(os.O_CREATE|os.O_APPEND|os.O_WRONLY)); err != nil {
 				lg.Error("unable write output in temp file", zap.Error(err))
@@ -681,7 +681,7 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 		x := &operatorv1.TaskDoneResponse{
 			Id:        task.CommandID,
 			Tid:       task.ID,
-			Aid:       ant.ID,
+			Aid:       agent.ID,
 			Status:    uint32(task.Status),
 			OutputBig: task.OutputBig,
 			OutputLen: uint64(blob.Size),
@@ -691,7 +691,7 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 		}
 		go pools.Pool.Tasks.Send(x)
 
-		// if task was CapSleep -> update ant data and notify operators
+		// if task was CapSleep -> update agent data and notify operators
 		if task.Cap == shared.CapSleep {
 			sleepBlob, err := s.db.Blobber.Get(ctx, task.ArgsID)
 			if err != nil {
@@ -701,17 +701,17 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 					lg.Error("unable unmarshal task sleep arguments to proto", zap.Error(err))
 				} else {
 					x := v.(*commonv1.CapSleep)
-					antUpdated, err := ant.Update().
+					agentUpdated, err := agent.Update().
 						SetSleep(x.GetSleep()).
 						SetJitter(uint8(x.GetJitter())).
 						Save(ctx)
 					if err != nil {
-						lg.Error("unable update ant to save new sleep/jitter values", zap.Error(err))
+						lg.Error("unable update agent to save new sleep/jitter values", zap.Error(err))
 					} else {
-						go pools.Pool.Ants.Send(&operatorv1.AntSleepResponse{
-							Id:     antUpdated.ID,
-							Sleep:  antUpdated.Sleep,
-							Jitter: uint32(antUpdated.Jitter),
+						go pools.Pool.Agents.Send(&operatorv1.AgentSleepResponse{
+							Id:     agentUpdated.ID,
+							Sleep:  agentUpdated.Sleep,
+							Jitter: uint32(agentUpdated.Jitter),
 						})
 					}
 				}

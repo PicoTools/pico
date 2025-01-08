@@ -20,18 +20,18 @@ const (
 )
 
 const (
-	// maximum length of ant's operating system meta information
-	AntOsMetaMaxLength = 1024
-	// maximum length of ant's hostname
-	AntHostnameMaxLength = 256
-	// maximum length of ant's username
-	AntUsernameMaxLength = 256
-	// maximum length of ant's domain
-	AntDomainMaxLength = 256
-	// maximum length of ant's process name
-	AntProcessNameMaxLength = 1024
-	// maximum length of ant's note
-	AntNoteMaxLength = 256
+	// maximum length of agent's operating system meta information
+	AgentOsMetaMaxLength = 1024
+	// maximum length of agent's hostname
+	AgentHostnameMaxLength = 256
+	// maximum length of agent's username
+	AgentUsernameMaxLength = 256
+	// maximum length of agent's domain
+	AgentDomainMaxLength = 256
+	// maximum length of agent's process name
+	AgentProcessNameMaxLength = 1024
+	// maximum length of agent's note
+	AgentNoteMaxLength = 256
 )
 
 const (

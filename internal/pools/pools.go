@@ -13,7 +13,7 @@ type pool struct {
 	Hello       PoolHello
 	Chat        PoolChat
 	Listeners   PoolListeners
-	Ants        PoolAnts
+	Agents      PoolAgents
 	Operators   PoolOperators
 	Credentials PoolCredentials
 	Tasks       PoolTasks
@@ -31,7 +31,7 @@ func (p *pool) DisconnectAll(ctx context.Context, cookie string) {
 		return nil
 	})
 	g.Go(func() error {
-		p.Ants.Disconnect(cookie)
+		p.Agents.Disconnect(cookie)
 		return nil
 	})
 	g.Go(func() error {

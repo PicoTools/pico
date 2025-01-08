@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/types"
 )
@@ -168,19 +168,19 @@ func (lc *ListenerCreate) SetID(i int64) *ListenerCreate {
 	return lc
 }
 
-// AddAntIDs adds the "ant" edge to the Ant entity by IDs.
-func (lc *ListenerCreate) AddAntIDs(ids ...uint32) *ListenerCreate {
-	lc.mutation.AddAntIDs(ids...)
+// AddAgentIDs adds the "agent" edge to the Agent entity by IDs.
+func (lc *ListenerCreate) AddAgentIDs(ids ...uint32) *ListenerCreate {
+	lc.mutation.AddAgentIDs(ids...)
 	return lc
 }
 
-// AddAnt adds the "ant" edges to the Ant entity.
-func (lc *ListenerCreate) AddAnt(a ...*Ant) *ListenerCreate {
+// AddAgent adds the "agent" edges to the Agent entity.
+func (lc *ListenerCreate) AddAgent(a ...*Agent) *ListenerCreate {
 	ids := make([]uint32, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return lc.AddAntIDs(ids...)
+	return lc.AddAgentIDs(ids...)
 }
 
 // Mutation returns the ListenerMutation object of the builder.
@@ -359,15 +359,15 @@ func (lc *ListenerCreate) createSpec() (*Listener, *sqlgraph.CreateSpec) {
 		_spec.SetField(listener.FieldLast, field.TypeTime, value)
 		_node.Last = value
 	}
-	if nodes := lc.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := lc.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   listener.AntTable,
-			Columns: []string{listener.AntColumn},
+			Table:   listener.AgentTable,
+			Columns: []string{listener.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {

@@ -11,28 +11,28 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/task"
 	"github.com/PicoTools/pico/internal/types"
 )
 
-// AntCreate is the builder for creating a Ant entity.
-type AntCreate struct {
+// AgentCreate is the builder for creating a Agent entity.
+type AgentCreate struct {
 	config
-	mutation *AntMutation
+	mutation *AgentMutation
 	hooks    []Hook
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ac *AntCreate) SetCreatedAt(t time.Time) *AntCreate {
+func (ac *AgentCreate) SetCreatedAt(t time.Time) *AgentCreate {
 	ac.mutation.SetCreatedAt(t)
 	return ac
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ac *AntCreate) SetNillableCreatedAt(t *time.Time) *AntCreate {
+func (ac *AgentCreate) SetNillableCreatedAt(t *time.Time) *AgentCreate {
 	if t != nil {
 		ac.SetCreatedAt(*t)
 	}
@@ -40,13 +40,13 @@ func (ac *AntCreate) SetNillableCreatedAt(t *time.Time) *AntCreate {
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ac *AntCreate) SetUpdatedAt(t time.Time) *AntCreate {
+func (ac *AgentCreate) SetUpdatedAt(t time.Time) *AgentCreate {
 	ac.mutation.SetUpdatedAt(t)
 	return ac
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ac *AntCreate) SetNillableUpdatedAt(t *time.Time) *AntCreate {
+func (ac *AgentCreate) SetNillableUpdatedAt(t *time.Time) *AgentCreate {
 	if t != nil {
 		ac.SetUpdatedAt(*t)
 	}
@@ -54,13 +54,13 @@ func (ac *AntCreate) SetNillableUpdatedAt(t *time.Time) *AntCreate {
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (ac *AntCreate) SetDeletedAt(t time.Time) *AntCreate {
+func (ac *AgentCreate) SetDeletedAt(t time.Time) *AgentCreate {
 	ac.mutation.SetDeletedAt(t)
 	return ac
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (ac *AntCreate) SetNillableDeletedAt(t *time.Time) *AntCreate {
+func (ac *AgentCreate) SetNillableDeletedAt(t *time.Time) *AgentCreate {
 	if t != nil {
 		ac.SetDeletedAt(*t)
 	}
@@ -68,19 +68,19 @@ func (ac *AntCreate) SetNillableDeletedAt(t *time.Time) *AntCreate {
 }
 
 // SetListenerID sets the "listener_id" field.
-func (ac *AntCreate) SetListenerID(i int64) *AntCreate {
+func (ac *AgentCreate) SetListenerID(i int64) *AgentCreate {
 	ac.mutation.SetListenerID(i)
 	return ac
 }
 
 // SetExtIP sets the "ext_ip" field.
-func (ac *AntCreate) SetExtIP(t types.Inet) *AntCreate {
+func (ac *AgentCreate) SetExtIP(t types.Inet) *AgentCreate {
 	ac.mutation.SetExtIP(t)
 	return ac
 }
 
 // SetNillableExtIP sets the "ext_ip" field if the given value is not nil.
-func (ac *AntCreate) SetNillableExtIP(t *types.Inet) *AntCreate {
+func (ac *AgentCreate) SetNillableExtIP(t *types.Inet) *AgentCreate {
 	if t != nil {
 		ac.SetExtIP(*t)
 	}
@@ -88,13 +88,13 @@ func (ac *AntCreate) SetNillableExtIP(t *types.Inet) *AntCreate {
 }
 
 // SetIntIP sets the "int_ip" field.
-func (ac *AntCreate) SetIntIP(t types.Inet) *AntCreate {
+func (ac *AgentCreate) SetIntIP(t types.Inet) *AgentCreate {
 	ac.mutation.SetIntIP(t)
 	return ac
 }
 
 // SetNillableIntIP sets the "int_ip" field if the given value is not nil.
-func (ac *AntCreate) SetNillableIntIP(t *types.Inet) *AntCreate {
+func (ac *AgentCreate) SetNillableIntIP(t *types.Inet) *AgentCreate {
 	if t != nil {
 		ac.SetIntIP(*t)
 	}
@@ -102,19 +102,19 @@ func (ac *AntCreate) SetNillableIntIP(t *types.Inet) *AntCreate {
 }
 
 // SetOs sets the "os" field.
-func (ac *AntCreate) SetOs(so shared.AntOs) *AntCreate {
+func (ac *AgentCreate) SetOs(so shared.AgentOs) *AgentCreate {
 	ac.mutation.SetOs(so)
 	return ac
 }
 
 // SetOsMeta sets the "os_meta" field.
-func (ac *AntCreate) SetOsMeta(s string) *AntCreate {
+func (ac *AgentCreate) SetOsMeta(s string) *AgentCreate {
 	ac.mutation.SetOsMeta(s)
 	return ac
 }
 
 // SetNillableOsMeta sets the "os_meta" field if the given value is not nil.
-func (ac *AntCreate) SetNillableOsMeta(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableOsMeta(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetOsMeta(*s)
 	}
@@ -122,13 +122,13 @@ func (ac *AntCreate) SetNillableOsMeta(s *string) *AntCreate {
 }
 
 // SetHostname sets the "hostname" field.
-func (ac *AntCreate) SetHostname(s string) *AntCreate {
+func (ac *AgentCreate) SetHostname(s string) *AgentCreate {
 	ac.mutation.SetHostname(s)
 	return ac
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (ac *AntCreate) SetNillableHostname(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableHostname(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetHostname(*s)
 	}
@@ -136,13 +136,13 @@ func (ac *AntCreate) SetNillableHostname(s *string) *AntCreate {
 }
 
 // SetUsername sets the "username" field.
-func (ac *AntCreate) SetUsername(s string) *AntCreate {
+func (ac *AgentCreate) SetUsername(s string) *AgentCreate {
 	ac.mutation.SetUsername(s)
 	return ac
 }
 
 // SetNillableUsername sets the "username" field if the given value is not nil.
-func (ac *AntCreate) SetNillableUsername(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableUsername(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetUsername(*s)
 	}
@@ -150,13 +150,13 @@ func (ac *AntCreate) SetNillableUsername(s *string) *AntCreate {
 }
 
 // SetDomain sets the "domain" field.
-func (ac *AntCreate) SetDomain(s string) *AntCreate {
+func (ac *AgentCreate) SetDomain(s string) *AgentCreate {
 	ac.mutation.SetDomain(s)
 	return ac
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (ac *AntCreate) SetNillableDomain(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableDomain(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetDomain(*s)
 	}
@@ -164,13 +164,13 @@ func (ac *AntCreate) SetNillableDomain(s *string) *AntCreate {
 }
 
 // SetPrivileged sets the "privileged" field.
-func (ac *AntCreate) SetPrivileged(b bool) *AntCreate {
+func (ac *AgentCreate) SetPrivileged(b bool) *AgentCreate {
 	ac.mutation.SetPrivileged(b)
 	return ac
 }
 
 // SetNillablePrivileged sets the "privileged" field if the given value is not nil.
-func (ac *AntCreate) SetNillablePrivileged(b *bool) *AntCreate {
+func (ac *AgentCreate) SetNillablePrivileged(b *bool) *AgentCreate {
 	if b != nil {
 		ac.SetPrivileged(*b)
 	}
@@ -178,13 +178,13 @@ func (ac *AntCreate) SetNillablePrivileged(b *bool) *AntCreate {
 }
 
 // SetProcessName sets the "process_name" field.
-func (ac *AntCreate) SetProcessName(s string) *AntCreate {
+func (ac *AgentCreate) SetProcessName(s string) *AgentCreate {
 	ac.mutation.SetProcessName(s)
 	return ac
 }
 
 // SetNillableProcessName sets the "process_name" field if the given value is not nil.
-func (ac *AntCreate) SetNillableProcessName(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableProcessName(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetProcessName(*s)
 	}
@@ -192,13 +192,13 @@ func (ac *AntCreate) SetNillableProcessName(s *string) *AntCreate {
 }
 
 // SetPid sets the "pid" field.
-func (ac *AntCreate) SetPid(i int64) *AntCreate {
+func (ac *AgentCreate) SetPid(i int64) *AgentCreate {
 	ac.mutation.SetPid(i)
 	return ac
 }
 
 // SetNillablePid sets the "pid" field if the given value is not nil.
-func (ac *AntCreate) SetNillablePid(i *int64) *AntCreate {
+func (ac *AgentCreate) SetNillablePid(i *int64) *AgentCreate {
 	if i != nil {
 		ac.SetPid(*i)
 	}
@@ -206,31 +206,31 @@ func (ac *AntCreate) SetNillablePid(i *int64) *AntCreate {
 }
 
 // SetArch sets the "arch" field.
-func (ac *AntCreate) SetArch(sa shared.AntArch) *AntCreate {
+func (ac *AgentCreate) SetArch(sa shared.AgentArch) *AgentCreate {
 	ac.mutation.SetArch(sa)
 	return ac
 }
 
 // SetSleep sets the "sleep" field.
-func (ac *AntCreate) SetSleep(u uint32) *AntCreate {
+func (ac *AgentCreate) SetSleep(u uint32) *AgentCreate {
 	ac.mutation.SetSleep(u)
 	return ac
 }
 
 // SetJitter sets the "jitter" field.
-func (ac *AntCreate) SetJitter(u uint8) *AntCreate {
+func (ac *AgentCreate) SetJitter(u uint8) *AgentCreate {
 	ac.mutation.SetJitter(u)
 	return ac
 }
 
 // SetFirst sets the "first" field.
-func (ac *AntCreate) SetFirst(t time.Time) *AntCreate {
+func (ac *AgentCreate) SetFirst(t time.Time) *AgentCreate {
 	ac.mutation.SetFirst(t)
 	return ac
 }
 
 // SetNillableFirst sets the "first" field if the given value is not nil.
-func (ac *AntCreate) SetNillableFirst(t *time.Time) *AntCreate {
+func (ac *AgentCreate) SetNillableFirst(t *time.Time) *AgentCreate {
 	if t != nil {
 		ac.SetFirst(*t)
 	}
@@ -238,13 +238,13 @@ func (ac *AntCreate) SetNillableFirst(t *time.Time) *AntCreate {
 }
 
 // SetLast sets the "last" field.
-func (ac *AntCreate) SetLast(t time.Time) *AntCreate {
+func (ac *AgentCreate) SetLast(t time.Time) *AgentCreate {
 	ac.mutation.SetLast(t)
 	return ac
 }
 
 // SetNillableLast sets the "last" field if the given value is not nil.
-func (ac *AntCreate) SetNillableLast(t *time.Time) *AntCreate {
+func (ac *AgentCreate) SetNillableLast(t *time.Time) *AgentCreate {
 	if t != nil {
 		ac.SetLast(*t)
 	}
@@ -252,19 +252,19 @@ func (ac *AntCreate) SetNillableLast(t *time.Time) *AntCreate {
 }
 
 // SetCaps sets the "caps" field.
-func (ac *AntCreate) SetCaps(u uint32) *AntCreate {
+func (ac *AgentCreate) SetCaps(u uint32) *AgentCreate {
 	ac.mutation.SetCaps(u)
 	return ac
 }
 
 // SetNote sets the "note" field.
-func (ac *AntCreate) SetNote(s string) *AntCreate {
+func (ac *AgentCreate) SetNote(s string) *AgentCreate {
 	ac.mutation.SetNote(s)
 	return ac
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (ac *AntCreate) SetNillableNote(s *string) *AntCreate {
+func (ac *AgentCreate) SetNillableNote(s *string) *AgentCreate {
 	if s != nil {
 		ac.SetNote(*s)
 	}
@@ -272,13 +272,13 @@ func (ac *AntCreate) SetNillableNote(s *string) *AntCreate {
 }
 
 // SetColor sets the "color" field.
-func (ac *AntCreate) SetColor(u uint32) *AntCreate {
+func (ac *AgentCreate) SetColor(u uint32) *AgentCreate {
 	ac.mutation.SetColor(u)
 	return ac
 }
 
 // SetNillableColor sets the "color" field if the given value is not nil.
-func (ac *AntCreate) SetNillableColor(u *uint32) *AntCreate {
+func (ac *AgentCreate) SetNillableColor(u *uint32) *AgentCreate {
 	if u != nil {
 		ac.SetColor(*u)
 	}
@@ -286,24 +286,24 @@ func (ac *AntCreate) SetNillableColor(u *uint32) *AntCreate {
 }
 
 // SetID sets the "id" field.
-func (ac *AntCreate) SetID(u uint32) *AntCreate {
+func (ac *AgentCreate) SetID(u uint32) *AgentCreate {
 	ac.mutation.SetID(u)
 	return ac
 }
 
 // SetListener sets the "listener" edge to the Listener entity.
-func (ac *AntCreate) SetListener(l *Listener) *AntCreate {
+func (ac *AgentCreate) SetListener(l *Listener) *AgentCreate {
 	return ac.SetListenerID(l.ID)
 }
 
 // AddCommandIDs adds the "command" edge to the Command entity by IDs.
-func (ac *AntCreate) AddCommandIDs(ids ...int64) *AntCreate {
+func (ac *AgentCreate) AddCommandIDs(ids ...int64) *AgentCreate {
 	ac.mutation.AddCommandIDs(ids...)
 	return ac
 }
 
 // AddCommand adds the "command" edges to the Command entity.
-func (ac *AntCreate) AddCommand(c ...*Command) *AntCreate {
+func (ac *AgentCreate) AddCommand(c ...*Command) *AgentCreate {
 	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -312,13 +312,13 @@ func (ac *AntCreate) AddCommand(c ...*Command) *AntCreate {
 }
 
 // AddTaskIDs adds the "task" edge to the Task entity by IDs.
-func (ac *AntCreate) AddTaskIDs(ids ...int64) *AntCreate {
+func (ac *AgentCreate) AddTaskIDs(ids ...int64) *AgentCreate {
 	ac.mutation.AddTaskIDs(ids...)
 	return ac
 }
 
 // AddTask adds the "task" edges to the Task entity.
-func (ac *AntCreate) AddTask(t ...*Task) *AntCreate {
+func (ac *AgentCreate) AddTask(t ...*Task) *AgentCreate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -326,13 +326,13 @@ func (ac *AntCreate) AddTask(t ...*Task) *AntCreate {
 	return ac.AddTaskIDs(ids...)
 }
 
-// Mutation returns the AntMutation object of the builder.
-func (ac *AntCreate) Mutation() *AntMutation {
+// Mutation returns the AgentMutation object of the builder.
+func (ac *AgentCreate) Mutation() *AgentMutation {
 	return ac.mutation
 }
 
-// Save creates the Ant in the database.
-func (ac *AntCreate) Save(ctx context.Context) (*Ant, error) {
+// Save creates the Agent in the database.
+func (ac *AgentCreate) Save(ctx context.Context) (*Agent, error) {
 	if err := ac.defaults(); err != nil {
 		return nil, err
 	}
@@ -340,7 +340,7 @@ func (ac *AntCreate) Save(ctx context.Context) (*Ant, error) {
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *AntCreate) SaveX(ctx context.Context) *Ant {
+func (ac *AgentCreate) SaveX(ctx context.Context) *Agent {
 	v, err := ac.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -349,147 +349,147 @@ func (ac *AntCreate) SaveX(ctx context.Context) *Ant {
 }
 
 // Exec executes the query.
-func (ac *AntCreate) Exec(ctx context.Context) error {
+func (ac *AgentCreate) Exec(ctx context.Context) error {
 	_, err := ac.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ac *AntCreate) ExecX(ctx context.Context) {
+func (ac *AgentCreate) ExecX(ctx context.Context) {
 	if err := ac.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ac *AntCreate) defaults() error {
+func (ac *AgentCreate) defaults() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
-		if ant.DefaultCreatedAt == nil {
-			return fmt.Errorf("ent: uninitialized ant.DefaultCreatedAt (forgotten import ent/runtime?)")
+		if agent.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agent.DefaultCreatedAt (forgotten import ent/runtime?)")
 		}
-		v := ant.DefaultCreatedAt()
+		v := agent.DefaultCreatedAt()
 		ac.mutation.SetCreatedAt(v)
 	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
-		if ant.DefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized ant.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		if agent.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agent.DefaultUpdatedAt (forgotten import ent/runtime?)")
 		}
-		v := ant.DefaultUpdatedAt()
+		v := agent.DefaultUpdatedAt()
 		ac.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := ac.mutation.First(); !ok {
-		if ant.DefaultFirst == nil {
-			return fmt.Errorf("ent: uninitialized ant.DefaultFirst (forgotten import ent/runtime?)")
+		if agent.DefaultFirst == nil {
+			return fmt.Errorf("ent: uninitialized agent.DefaultFirst (forgotten import ent/runtime?)")
 		}
-		v := ant.DefaultFirst()
+		v := agent.DefaultFirst()
 		ac.mutation.SetFirst(v)
 	}
 	if _, ok := ac.mutation.Last(); !ok {
-		if ant.DefaultLast == nil {
-			return fmt.Errorf("ent: uninitialized ant.DefaultLast (forgotten import ent/runtime?)")
+		if agent.DefaultLast == nil {
+			return fmt.Errorf("ent: uninitialized agent.DefaultLast (forgotten import ent/runtime?)")
 		}
-		v := ant.DefaultLast()
+		v := agent.DefaultLast()
 		ac.mutation.SetLast(v)
 	}
 	if _, ok := ac.mutation.Color(); !ok {
-		v := ant.DefaultColor
+		v := agent.DefaultColor
 		ac.mutation.SetColor(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ac *AntCreate) check() error {
+func (ac *AgentCreate) check() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Ant.created_at"`)}
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Agent.created_at"`)}
 	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Ant.updated_at"`)}
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Agent.updated_at"`)}
 	}
 	if _, ok := ac.mutation.ListenerID(); !ok {
-		return &ValidationError{Name: "listener_id", err: errors.New(`ent: missing required field "Ant.listener_id"`)}
+		return &ValidationError{Name: "listener_id", err: errors.New(`ent: missing required field "Agent.listener_id"`)}
 	}
 	if v, ok := ac.mutation.ExtIP(); ok {
-		if err := ant.ExtIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.ext_ip": %w`, err)}
+		if err := agent.ExtIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.ext_ip": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.IntIP(); ok {
-		if err := ant.IntIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.int_ip": %w`, err)}
+		if err := agent.IntIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.int_ip": %w`, err)}
 		}
 	}
 	if _, ok := ac.mutation.Os(); !ok {
-		return &ValidationError{Name: "os", err: errors.New(`ent: missing required field "Ant.os"`)}
+		return &ValidationError{Name: "os", err: errors.New(`ent: missing required field "Agent.os"`)}
 	}
 	if v, ok := ac.mutation.Os(); ok {
-		if err := ant.OsValidator(v); err != nil {
-			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Ant.os": %w`, err)}
+		if err := agent.OsValidator(v); err != nil {
+			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Agent.os": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.OsMeta(); ok {
-		if err := ant.OsMetaValidator(v); err != nil {
-			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Ant.os_meta": %w`, err)}
+		if err := agent.OsMetaValidator(v); err != nil {
+			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Agent.os_meta": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.Hostname(); ok {
-		if err := ant.HostnameValidator(v); err != nil {
-			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Ant.hostname": %w`, err)}
+		if err := agent.HostnameValidator(v); err != nil {
+			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Agent.hostname": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.Username(); ok {
-		if err := ant.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Ant.username": %w`, err)}
+		if err := agent.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Agent.username": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.Domain(); ok {
-		if err := ant.DomainValidator(v); err != nil {
-			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Ant.domain": %w`, err)}
+		if err := agent.DomainValidator(v); err != nil {
+			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Agent.domain": %w`, err)}
 		}
 	}
 	if v, ok := ac.mutation.ProcessName(); ok {
-		if err := ant.ProcessNameValidator(v); err != nil {
-			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Ant.process_name": %w`, err)}
+		if err := agent.ProcessNameValidator(v); err != nil {
+			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Agent.process_name": %w`, err)}
 		}
 	}
 	if _, ok := ac.mutation.Arch(); !ok {
-		return &ValidationError{Name: "arch", err: errors.New(`ent: missing required field "Ant.arch"`)}
+		return &ValidationError{Name: "arch", err: errors.New(`ent: missing required field "Agent.arch"`)}
 	}
 	if v, ok := ac.mutation.Arch(); ok {
-		if err := ant.ArchValidator(v); err != nil {
-			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Ant.arch": %w`, err)}
+		if err := agent.ArchValidator(v); err != nil {
+			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Agent.arch": %w`, err)}
 		}
 	}
 	if _, ok := ac.mutation.Sleep(); !ok {
-		return &ValidationError{Name: "sleep", err: errors.New(`ent: missing required field "Ant.sleep"`)}
+		return &ValidationError{Name: "sleep", err: errors.New(`ent: missing required field "Agent.sleep"`)}
 	}
 	if _, ok := ac.mutation.Jitter(); !ok {
-		return &ValidationError{Name: "jitter", err: errors.New(`ent: missing required field "Ant.jitter"`)}
+		return &ValidationError{Name: "jitter", err: errors.New(`ent: missing required field "Agent.jitter"`)}
 	}
 	if _, ok := ac.mutation.First(); !ok {
-		return &ValidationError{Name: "first", err: errors.New(`ent: missing required field "Ant.first"`)}
+		return &ValidationError{Name: "first", err: errors.New(`ent: missing required field "Agent.first"`)}
 	}
 	if _, ok := ac.mutation.Last(); !ok {
-		return &ValidationError{Name: "last", err: errors.New(`ent: missing required field "Ant.last"`)}
+		return &ValidationError{Name: "last", err: errors.New(`ent: missing required field "Agent.last"`)}
 	}
 	if _, ok := ac.mutation.Caps(); !ok {
-		return &ValidationError{Name: "caps", err: errors.New(`ent: missing required field "Ant.caps"`)}
+		return &ValidationError{Name: "caps", err: errors.New(`ent: missing required field "Agent.caps"`)}
 	}
 	if v, ok := ac.mutation.Note(); ok {
-		if err := ant.NoteValidator(v); err != nil {
-			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Ant.note": %w`, err)}
+		if err := agent.NoteValidator(v); err != nil {
+			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Agent.note": %w`, err)}
 		}
 	}
 	if _, ok := ac.mutation.Color(); !ok {
-		return &ValidationError{Name: "color", err: errors.New(`ent: missing required field "Ant.color"`)}
+		return &ValidationError{Name: "color", err: errors.New(`ent: missing required field "Agent.color"`)}
 	}
 	if len(ac.mutation.ListenerIDs()) == 0 {
-		return &ValidationError{Name: "listener", err: errors.New(`ent: missing required edge "Ant.listener"`)}
+		return &ValidationError{Name: "listener", err: errors.New(`ent: missing required edge "Agent.listener"`)}
 	}
 	return nil
 }
 
-func (ac *AntCreate) sqlSave(ctx context.Context) (*Ant, error) {
+func (ac *AgentCreate) sqlSave(ctx context.Context) (*Agent, error) {
 	if err := ac.check(); err != nil {
 		return nil, err
 	}
@@ -509,105 +509,105 @@ func (ac *AntCreate) sqlSave(ctx context.Context) (*Ant, error) {
 	return _node, nil
 }
 
-func (ac *AntCreate) createSpec() (*Ant, *sqlgraph.CreateSpec) {
+func (ac *AgentCreate) createSpec() (*Agent, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Ant{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(ant.Table, sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32))
+		_node = &Agent{config: ac.config}
+		_spec = sqlgraph.NewCreateSpec(agent.Table, sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32))
 	)
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
-		_spec.SetField(ant.FieldCreatedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	if value, ok := ac.mutation.UpdatedAt(); ok {
-		_spec.SetField(ant.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
 	if value, ok := ac.mutation.DeletedAt(); ok {
-		_spec.SetField(ant.FieldDeletedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldDeletedAt, field.TypeTime, value)
 		_node.DeletedAt = value
 	}
 	if value, ok := ac.mutation.ExtIP(); ok {
-		_spec.SetField(ant.FieldExtIP, field.TypeString, value)
+		_spec.SetField(agent.FieldExtIP, field.TypeString, value)
 		_node.ExtIP = value
 	}
 	if value, ok := ac.mutation.IntIP(); ok {
-		_spec.SetField(ant.FieldIntIP, field.TypeString, value)
+		_spec.SetField(agent.FieldIntIP, field.TypeString, value)
 		_node.IntIP = value
 	}
 	if value, ok := ac.mutation.Os(); ok {
-		_spec.SetField(ant.FieldOs, field.TypeEnum, value)
+		_spec.SetField(agent.FieldOs, field.TypeEnum, value)
 		_node.Os = value
 	}
 	if value, ok := ac.mutation.OsMeta(); ok {
-		_spec.SetField(ant.FieldOsMeta, field.TypeString, value)
+		_spec.SetField(agent.FieldOsMeta, field.TypeString, value)
 		_node.OsMeta = value
 	}
 	if value, ok := ac.mutation.Hostname(); ok {
-		_spec.SetField(ant.FieldHostname, field.TypeString, value)
+		_spec.SetField(agent.FieldHostname, field.TypeString, value)
 		_node.Hostname = value
 	}
 	if value, ok := ac.mutation.Username(); ok {
-		_spec.SetField(ant.FieldUsername, field.TypeString, value)
+		_spec.SetField(agent.FieldUsername, field.TypeString, value)
 		_node.Username = value
 	}
 	if value, ok := ac.mutation.Domain(); ok {
-		_spec.SetField(ant.FieldDomain, field.TypeString, value)
+		_spec.SetField(agent.FieldDomain, field.TypeString, value)
 		_node.Domain = value
 	}
 	if value, ok := ac.mutation.Privileged(); ok {
-		_spec.SetField(ant.FieldPrivileged, field.TypeBool, value)
+		_spec.SetField(agent.FieldPrivileged, field.TypeBool, value)
 		_node.Privileged = value
 	}
 	if value, ok := ac.mutation.ProcessName(); ok {
-		_spec.SetField(ant.FieldProcessName, field.TypeString, value)
+		_spec.SetField(agent.FieldProcessName, field.TypeString, value)
 		_node.ProcessName = value
 	}
 	if value, ok := ac.mutation.Pid(); ok {
-		_spec.SetField(ant.FieldPid, field.TypeInt64, value)
+		_spec.SetField(agent.FieldPid, field.TypeInt64, value)
 		_node.Pid = value
 	}
 	if value, ok := ac.mutation.Arch(); ok {
-		_spec.SetField(ant.FieldArch, field.TypeEnum, value)
+		_spec.SetField(agent.FieldArch, field.TypeEnum, value)
 		_node.Arch = value
 	}
 	if value, ok := ac.mutation.Sleep(); ok {
-		_spec.SetField(ant.FieldSleep, field.TypeUint32, value)
+		_spec.SetField(agent.FieldSleep, field.TypeUint32, value)
 		_node.Sleep = value
 	}
 	if value, ok := ac.mutation.Jitter(); ok {
-		_spec.SetField(ant.FieldJitter, field.TypeUint8, value)
+		_spec.SetField(agent.FieldJitter, field.TypeUint8, value)
 		_node.Jitter = value
 	}
 	if value, ok := ac.mutation.First(); ok {
-		_spec.SetField(ant.FieldFirst, field.TypeTime, value)
+		_spec.SetField(agent.FieldFirst, field.TypeTime, value)
 		_node.First = value
 	}
 	if value, ok := ac.mutation.Last(); ok {
-		_spec.SetField(ant.FieldLast, field.TypeTime, value)
+		_spec.SetField(agent.FieldLast, field.TypeTime, value)
 		_node.Last = value
 	}
 	if value, ok := ac.mutation.Caps(); ok {
-		_spec.SetField(ant.FieldCaps, field.TypeUint32, value)
+		_spec.SetField(agent.FieldCaps, field.TypeUint32, value)
 		_node.Caps = value
 	}
 	if value, ok := ac.mutation.Note(); ok {
-		_spec.SetField(ant.FieldNote, field.TypeString, value)
+		_spec.SetField(agent.FieldNote, field.TypeString, value)
 		_node.Note = value
 	}
 	if value, ok := ac.mutation.Color(); ok {
-		_spec.SetField(ant.FieldColor, field.TypeUint32, value)
+		_spec.SetField(agent.FieldColor, field.TypeUint32, value)
 		_node.Color = value
 	}
 	if nodes := ac.mutation.ListenerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   ant.ListenerTable,
-			Columns: []string{ant.ListenerColumn},
+			Table:   agent.ListenerTable,
+			Columns: []string{agent.ListenerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(listener.FieldID, field.TypeInt64),
@@ -623,8 +623,8 @@ func (ac *AntCreate) createSpec() (*Ant, *sqlgraph.CreateSpec) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -639,8 +639,8 @@ func (ac *AntCreate) createSpec() (*Ant, *sqlgraph.CreateSpec) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -654,27 +654,27 @@ func (ac *AntCreate) createSpec() (*Ant, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
-// AntCreateBulk is the builder for creating many Ant entities in bulk.
-type AntCreateBulk struct {
+// AgentCreateBulk is the builder for creating many Agent entities in bulk.
+type AgentCreateBulk struct {
 	config
 	err      error
-	builders []*AntCreate
+	builders []*AgentCreate
 }
 
-// Save creates the Ant entities in the database.
-func (acb *AntCreateBulk) Save(ctx context.Context) ([]*Ant, error) {
+// Save creates the Agent entities in the database.
+func (acb *AgentCreateBulk) Save(ctx context.Context) ([]*Agent, error) {
 	if acb.err != nil {
 		return nil, acb.err
 	}
 	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*Ant, len(acb.builders))
+	nodes := make([]*Agent, len(acb.builders))
 	mutators := make([]Mutator, len(acb.builders))
 	for i := range acb.builders {
 		func(i int, root context.Context) {
 			builder := acb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*AntMutation)
+				mutation, ok := m.(*AgentMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -721,7 +721,7 @@ func (acb *AntCreateBulk) Save(ctx context.Context) ([]*Ant, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *AntCreateBulk) SaveX(ctx context.Context) []*Ant {
+func (acb *AgentCreateBulk) SaveX(ctx context.Context) []*Agent {
 	v, err := acb.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -730,13 +730,13 @@ func (acb *AntCreateBulk) SaveX(ctx context.Context) []*Ant {
 }
 
 // Exec executes the query.
-func (acb *AntCreateBulk) Exec(ctx context.Context) error {
+func (acb *AgentCreateBulk) Exec(ctx context.Context) error {
 	_, err := acb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acb *AntCreateBulk) ExecX(ctx context.Context) {
+func (acb *AgentCreateBulk) ExecX(ctx context.Context) {
 	if err := acb.Exec(ctx); err != nil {
 		panic(err)
 	}

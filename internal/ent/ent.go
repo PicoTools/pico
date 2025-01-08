@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/chat"
 	"github.com/PicoTools/pico/internal/ent/command"
@@ -82,7 +82,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			ant.Table:        ant.ValidColumn,
+			agent.Table:      agent.ValidColumn,
 			blobber.Table:    blobber.ValidColumn,
 			chat.Table:       chat.ValidColumn,
 			command.Table:    command.ValidColumn,

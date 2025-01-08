@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/predicate"
@@ -20,33 +20,33 @@ import (
 	"github.com/PicoTools/pico/internal/types"
 )
 
-// AntUpdate is the builder for updating Ant entities.
-type AntUpdate struct {
+// AgentUpdate is the builder for updating Agent entities.
+type AgentUpdate struct {
 	config
 	hooks    []Hook
-	mutation *AntMutation
+	mutation *AgentMutation
 }
 
-// Where appends a list predicates to the AntUpdate builder.
-func (au *AntUpdate) Where(ps ...predicate.Ant) *AntUpdate {
+// Where appends a list predicates to the AgentUpdate builder.
+func (au *AgentUpdate) Where(ps ...predicate.Agent) *AgentUpdate {
 	au.mutation.Where(ps...)
 	return au
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (au *AntUpdate) SetUpdatedAt(t time.Time) *AntUpdate {
+func (au *AgentUpdate) SetUpdatedAt(t time.Time) *AgentUpdate {
 	au.mutation.SetUpdatedAt(t)
 	return au
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (au *AntUpdate) SetDeletedAt(t time.Time) *AntUpdate {
+func (au *AgentUpdate) SetDeletedAt(t time.Time) *AgentUpdate {
 	au.mutation.SetDeletedAt(t)
 	return au
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (au *AntUpdate) SetNillableDeletedAt(t *time.Time) *AntUpdate {
+func (au *AgentUpdate) SetNillableDeletedAt(t *time.Time) *AgentUpdate {
 	if t != nil {
 		au.SetDeletedAt(*t)
 	}
@@ -54,19 +54,19 @@ func (au *AntUpdate) SetNillableDeletedAt(t *time.Time) *AntUpdate {
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (au *AntUpdate) ClearDeletedAt() *AntUpdate {
+func (au *AgentUpdate) ClearDeletedAt() *AgentUpdate {
 	au.mutation.ClearDeletedAt()
 	return au
 }
 
 // SetListenerID sets the "listener_id" field.
-func (au *AntUpdate) SetListenerID(i int64) *AntUpdate {
+func (au *AgentUpdate) SetListenerID(i int64) *AgentUpdate {
 	au.mutation.SetListenerID(i)
 	return au
 }
 
 // SetNillableListenerID sets the "listener_id" field if the given value is not nil.
-func (au *AntUpdate) SetNillableListenerID(i *int64) *AntUpdate {
+func (au *AgentUpdate) SetNillableListenerID(i *int64) *AgentUpdate {
 	if i != nil {
 		au.SetListenerID(*i)
 	}
@@ -74,13 +74,13 @@ func (au *AntUpdate) SetNillableListenerID(i *int64) *AntUpdate {
 }
 
 // SetExtIP sets the "ext_ip" field.
-func (au *AntUpdate) SetExtIP(t types.Inet) *AntUpdate {
+func (au *AgentUpdate) SetExtIP(t types.Inet) *AgentUpdate {
 	au.mutation.SetExtIP(t)
 	return au
 }
 
 // SetNillableExtIP sets the "ext_ip" field if the given value is not nil.
-func (au *AntUpdate) SetNillableExtIP(t *types.Inet) *AntUpdate {
+func (au *AgentUpdate) SetNillableExtIP(t *types.Inet) *AgentUpdate {
 	if t != nil {
 		au.SetExtIP(*t)
 	}
@@ -88,19 +88,19 @@ func (au *AntUpdate) SetNillableExtIP(t *types.Inet) *AntUpdate {
 }
 
 // ClearExtIP clears the value of the "ext_ip" field.
-func (au *AntUpdate) ClearExtIP() *AntUpdate {
+func (au *AgentUpdate) ClearExtIP() *AgentUpdate {
 	au.mutation.ClearExtIP()
 	return au
 }
 
 // SetIntIP sets the "int_ip" field.
-func (au *AntUpdate) SetIntIP(t types.Inet) *AntUpdate {
+func (au *AgentUpdate) SetIntIP(t types.Inet) *AgentUpdate {
 	au.mutation.SetIntIP(t)
 	return au
 }
 
 // SetNillableIntIP sets the "int_ip" field if the given value is not nil.
-func (au *AntUpdate) SetNillableIntIP(t *types.Inet) *AntUpdate {
+func (au *AgentUpdate) SetNillableIntIP(t *types.Inet) *AgentUpdate {
 	if t != nil {
 		au.SetIntIP(*t)
 	}
@@ -108,19 +108,19 @@ func (au *AntUpdate) SetNillableIntIP(t *types.Inet) *AntUpdate {
 }
 
 // ClearIntIP clears the value of the "int_ip" field.
-func (au *AntUpdate) ClearIntIP() *AntUpdate {
+func (au *AgentUpdate) ClearIntIP() *AgentUpdate {
 	au.mutation.ClearIntIP()
 	return au
 }
 
 // SetOs sets the "os" field.
-func (au *AntUpdate) SetOs(so shared.AntOs) *AntUpdate {
+func (au *AgentUpdate) SetOs(so shared.AgentOs) *AgentUpdate {
 	au.mutation.SetOs(so)
 	return au
 }
 
 // SetNillableOs sets the "os" field if the given value is not nil.
-func (au *AntUpdate) SetNillableOs(so *shared.AntOs) *AntUpdate {
+func (au *AgentUpdate) SetNillableOs(so *shared.AgentOs) *AgentUpdate {
 	if so != nil {
 		au.SetOs(*so)
 	}
@@ -128,13 +128,13 @@ func (au *AntUpdate) SetNillableOs(so *shared.AntOs) *AntUpdate {
 }
 
 // SetOsMeta sets the "os_meta" field.
-func (au *AntUpdate) SetOsMeta(s string) *AntUpdate {
+func (au *AgentUpdate) SetOsMeta(s string) *AgentUpdate {
 	au.mutation.SetOsMeta(s)
 	return au
 }
 
 // SetNillableOsMeta sets the "os_meta" field if the given value is not nil.
-func (au *AntUpdate) SetNillableOsMeta(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableOsMeta(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetOsMeta(*s)
 	}
@@ -142,19 +142,19 @@ func (au *AntUpdate) SetNillableOsMeta(s *string) *AntUpdate {
 }
 
 // ClearOsMeta clears the value of the "os_meta" field.
-func (au *AntUpdate) ClearOsMeta() *AntUpdate {
+func (au *AgentUpdate) ClearOsMeta() *AgentUpdate {
 	au.mutation.ClearOsMeta()
 	return au
 }
 
 // SetHostname sets the "hostname" field.
-func (au *AntUpdate) SetHostname(s string) *AntUpdate {
+func (au *AgentUpdate) SetHostname(s string) *AgentUpdate {
 	au.mutation.SetHostname(s)
 	return au
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (au *AntUpdate) SetNillableHostname(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableHostname(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetHostname(*s)
 	}
@@ -162,19 +162,19 @@ func (au *AntUpdate) SetNillableHostname(s *string) *AntUpdate {
 }
 
 // ClearHostname clears the value of the "hostname" field.
-func (au *AntUpdate) ClearHostname() *AntUpdate {
+func (au *AgentUpdate) ClearHostname() *AgentUpdate {
 	au.mutation.ClearHostname()
 	return au
 }
 
 // SetUsername sets the "username" field.
-func (au *AntUpdate) SetUsername(s string) *AntUpdate {
+func (au *AgentUpdate) SetUsername(s string) *AgentUpdate {
 	au.mutation.SetUsername(s)
 	return au
 }
 
 // SetNillableUsername sets the "username" field if the given value is not nil.
-func (au *AntUpdate) SetNillableUsername(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableUsername(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetUsername(*s)
 	}
@@ -182,19 +182,19 @@ func (au *AntUpdate) SetNillableUsername(s *string) *AntUpdate {
 }
 
 // ClearUsername clears the value of the "username" field.
-func (au *AntUpdate) ClearUsername() *AntUpdate {
+func (au *AgentUpdate) ClearUsername() *AgentUpdate {
 	au.mutation.ClearUsername()
 	return au
 }
 
 // SetDomain sets the "domain" field.
-func (au *AntUpdate) SetDomain(s string) *AntUpdate {
+func (au *AgentUpdate) SetDomain(s string) *AgentUpdate {
 	au.mutation.SetDomain(s)
 	return au
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (au *AntUpdate) SetNillableDomain(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableDomain(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetDomain(*s)
 	}
@@ -202,19 +202,19 @@ func (au *AntUpdate) SetNillableDomain(s *string) *AntUpdate {
 }
 
 // ClearDomain clears the value of the "domain" field.
-func (au *AntUpdate) ClearDomain() *AntUpdate {
+func (au *AgentUpdate) ClearDomain() *AgentUpdate {
 	au.mutation.ClearDomain()
 	return au
 }
 
 // SetPrivileged sets the "privileged" field.
-func (au *AntUpdate) SetPrivileged(b bool) *AntUpdate {
+func (au *AgentUpdate) SetPrivileged(b bool) *AgentUpdate {
 	au.mutation.SetPrivileged(b)
 	return au
 }
 
 // SetNillablePrivileged sets the "privileged" field if the given value is not nil.
-func (au *AntUpdate) SetNillablePrivileged(b *bool) *AntUpdate {
+func (au *AgentUpdate) SetNillablePrivileged(b *bool) *AgentUpdate {
 	if b != nil {
 		au.SetPrivileged(*b)
 	}
@@ -222,19 +222,19 @@ func (au *AntUpdate) SetNillablePrivileged(b *bool) *AntUpdate {
 }
 
 // ClearPrivileged clears the value of the "privileged" field.
-func (au *AntUpdate) ClearPrivileged() *AntUpdate {
+func (au *AgentUpdate) ClearPrivileged() *AgentUpdate {
 	au.mutation.ClearPrivileged()
 	return au
 }
 
 // SetProcessName sets the "process_name" field.
-func (au *AntUpdate) SetProcessName(s string) *AntUpdate {
+func (au *AgentUpdate) SetProcessName(s string) *AgentUpdate {
 	au.mutation.SetProcessName(s)
 	return au
 }
 
 // SetNillableProcessName sets the "process_name" field if the given value is not nil.
-func (au *AntUpdate) SetNillableProcessName(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableProcessName(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetProcessName(*s)
 	}
@@ -242,20 +242,20 @@ func (au *AntUpdate) SetNillableProcessName(s *string) *AntUpdate {
 }
 
 // ClearProcessName clears the value of the "process_name" field.
-func (au *AntUpdate) ClearProcessName() *AntUpdate {
+func (au *AgentUpdate) ClearProcessName() *AgentUpdate {
 	au.mutation.ClearProcessName()
 	return au
 }
 
 // SetPid sets the "pid" field.
-func (au *AntUpdate) SetPid(i int64) *AntUpdate {
+func (au *AgentUpdate) SetPid(i int64) *AgentUpdate {
 	au.mutation.ResetPid()
 	au.mutation.SetPid(i)
 	return au
 }
 
 // SetNillablePid sets the "pid" field if the given value is not nil.
-func (au *AntUpdate) SetNillablePid(i *int64) *AntUpdate {
+func (au *AgentUpdate) SetNillablePid(i *int64) *AgentUpdate {
 	if i != nil {
 		au.SetPid(*i)
 	}
@@ -263,25 +263,25 @@ func (au *AntUpdate) SetNillablePid(i *int64) *AntUpdate {
 }
 
 // AddPid adds i to the "pid" field.
-func (au *AntUpdate) AddPid(i int64) *AntUpdate {
+func (au *AgentUpdate) AddPid(i int64) *AgentUpdate {
 	au.mutation.AddPid(i)
 	return au
 }
 
 // ClearPid clears the value of the "pid" field.
-func (au *AntUpdate) ClearPid() *AntUpdate {
+func (au *AgentUpdate) ClearPid() *AgentUpdate {
 	au.mutation.ClearPid()
 	return au
 }
 
 // SetArch sets the "arch" field.
-func (au *AntUpdate) SetArch(sa shared.AntArch) *AntUpdate {
+func (au *AgentUpdate) SetArch(sa shared.AgentArch) *AgentUpdate {
 	au.mutation.SetArch(sa)
 	return au
 }
 
 // SetNillableArch sets the "arch" field if the given value is not nil.
-func (au *AntUpdate) SetNillableArch(sa *shared.AntArch) *AntUpdate {
+func (au *AgentUpdate) SetNillableArch(sa *shared.AgentArch) *AgentUpdate {
 	if sa != nil {
 		au.SetArch(*sa)
 	}
@@ -289,14 +289,14 @@ func (au *AntUpdate) SetNillableArch(sa *shared.AntArch) *AntUpdate {
 }
 
 // SetSleep sets the "sleep" field.
-func (au *AntUpdate) SetSleep(u uint32) *AntUpdate {
+func (au *AgentUpdate) SetSleep(u uint32) *AgentUpdate {
 	au.mutation.ResetSleep()
 	au.mutation.SetSleep(u)
 	return au
 }
 
 // SetNillableSleep sets the "sleep" field if the given value is not nil.
-func (au *AntUpdate) SetNillableSleep(u *uint32) *AntUpdate {
+func (au *AgentUpdate) SetNillableSleep(u *uint32) *AgentUpdate {
 	if u != nil {
 		au.SetSleep(*u)
 	}
@@ -304,20 +304,20 @@ func (au *AntUpdate) SetNillableSleep(u *uint32) *AntUpdate {
 }
 
 // AddSleep adds u to the "sleep" field.
-func (au *AntUpdate) AddSleep(u int32) *AntUpdate {
+func (au *AgentUpdate) AddSleep(u int32) *AgentUpdate {
 	au.mutation.AddSleep(u)
 	return au
 }
 
 // SetJitter sets the "jitter" field.
-func (au *AntUpdate) SetJitter(u uint8) *AntUpdate {
+func (au *AgentUpdate) SetJitter(u uint8) *AgentUpdate {
 	au.mutation.ResetJitter()
 	au.mutation.SetJitter(u)
 	return au
 }
 
 // SetNillableJitter sets the "jitter" field if the given value is not nil.
-func (au *AntUpdate) SetNillableJitter(u *uint8) *AntUpdate {
+func (au *AgentUpdate) SetNillableJitter(u *uint8) *AgentUpdate {
 	if u != nil {
 		au.SetJitter(*u)
 	}
@@ -325,19 +325,19 @@ func (au *AntUpdate) SetNillableJitter(u *uint8) *AntUpdate {
 }
 
 // AddJitter adds u to the "jitter" field.
-func (au *AntUpdate) AddJitter(u int8) *AntUpdate {
+func (au *AgentUpdate) AddJitter(u int8) *AgentUpdate {
 	au.mutation.AddJitter(u)
 	return au
 }
 
 // SetFirst sets the "first" field.
-func (au *AntUpdate) SetFirst(t time.Time) *AntUpdate {
+func (au *AgentUpdate) SetFirst(t time.Time) *AgentUpdate {
 	au.mutation.SetFirst(t)
 	return au
 }
 
 // SetNillableFirst sets the "first" field if the given value is not nil.
-func (au *AntUpdate) SetNillableFirst(t *time.Time) *AntUpdate {
+func (au *AgentUpdate) SetNillableFirst(t *time.Time) *AgentUpdate {
 	if t != nil {
 		au.SetFirst(*t)
 	}
@@ -345,13 +345,13 @@ func (au *AntUpdate) SetNillableFirst(t *time.Time) *AntUpdate {
 }
 
 // SetLast sets the "last" field.
-func (au *AntUpdate) SetLast(t time.Time) *AntUpdate {
+func (au *AgentUpdate) SetLast(t time.Time) *AgentUpdate {
 	au.mutation.SetLast(t)
 	return au
 }
 
 // SetNillableLast sets the "last" field if the given value is not nil.
-func (au *AntUpdate) SetNillableLast(t *time.Time) *AntUpdate {
+func (au *AgentUpdate) SetNillableLast(t *time.Time) *AgentUpdate {
 	if t != nil {
 		au.SetLast(*t)
 	}
@@ -359,14 +359,14 @@ func (au *AntUpdate) SetNillableLast(t *time.Time) *AntUpdate {
 }
 
 // SetCaps sets the "caps" field.
-func (au *AntUpdate) SetCaps(u uint32) *AntUpdate {
+func (au *AgentUpdate) SetCaps(u uint32) *AgentUpdate {
 	au.mutation.ResetCaps()
 	au.mutation.SetCaps(u)
 	return au
 }
 
 // SetNillableCaps sets the "caps" field if the given value is not nil.
-func (au *AntUpdate) SetNillableCaps(u *uint32) *AntUpdate {
+func (au *AgentUpdate) SetNillableCaps(u *uint32) *AgentUpdate {
 	if u != nil {
 		au.SetCaps(*u)
 	}
@@ -374,19 +374,19 @@ func (au *AntUpdate) SetNillableCaps(u *uint32) *AntUpdate {
 }
 
 // AddCaps adds u to the "caps" field.
-func (au *AntUpdate) AddCaps(u int32) *AntUpdate {
+func (au *AgentUpdate) AddCaps(u int32) *AgentUpdate {
 	au.mutation.AddCaps(u)
 	return au
 }
 
 // SetNote sets the "note" field.
-func (au *AntUpdate) SetNote(s string) *AntUpdate {
+func (au *AgentUpdate) SetNote(s string) *AgentUpdate {
 	au.mutation.SetNote(s)
 	return au
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (au *AntUpdate) SetNillableNote(s *string) *AntUpdate {
+func (au *AgentUpdate) SetNillableNote(s *string) *AgentUpdate {
 	if s != nil {
 		au.SetNote(*s)
 	}
@@ -394,20 +394,20 @@ func (au *AntUpdate) SetNillableNote(s *string) *AntUpdate {
 }
 
 // ClearNote clears the value of the "note" field.
-func (au *AntUpdate) ClearNote() *AntUpdate {
+func (au *AgentUpdate) ClearNote() *AgentUpdate {
 	au.mutation.ClearNote()
 	return au
 }
 
 // SetColor sets the "color" field.
-func (au *AntUpdate) SetColor(u uint32) *AntUpdate {
+func (au *AgentUpdate) SetColor(u uint32) *AgentUpdate {
 	au.mutation.ResetColor()
 	au.mutation.SetColor(u)
 	return au
 }
 
 // SetNillableColor sets the "color" field if the given value is not nil.
-func (au *AntUpdate) SetNillableColor(u *uint32) *AntUpdate {
+func (au *AgentUpdate) SetNillableColor(u *uint32) *AgentUpdate {
 	if u != nil {
 		au.SetColor(*u)
 	}
@@ -415,24 +415,24 @@ func (au *AntUpdate) SetNillableColor(u *uint32) *AntUpdate {
 }
 
 // AddColor adds u to the "color" field.
-func (au *AntUpdate) AddColor(u int32) *AntUpdate {
+func (au *AgentUpdate) AddColor(u int32) *AgentUpdate {
 	au.mutation.AddColor(u)
 	return au
 }
 
 // SetListener sets the "listener" edge to the Listener entity.
-func (au *AntUpdate) SetListener(l *Listener) *AntUpdate {
+func (au *AgentUpdate) SetListener(l *Listener) *AgentUpdate {
 	return au.SetListenerID(l.ID)
 }
 
 // AddCommandIDs adds the "command" edge to the Command entity by IDs.
-func (au *AntUpdate) AddCommandIDs(ids ...int64) *AntUpdate {
+func (au *AgentUpdate) AddCommandIDs(ids ...int64) *AgentUpdate {
 	au.mutation.AddCommandIDs(ids...)
 	return au
 }
 
 // AddCommand adds the "command" edges to the Command entity.
-func (au *AntUpdate) AddCommand(c ...*Command) *AntUpdate {
+func (au *AgentUpdate) AddCommand(c ...*Command) *AgentUpdate {
 	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -441,13 +441,13 @@ func (au *AntUpdate) AddCommand(c ...*Command) *AntUpdate {
 }
 
 // AddTaskIDs adds the "task" edge to the Task entity by IDs.
-func (au *AntUpdate) AddTaskIDs(ids ...int64) *AntUpdate {
+func (au *AgentUpdate) AddTaskIDs(ids ...int64) *AgentUpdate {
 	au.mutation.AddTaskIDs(ids...)
 	return au
 }
 
 // AddTask adds the "task" edges to the Task entity.
-func (au *AntUpdate) AddTask(t ...*Task) *AntUpdate {
+func (au *AgentUpdate) AddTask(t ...*Task) *AgentUpdate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -455,31 +455,31 @@ func (au *AntUpdate) AddTask(t ...*Task) *AntUpdate {
 	return au.AddTaskIDs(ids...)
 }
 
-// Mutation returns the AntMutation object of the builder.
-func (au *AntUpdate) Mutation() *AntMutation {
+// Mutation returns the AgentMutation object of the builder.
+func (au *AgentUpdate) Mutation() *AgentMutation {
 	return au.mutation
 }
 
 // ClearListener clears the "listener" edge to the Listener entity.
-func (au *AntUpdate) ClearListener() *AntUpdate {
+func (au *AgentUpdate) ClearListener() *AgentUpdate {
 	au.mutation.ClearListener()
 	return au
 }
 
 // ClearCommand clears all "command" edges to the Command entity.
-func (au *AntUpdate) ClearCommand() *AntUpdate {
+func (au *AgentUpdate) ClearCommand() *AgentUpdate {
 	au.mutation.ClearCommand()
 	return au
 }
 
 // RemoveCommandIDs removes the "command" edge to Command entities by IDs.
-func (au *AntUpdate) RemoveCommandIDs(ids ...int64) *AntUpdate {
+func (au *AgentUpdate) RemoveCommandIDs(ids ...int64) *AgentUpdate {
 	au.mutation.RemoveCommandIDs(ids...)
 	return au
 }
 
 // RemoveCommand removes "command" edges to Command entities.
-func (au *AntUpdate) RemoveCommand(c ...*Command) *AntUpdate {
+func (au *AgentUpdate) RemoveCommand(c ...*Command) *AgentUpdate {
 	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -488,19 +488,19 @@ func (au *AntUpdate) RemoveCommand(c ...*Command) *AntUpdate {
 }
 
 // ClearTask clears all "task" edges to the Task entity.
-func (au *AntUpdate) ClearTask() *AntUpdate {
+func (au *AgentUpdate) ClearTask() *AgentUpdate {
 	au.mutation.ClearTask()
 	return au
 }
 
 // RemoveTaskIDs removes the "task" edge to Task entities by IDs.
-func (au *AntUpdate) RemoveTaskIDs(ids ...int64) *AntUpdate {
+func (au *AgentUpdate) RemoveTaskIDs(ids ...int64) *AgentUpdate {
 	au.mutation.RemoveTaskIDs(ids...)
 	return au
 }
 
 // RemoveTask removes "task" edges to Task entities.
-func (au *AntUpdate) RemoveTask(t ...*Task) *AntUpdate {
+func (au *AgentUpdate) RemoveTask(t ...*Task) *AgentUpdate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -509,7 +509,7 @@ func (au *AntUpdate) RemoveTask(t ...*Task) *AntUpdate {
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *AntUpdate) Save(ctx context.Context) (int, error) {
+func (au *AgentUpdate) Save(ctx context.Context) (int, error) {
 	if err := au.defaults(); err != nil {
 		return 0, err
 	}
@@ -517,7 +517,7 @@ func (au *AntUpdate) Save(ctx context.Context) (int, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *AntUpdate) SaveX(ctx context.Context) int {
+func (au *AgentUpdate) SaveX(ctx context.Context) int {
 	affected, err := au.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -526,93 +526,93 @@ func (au *AntUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *AntUpdate) Exec(ctx context.Context) error {
+func (au *AgentUpdate) Exec(ctx context.Context) error {
 	_, err := au.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *AntUpdate) ExecX(ctx context.Context) {
+func (au *AgentUpdate) ExecX(ctx context.Context) {
 	if err := au.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (au *AntUpdate) defaults() error {
+func (au *AgentUpdate) defaults() error {
 	if _, ok := au.mutation.UpdatedAt(); !ok {
-		if ant.UpdateDefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized ant.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		if agent.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agent.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
 		}
-		v := ant.UpdateDefaultUpdatedAt()
+		v := agent.UpdateDefaultUpdatedAt()
 		au.mutation.SetUpdatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (au *AntUpdate) check() error {
+func (au *AgentUpdate) check() error {
 	if v, ok := au.mutation.ExtIP(); ok {
-		if err := ant.ExtIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.ext_ip": %w`, err)}
+		if err := agent.ExtIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.ext_ip": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.IntIP(); ok {
-		if err := ant.IntIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.int_ip": %w`, err)}
+		if err := agent.IntIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.int_ip": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Os(); ok {
-		if err := ant.OsValidator(v); err != nil {
-			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Ant.os": %w`, err)}
+		if err := agent.OsValidator(v); err != nil {
+			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Agent.os": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.OsMeta(); ok {
-		if err := ant.OsMetaValidator(v); err != nil {
-			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Ant.os_meta": %w`, err)}
+		if err := agent.OsMetaValidator(v); err != nil {
+			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Agent.os_meta": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Hostname(); ok {
-		if err := ant.HostnameValidator(v); err != nil {
-			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Ant.hostname": %w`, err)}
+		if err := agent.HostnameValidator(v); err != nil {
+			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Agent.hostname": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Username(); ok {
-		if err := ant.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Ant.username": %w`, err)}
+		if err := agent.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Agent.username": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Domain(); ok {
-		if err := ant.DomainValidator(v); err != nil {
-			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Ant.domain": %w`, err)}
+		if err := agent.DomainValidator(v); err != nil {
+			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Agent.domain": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.ProcessName(); ok {
-		if err := ant.ProcessNameValidator(v); err != nil {
-			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Ant.process_name": %w`, err)}
+		if err := agent.ProcessNameValidator(v); err != nil {
+			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Agent.process_name": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Arch(); ok {
-		if err := ant.ArchValidator(v); err != nil {
-			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Ant.arch": %w`, err)}
+		if err := agent.ArchValidator(v); err != nil {
+			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Agent.arch": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Note(); ok {
-		if err := ant.NoteValidator(v); err != nil {
-			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Ant.note": %w`, err)}
+		if err := agent.NoteValidator(v); err != nil {
+			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Agent.note": %w`, err)}
 		}
 	}
 	if au.mutation.ListenerCleared() && len(au.mutation.ListenerIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Ant.listener"`)
+		return errors.New(`ent: clearing a required unique edge "Agent.listener"`)
 	}
 	return nil
 }
 
-func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (au *AgentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(ant.Table, ant.Columns, sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(agent.Table, agent.Columns, sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -621,119 +621,119 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := au.mutation.UpdatedAt(); ok {
-		_spec.SetField(ant.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.DeletedAt(); ok {
-		_spec.SetField(ant.FieldDeletedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldDeletedAt, field.TypeTime, value)
 	}
 	if au.mutation.DeletedAtCleared() {
-		_spec.ClearField(ant.FieldDeletedAt, field.TypeTime)
+		_spec.ClearField(agent.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := au.mutation.ExtIP(); ok {
-		_spec.SetField(ant.FieldExtIP, field.TypeString, value)
+		_spec.SetField(agent.FieldExtIP, field.TypeString, value)
 	}
 	if au.mutation.ExtIPCleared() {
-		_spec.ClearField(ant.FieldExtIP, field.TypeString)
+		_spec.ClearField(agent.FieldExtIP, field.TypeString)
 	}
 	if value, ok := au.mutation.IntIP(); ok {
-		_spec.SetField(ant.FieldIntIP, field.TypeString, value)
+		_spec.SetField(agent.FieldIntIP, field.TypeString, value)
 	}
 	if au.mutation.IntIPCleared() {
-		_spec.ClearField(ant.FieldIntIP, field.TypeString)
+		_spec.ClearField(agent.FieldIntIP, field.TypeString)
 	}
 	if value, ok := au.mutation.Os(); ok {
-		_spec.SetField(ant.FieldOs, field.TypeEnum, value)
+		_spec.SetField(agent.FieldOs, field.TypeEnum, value)
 	}
 	if value, ok := au.mutation.OsMeta(); ok {
-		_spec.SetField(ant.FieldOsMeta, field.TypeString, value)
+		_spec.SetField(agent.FieldOsMeta, field.TypeString, value)
 	}
 	if au.mutation.OsMetaCleared() {
-		_spec.ClearField(ant.FieldOsMeta, field.TypeString)
+		_spec.ClearField(agent.FieldOsMeta, field.TypeString)
 	}
 	if value, ok := au.mutation.Hostname(); ok {
-		_spec.SetField(ant.FieldHostname, field.TypeString, value)
+		_spec.SetField(agent.FieldHostname, field.TypeString, value)
 	}
 	if au.mutation.HostnameCleared() {
-		_spec.ClearField(ant.FieldHostname, field.TypeString)
+		_spec.ClearField(agent.FieldHostname, field.TypeString)
 	}
 	if value, ok := au.mutation.Username(); ok {
-		_spec.SetField(ant.FieldUsername, field.TypeString, value)
+		_spec.SetField(agent.FieldUsername, field.TypeString, value)
 	}
 	if au.mutation.UsernameCleared() {
-		_spec.ClearField(ant.FieldUsername, field.TypeString)
+		_spec.ClearField(agent.FieldUsername, field.TypeString)
 	}
 	if value, ok := au.mutation.Domain(); ok {
-		_spec.SetField(ant.FieldDomain, field.TypeString, value)
+		_spec.SetField(agent.FieldDomain, field.TypeString, value)
 	}
 	if au.mutation.DomainCleared() {
-		_spec.ClearField(ant.FieldDomain, field.TypeString)
+		_spec.ClearField(agent.FieldDomain, field.TypeString)
 	}
 	if value, ok := au.mutation.Privileged(); ok {
-		_spec.SetField(ant.FieldPrivileged, field.TypeBool, value)
+		_spec.SetField(agent.FieldPrivileged, field.TypeBool, value)
 	}
 	if au.mutation.PrivilegedCleared() {
-		_spec.ClearField(ant.FieldPrivileged, field.TypeBool)
+		_spec.ClearField(agent.FieldPrivileged, field.TypeBool)
 	}
 	if value, ok := au.mutation.ProcessName(); ok {
-		_spec.SetField(ant.FieldProcessName, field.TypeString, value)
+		_spec.SetField(agent.FieldProcessName, field.TypeString, value)
 	}
 	if au.mutation.ProcessNameCleared() {
-		_spec.ClearField(ant.FieldProcessName, field.TypeString)
+		_spec.ClearField(agent.FieldProcessName, field.TypeString)
 	}
 	if value, ok := au.mutation.Pid(); ok {
-		_spec.SetField(ant.FieldPid, field.TypeInt64, value)
+		_spec.SetField(agent.FieldPid, field.TypeInt64, value)
 	}
 	if value, ok := au.mutation.AddedPid(); ok {
-		_spec.AddField(ant.FieldPid, field.TypeInt64, value)
+		_spec.AddField(agent.FieldPid, field.TypeInt64, value)
 	}
 	if au.mutation.PidCleared() {
-		_spec.ClearField(ant.FieldPid, field.TypeInt64)
+		_spec.ClearField(agent.FieldPid, field.TypeInt64)
 	}
 	if value, ok := au.mutation.Arch(); ok {
-		_spec.SetField(ant.FieldArch, field.TypeEnum, value)
+		_spec.SetField(agent.FieldArch, field.TypeEnum, value)
 	}
 	if value, ok := au.mutation.Sleep(); ok {
-		_spec.SetField(ant.FieldSleep, field.TypeUint32, value)
+		_spec.SetField(agent.FieldSleep, field.TypeUint32, value)
 	}
 	if value, ok := au.mutation.AddedSleep(); ok {
-		_spec.AddField(ant.FieldSleep, field.TypeUint32, value)
+		_spec.AddField(agent.FieldSleep, field.TypeUint32, value)
 	}
 	if value, ok := au.mutation.Jitter(); ok {
-		_spec.SetField(ant.FieldJitter, field.TypeUint8, value)
+		_spec.SetField(agent.FieldJitter, field.TypeUint8, value)
 	}
 	if value, ok := au.mutation.AddedJitter(); ok {
-		_spec.AddField(ant.FieldJitter, field.TypeUint8, value)
+		_spec.AddField(agent.FieldJitter, field.TypeUint8, value)
 	}
 	if value, ok := au.mutation.First(); ok {
-		_spec.SetField(ant.FieldFirst, field.TypeTime, value)
+		_spec.SetField(agent.FieldFirst, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.Last(); ok {
-		_spec.SetField(ant.FieldLast, field.TypeTime, value)
+		_spec.SetField(agent.FieldLast, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.Caps(); ok {
-		_spec.SetField(ant.FieldCaps, field.TypeUint32, value)
+		_spec.SetField(agent.FieldCaps, field.TypeUint32, value)
 	}
 	if value, ok := au.mutation.AddedCaps(); ok {
-		_spec.AddField(ant.FieldCaps, field.TypeUint32, value)
+		_spec.AddField(agent.FieldCaps, field.TypeUint32, value)
 	}
 	if value, ok := au.mutation.Note(); ok {
-		_spec.SetField(ant.FieldNote, field.TypeString, value)
+		_spec.SetField(agent.FieldNote, field.TypeString, value)
 	}
 	if au.mutation.NoteCleared() {
-		_spec.ClearField(ant.FieldNote, field.TypeString)
+		_spec.ClearField(agent.FieldNote, field.TypeString)
 	}
 	if value, ok := au.mutation.Color(); ok {
-		_spec.SetField(ant.FieldColor, field.TypeUint32, value)
+		_spec.SetField(agent.FieldColor, field.TypeUint32, value)
 	}
 	if value, ok := au.mutation.AddedColor(); ok {
-		_spec.AddField(ant.FieldColor, field.TypeUint32, value)
+		_spec.AddField(agent.FieldColor, field.TypeUint32, value)
 	}
 	if au.mutation.ListenerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   ant.ListenerTable,
-			Columns: []string{ant.ListenerColumn},
+			Table:   agent.ListenerTable,
+			Columns: []string{agent.ListenerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(listener.FieldID, field.TypeInt64),
@@ -745,8 +745,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   ant.ListenerTable,
-			Columns: []string{ant.ListenerColumn},
+			Table:   agent.ListenerTable,
+			Columns: []string{agent.ListenerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(listener.FieldID, field.TypeInt64),
@@ -761,8 +761,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -774,8 +774,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -790,8 +790,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -806,8 +806,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -819,8 +819,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -835,8 +835,8 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -849,7 +849,7 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{ant.Label}
+			err = &NotFoundError{agent.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -859,28 +859,28 @@ func (au *AntUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	return n, nil
 }
 
-// AntUpdateOne is the builder for updating a single Ant entity.
-type AntUpdateOne struct {
+// AgentUpdateOne is the builder for updating a single Agent entity.
+type AgentUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *AntMutation
+	mutation *AgentMutation
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (auo *AntUpdateOne) SetUpdatedAt(t time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetUpdatedAt(t time.Time) *AgentUpdateOne {
 	auo.mutation.SetUpdatedAt(t)
 	return auo
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (auo *AntUpdateOne) SetDeletedAt(t time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetDeletedAt(t time.Time) *AgentUpdateOne {
 	auo.mutation.SetDeletedAt(t)
 	return auo
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableDeletedAt(t *time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableDeletedAt(t *time.Time) *AgentUpdateOne {
 	if t != nil {
 		auo.SetDeletedAt(*t)
 	}
@@ -888,19 +888,19 @@ func (auo *AntUpdateOne) SetNillableDeletedAt(t *time.Time) *AntUpdateOne {
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (auo *AntUpdateOne) ClearDeletedAt() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearDeletedAt() *AgentUpdateOne {
 	auo.mutation.ClearDeletedAt()
 	return auo
 }
 
 // SetListenerID sets the "listener_id" field.
-func (auo *AntUpdateOne) SetListenerID(i int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetListenerID(i int64) *AgentUpdateOne {
 	auo.mutation.SetListenerID(i)
 	return auo
 }
 
 // SetNillableListenerID sets the "listener_id" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableListenerID(i *int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableListenerID(i *int64) *AgentUpdateOne {
 	if i != nil {
 		auo.SetListenerID(*i)
 	}
@@ -908,13 +908,13 @@ func (auo *AntUpdateOne) SetNillableListenerID(i *int64) *AntUpdateOne {
 }
 
 // SetExtIP sets the "ext_ip" field.
-func (auo *AntUpdateOne) SetExtIP(t types.Inet) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetExtIP(t types.Inet) *AgentUpdateOne {
 	auo.mutation.SetExtIP(t)
 	return auo
 }
 
 // SetNillableExtIP sets the "ext_ip" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableExtIP(t *types.Inet) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableExtIP(t *types.Inet) *AgentUpdateOne {
 	if t != nil {
 		auo.SetExtIP(*t)
 	}
@@ -922,19 +922,19 @@ func (auo *AntUpdateOne) SetNillableExtIP(t *types.Inet) *AntUpdateOne {
 }
 
 // ClearExtIP clears the value of the "ext_ip" field.
-func (auo *AntUpdateOne) ClearExtIP() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearExtIP() *AgentUpdateOne {
 	auo.mutation.ClearExtIP()
 	return auo
 }
 
 // SetIntIP sets the "int_ip" field.
-func (auo *AntUpdateOne) SetIntIP(t types.Inet) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetIntIP(t types.Inet) *AgentUpdateOne {
 	auo.mutation.SetIntIP(t)
 	return auo
 }
 
 // SetNillableIntIP sets the "int_ip" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableIntIP(t *types.Inet) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableIntIP(t *types.Inet) *AgentUpdateOne {
 	if t != nil {
 		auo.SetIntIP(*t)
 	}
@@ -942,19 +942,19 @@ func (auo *AntUpdateOne) SetNillableIntIP(t *types.Inet) *AntUpdateOne {
 }
 
 // ClearIntIP clears the value of the "int_ip" field.
-func (auo *AntUpdateOne) ClearIntIP() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearIntIP() *AgentUpdateOne {
 	auo.mutation.ClearIntIP()
 	return auo
 }
 
 // SetOs sets the "os" field.
-func (auo *AntUpdateOne) SetOs(so shared.AntOs) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetOs(so shared.AgentOs) *AgentUpdateOne {
 	auo.mutation.SetOs(so)
 	return auo
 }
 
 // SetNillableOs sets the "os" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableOs(so *shared.AntOs) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableOs(so *shared.AgentOs) *AgentUpdateOne {
 	if so != nil {
 		auo.SetOs(*so)
 	}
@@ -962,13 +962,13 @@ func (auo *AntUpdateOne) SetNillableOs(so *shared.AntOs) *AntUpdateOne {
 }
 
 // SetOsMeta sets the "os_meta" field.
-func (auo *AntUpdateOne) SetOsMeta(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetOsMeta(s string) *AgentUpdateOne {
 	auo.mutation.SetOsMeta(s)
 	return auo
 }
 
 // SetNillableOsMeta sets the "os_meta" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableOsMeta(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableOsMeta(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetOsMeta(*s)
 	}
@@ -976,19 +976,19 @@ func (auo *AntUpdateOne) SetNillableOsMeta(s *string) *AntUpdateOne {
 }
 
 // ClearOsMeta clears the value of the "os_meta" field.
-func (auo *AntUpdateOne) ClearOsMeta() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearOsMeta() *AgentUpdateOne {
 	auo.mutation.ClearOsMeta()
 	return auo
 }
 
 // SetHostname sets the "hostname" field.
-func (auo *AntUpdateOne) SetHostname(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetHostname(s string) *AgentUpdateOne {
 	auo.mutation.SetHostname(s)
 	return auo
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableHostname(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableHostname(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetHostname(*s)
 	}
@@ -996,19 +996,19 @@ func (auo *AntUpdateOne) SetNillableHostname(s *string) *AntUpdateOne {
 }
 
 // ClearHostname clears the value of the "hostname" field.
-func (auo *AntUpdateOne) ClearHostname() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearHostname() *AgentUpdateOne {
 	auo.mutation.ClearHostname()
 	return auo
 }
 
 // SetUsername sets the "username" field.
-func (auo *AntUpdateOne) SetUsername(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetUsername(s string) *AgentUpdateOne {
 	auo.mutation.SetUsername(s)
 	return auo
 }
 
 // SetNillableUsername sets the "username" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableUsername(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableUsername(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetUsername(*s)
 	}
@@ -1016,19 +1016,19 @@ func (auo *AntUpdateOne) SetNillableUsername(s *string) *AntUpdateOne {
 }
 
 // ClearUsername clears the value of the "username" field.
-func (auo *AntUpdateOne) ClearUsername() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearUsername() *AgentUpdateOne {
 	auo.mutation.ClearUsername()
 	return auo
 }
 
 // SetDomain sets the "domain" field.
-func (auo *AntUpdateOne) SetDomain(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetDomain(s string) *AgentUpdateOne {
 	auo.mutation.SetDomain(s)
 	return auo
 }
 
 // SetNillableDomain sets the "domain" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableDomain(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableDomain(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetDomain(*s)
 	}
@@ -1036,19 +1036,19 @@ func (auo *AntUpdateOne) SetNillableDomain(s *string) *AntUpdateOne {
 }
 
 // ClearDomain clears the value of the "domain" field.
-func (auo *AntUpdateOne) ClearDomain() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearDomain() *AgentUpdateOne {
 	auo.mutation.ClearDomain()
 	return auo
 }
 
 // SetPrivileged sets the "privileged" field.
-func (auo *AntUpdateOne) SetPrivileged(b bool) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetPrivileged(b bool) *AgentUpdateOne {
 	auo.mutation.SetPrivileged(b)
 	return auo
 }
 
 // SetNillablePrivileged sets the "privileged" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillablePrivileged(b *bool) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillablePrivileged(b *bool) *AgentUpdateOne {
 	if b != nil {
 		auo.SetPrivileged(*b)
 	}
@@ -1056,19 +1056,19 @@ func (auo *AntUpdateOne) SetNillablePrivileged(b *bool) *AntUpdateOne {
 }
 
 // ClearPrivileged clears the value of the "privileged" field.
-func (auo *AntUpdateOne) ClearPrivileged() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearPrivileged() *AgentUpdateOne {
 	auo.mutation.ClearPrivileged()
 	return auo
 }
 
 // SetProcessName sets the "process_name" field.
-func (auo *AntUpdateOne) SetProcessName(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetProcessName(s string) *AgentUpdateOne {
 	auo.mutation.SetProcessName(s)
 	return auo
 }
 
 // SetNillableProcessName sets the "process_name" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableProcessName(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableProcessName(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetProcessName(*s)
 	}
@@ -1076,20 +1076,20 @@ func (auo *AntUpdateOne) SetNillableProcessName(s *string) *AntUpdateOne {
 }
 
 // ClearProcessName clears the value of the "process_name" field.
-func (auo *AntUpdateOne) ClearProcessName() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearProcessName() *AgentUpdateOne {
 	auo.mutation.ClearProcessName()
 	return auo
 }
 
 // SetPid sets the "pid" field.
-func (auo *AntUpdateOne) SetPid(i int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetPid(i int64) *AgentUpdateOne {
 	auo.mutation.ResetPid()
 	auo.mutation.SetPid(i)
 	return auo
 }
 
 // SetNillablePid sets the "pid" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillablePid(i *int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillablePid(i *int64) *AgentUpdateOne {
 	if i != nil {
 		auo.SetPid(*i)
 	}
@@ -1097,25 +1097,25 @@ func (auo *AntUpdateOne) SetNillablePid(i *int64) *AntUpdateOne {
 }
 
 // AddPid adds i to the "pid" field.
-func (auo *AntUpdateOne) AddPid(i int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddPid(i int64) *AgentUpdateOne {
 	auo.mutation.AddPid(i)
 	return auo
 }
 
 // ClearPid clears the value of the "pid" field.
-func (auo *AntUpdateOne) ClearPid() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearPid() *AgentUpdateOne {
 	auo.mutation.ClearPid()
 	return auo
 }
 
 // SetArch sets the "arch" field.
-func (auo *AntUpdateOne) SetArch(sa shared.AntArch) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetArch(sa shared.AgentArch) *AgentUpdateOne {
 	auo.mutation.SetArch(sa)
 	return auo
 }
 
 // SetNillableArch sets the "arch" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableArch(sa *shared.AntArch) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableArch(sa *shared.AgentArch) *AgentUpdateOne {
 	if sa != nil {
 		auo.SetArch(*sa)
 	}
@@ -1123,14 +1123,14 @@ func (auo *AntUpdateOne) SetNillableArch(sa *shared.AntArch) *AntUpdateOne {
 }
 
 // SetSleep sets the "sleep" field.
-func (auo *AntUpdateOne) SetSleep(u uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetSleep(u uint32) *AgentUpdateOne {
 	auo.mutation.ResetSleep()
 	auo.mutation.SetSleep(u)
 	return auo
 }
 
 // SetNillableSleep sets the "sleep" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableSleep(u *uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableSleep(u *uint32) *AgentUpdateOne {
 	if u != nil {
 		auo.SetSleep(*u)
 	}
@@ -1138,20 +1138,20 @@ func (auo *AntUpdateOne) SetNillableSleep(u *uint32) *AntUpdateOne {
 }
 
 // AddSleep adds u to the "sleep" field.
-func (auo *AntUpdateOne) AddSleep(u int32) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddSleep(u int32) *AgentUpdateOne {
 	auo.mutation.AddSleep(u)
 	return auo
 }
 
 // SetJitter sets the "jitter" field.
-func (auo *AntUpdateOne) SetJitter(u uint8) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetJitter(u uint8) *AgentUpdateOne {
 	auo.mutation.ResetJitter()
 	auo.mutation.SetJitter(u)
 	return auo
 }
 
 // SetNillableJitter sets the "jitter" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableJitter(u *uint8) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableJitter(u *uint8) *AgentUpdateOne {
 	if u != nil {
 		auo.SetJitter(*u)
 	}
@@ -1159,19 +1159,19 @@ func (auo *AntUpdateOne) SetNillableJitter(u *uint8) *AntUpdateOne {
 }
 
 // AddJitter adds u to the "jitter" field.
-func (auo *AntUpdateOne) AddJitter(u int8) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddJitter(u int8) *AgentUpdateOne {
 	auo.mutation.AddJitter(u)
 	return auo
 }
 
 // SetFirst sets the "first" field.
-func (auo *AntUpdateOne) SetFirst(t time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetFirst(t time.Time) *AgentUpdateOne {
 	auo.mutation.SetFirst(t)
 	return auo
 }
 
 // SetNillableFirst sets the "first" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableFirst(t *time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableFirst(t *time.Time) *AgentUpdateOne {
 	if t != nil {
 		auo.SetFirst(*t)
 	}
@@ -1179,13 +1179,13 @@ func (auo *AntUpdateOne) SetNillableFirst(t *time.Time) *AntUpdateOne {
 }
 
 // SetLast sets the "last" field.
-func (auo *AntUpdateOne) SetLast(t time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetLast(t time.Time) *AgentUpdateOne {
 	auo.mutation.SetLast(t)
 	return auo
 }
 
 // SetNillableLast sets the "last" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableLast(t *time.Time) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableLast(t *time.Time) *AgentUpdateOne {
 	if t != nil {
 		auo.SetLast(*t)
 	}
@@ -1193,14 +1193,14 @@ func (auo *AntUpdateOne) SetNillableLast(t *time.Time) *AntUpdateOne {
 }
 
 // SetCaps sets the "caps" field.
-func (auo *AntUpdateOne) SetCaps(u uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetCaps(u uint32) *AgentUpdateOne {
 	auo.mutation.ResetCaps()
 	auo.mutation.SetCaps(u)
 	return auo
 }
 
 // SetNillableCaps sets the "caps" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableCaps(u *uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableCaps(u *uint32) *AgentUpdateOne {
 	if u != nil {
 		auo.SetCaps(*u)
 	}
@@ -1208,19 +1208,19 @@ func (auo *AntUpdateOne) SetNillableCaps(u *uint32) *AntUpdateOne {
 }
 
 // AddCaps adds u to the "caps" field.
-func (auo *AntUpdateOne) AddCaps(u int32) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddCaps(u int32) *AgentUpdateOne {
 	auo.mutation.AddCaps(u)
 	return auo
 }
 
 // SetNote sets the "note" field.
-func (auo *AntUpdateOne) SetNote(s string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNote(s string) *AgentUpdateOne {
 	auo.mutation.SetNote(s)
 	return auo
 }
 
 // SetNillableNote sets the "note" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableNote(s *string) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableNote(s *string) *AgentUpdateOne {
 	if s != nil {
 		auo.SetNote(*s)
 	}
@@ -1228,20 +1228,20 @@ func (auo *AntUpdateOne) SetNillableNote(s *string) *AntUpdateOne {
 }
 
 // ClearNote clears the value of the "note" field.
-func (auo *AntUpdateOne) ClearNote() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearNote() *AgentUpdateOne {
 	auo.mutation.ClearNote()
 	return auo
 }
 
 // SetColor sets the "color" field.
-func (auo *AntUpdateOne) SetColor(u uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetColor(u uint32) *AgentUpdateOne {
 	auo.mutation.ResetColor()
 	auo.mutation.SetColor(u)
 	return auo
 }
 
 // SetNillableColor sets the "color" field if the given value is not nil.
-func (auo *AntUpdateOne) SetNillableColor(u *uint32) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetNillableColor(u *uint32) *AgentUpdateOne {
 	if u != nil {
 		auo.SetColor(*u)
 	}
@@ -1249,24 +1249,24 @@ func (auo *AntUpdateOne) SetNillableColor(u *uint32) *AntUpdateOne {
 }
 
 // AddColor adds u to the "color" field.
-func (auo *AntUpdateOne) AddColor(u int32) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddColor(u int32) *AgentUpdateOne {
 	auo.mutation.AddColor(u)
 	return auo
 }
 
 // SetListener sets the "listener" edge to the Listener entity.
-func (auo *AntUpdateOne) SetListener(l *Listener) *AntUpdateOne {
+func (auo *AgentUpdateOne) SetListener(l *Listener) *AgentUpdateOne {
 	return auo.SetListenerID(l.ID)
 }
 
 // AddCommandIDs adds the "command" edge to the Command entity by IDs.
-func (auo *AntUpdateOne) AddCommandIDs(ids ...int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddCommandIDs(ids ...int64) *AgentUpdateOne {
 	auo.mutation.AddCommandIDs(ids...)
 	return auo
 }
 
 // AddCommand adds the "command" edges to the Command entity.
-func (auo *AntUpdateOne) AddCommand(c ...*Command) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddCommand(c ...*Command) *AgentUpdateOne {
 	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -1275,13 +1275,13 @@ func (auo *AntUpdateOne) AddCommand(c ...*Command) *AntUpdateOne {
 }
 
 // AddTaskIDs adds the "task" edge to the Task entity by IDs.
-func (auo *AntUpdateOne) AddTaskIDs(ids ...int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddTaskIDs(ids ...int64) *AgentUpdateOne {
 	auo.mutation.AddTaskIDs(ids...)
 	return auo
 }
 
 // AddTask adds the "task" edges to the Task entity.
-func (auo *AntUpdateOne) AddTask(t ...*Task) *AntUpdateOne {
+func (auo *AgentUpdateOne) AddTask(t ...*Task) *AgentUpdateOne {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -1289,31 +1289,31 @@ func (auo *AntUpdateOne) AddTask(t ...*Task) *AntUpdateOne {
 	return auo.AddTaskIDs(ids...)
 }
 
-// Mutation returns the AntMutation object of the builder.
-func (auo *AntUpdateOne) Mutation() *AntMutation {
+// Mutation returns the AgentMutation object of the builder.
+func (auo *AgentUpdateOne) Mutation() *AgentMutation {
 	return auo.mutation
 }
 
 // ClearListener clears the "listener" edge to the Listener entity.
-func (auo *AntUpdateOne) ClearListener() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearListener() *AgentUpdateOne {
 	auo.mutation.ClearListener()
 	return auo
 }
 
 // ClearCommand clears all "command" edges to the Command entity.
-func (auo *AntUpdateOne) ClearCommand() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearCommand() *AgentUpdateOne {
 	auo.mutation.ClearCommand()
 	return auo
 }
 
 // RemoveCommandIDs removes the "command" edge to Command entities by IDs.
-func (auo *AntUpdateOne) RemoveCommandIDs(ids ...int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) RemoveCommandIDs(ids ...int64) *AgentUpdateOne {
 	auo.mutation.RemoveCommandIDs(ids...)
 	return auo
 }
 
 // RemoveCommand removes "command" edges to Command entities.
-func (auo *AntUpdateOne) RemoveCommand(c ...*Command) *AntUpdateOne {
+func (auo *AgentUpdateOne) RemoveCommand(c ...*Command) *AgentUpdateOne {
 	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
@@ -1322,19 +1322,19 @@ func (auo *AntUpdateOne) RemoveCommand(c ...*Command) *AntUpdateOne {
 }
 
 // ClearTask clears all "task" edges to the Task entity.
-func (auo *AntUpdateOne) ClearTask() *AntUpdateOne {
+func (auo *AgentUpdateOne) ClearTask() *AgentUpdateOne {
 	auo.mutation.ClearTask()
 	return auo
 }
 
 // RemoveTaskIDs removes the "task" edge to Task entities by IDs.
-func (auo *AntUpdateOne) RemoveTaskIDs(ids ...int64) *AntUpdateOne {
+func (auo *AgentUpdateOne) RemoveTaskIDs(ids ...int64) *AgentUpdateOne {
 	auo.mutation.RemoveTaskIDs(ids...)
 	return auo
 }
 
 // RemoveTask removes "task" edges to Task entities.
-func (auo *AntUpdateOne) RemoveTask(t ...*Task) *AntUpdateOne {
+func (auo *AgentUpdateOne) RemoveTask(t ...*Task) *AgentUpdateOne {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -1342,21 +1342,21 @@ func (auo *AntUpdateOne) RemoveTask(t ...*Task) *AntUpdateOne {
 	return auo.RemoveTaskIDs(ids...)
 }
 
-// Where appends a list predicates to the AntUpdate builder.
-func (auo *AntUpdateOne) Where(ps ...predicate.Ant) *AntUpdateOne {
+// Where appends a list predicates to the AgentUpdate builder.
+func (auo *AgentUpdateOne) Where(ps ...predicate.Agent) *AgentUpdateOne {
 	auo.mutation.Where(ps...)
 	return auo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *AntUpdateOne) Select(field string, fields ...string) *AntUpdateOne {
+func (auo *AgentUpdateOne) Select(field string, fields ...string) *AgentUpdateOne {
 	auo.fields = append([]string{field}, fields...)
 	return auo
 }
 
-// Save executes the query and returns the updated Ant entity.
-func (auo *AntUpdateOne) Save(ctx context.Context) (*Ant, error) {
+// Save executes the query and returns the updated Agent entity.
+func (auo *AgentUpdateOne) Save(ctx context.Context) (*Agent, error) {
 	if err := auo.defaults(); err != nil {
 		return nil, err
 	}
@@ -1364,7 +1364,7 @@ func (auo *AntUpdateOne) Save(ctx context.Context) (*Ant, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *AntUpdateOne) SaveX(ctx context.Context) *Ant {
+func (auo *AgentUpdateOne) SaveX(ctx context.Context) *Agent {
 	node, err := auo.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -1373,106 +1373,106 @@ func (auo *AntUpdateOne) SaveX(ctx context.Context) *Ant {
 }
 
 // Exec executes the query on the entity.
-func (auo *AntUpdateOne) Exec(ctx context.Context) error {
+func (auo *AgentUpdateOne) Exec(ctx context.Context) error {
 	_, err := auo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *AntUpdateOne) ExecX(ctx context.Context) {
+func (auo *AgentUpdateOne) ExecX(ctx context.Context) {
 	if err := auo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (auo *AntUpdateOne) defaults() error {
+func (auo *AgentUpdateOne) defaults() error {
 	if _, ok := auo.mutation.UpdatedAt(); !ok {
-		if ant.UpdateDefaultUpdatedAt == nil {
-			return fmt.Errorf("ent: uninitialized ant.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		if agent.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agent.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
 		}
-		v := ant.UpdateDefaultUpdatedAt()
+		v := agent.UpdateDefaultUpdatedAt()
 		auo.mutation.SetUpdatedAt(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (auo *AntUpdateOne) check() error {
+func (auo *AgentUpdateOne) check() error {
 	if v, ok := auo.mutation.ExtIP(); ok {
-		if err := ant.ExtIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.ext_ip": %w`, err)}
+		if err := agent.ExtIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "ext_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.ext_ip": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.IntIP(); ok {
-		if err := ant.IntIPValidator(v.String()); err != nil {
-			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Ant.int_ip": %w`, err)}
+		if err := agent.IntIPValidator(v.String()); err != nil {
+			return &ValidationError{Name: "int_ip", err: fmt.Errorf(`ent: validator failed for field "Agent.int_ip": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Os(); ok {
-		if err := ant.OsValidator(v); err != nil {
-			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Ant.os": %w`, err)}
+		if err := agent.OsValidator(v); err != nil {
+			return &ValidationError{Name: "os", err: fmt.Errorf(`ent: validator failed for field "Agent.os": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.OsMeta(); ok {
-		if err := ant.OsMetaValidator(v); err != nil {
-			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Ant.os_meta": %w`, err)}
+		if err := agent.OsMetaValidator(v); err != nil {
+			return &ValidationError{Name: "os_meta", err: fmt.Errorf(`ent: validator failed for field "Agent.os_meta": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Hostname(); ok {
-		if err := ant.HostnameValidator(v); err != nil {
-			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Ant.hostname": %w`, err)}
+		if err := agent.HostnameValidator(v); err != nil {
+			return &ValidationError{Name: "hostname", err: fmt.Errorf(`ent: validator failed for field "Agent.hostname": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Username(); ok {
-		if err := ant.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Ant.username": %w`, err)}
+		if err := agent.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Agent.username": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Domain(); ok {
-		if err := ant.DomainValidator(v); err != nil {
-			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Ant.domain": %w`, err)}
+		if err := agent.DomainValidator(v); err != nil {
+			return &ValidationError{Name: "domain", err: fmt.Errorf(`ent: validator failed for field "Agent.domain": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.ProcessName(); ok {
-		if err := ant.ProcessNameValidator(v); err != nil {
-			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Ant.process_name": %w`, err)}
+		if err := agent.ProcessNameValidator(v); err != nil {
+			return &ValidationError{Name: "process_name", err: fmt.Errorf(`ent: validator failed for field "Agent.process_name": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Arch(); ok {
-		if err := ant.ArchValidator(v); err != nil {
-			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Ant.arch": %w`, err)}
+		if err := agent.ArchValidator(v); err != nil {
+			return &ValidationError{Name: "arch", err: fmt.Errorf(`ent: validator failed for field "Agent.arch": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Note(); ok {
-		if err := ant.NoteValidator(v); err != nil {
-			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Ant.note": %w`, err)}
+		if err := agent.NoteValidator(v); err != nil {
+			return &ValidationError{Name: "note", err: fmt.Errorf(`ent: validator failed for field "Agent.note": %w`, err)}
 		}
 	}
 	if auo.mutation.ListenerCleared() && len(auo.mutation.ListenerIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Ant.listener"`)
+		return errors.New(`ent: clearing a required unique edge "Agent.listener"`)
 	}
 	return nil
 }
 
-func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
+func (auo *AgentUpdateOne) sqlSave(ctx context.Context) (_node *Agent, err error) {
 	if err := auo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(ant.Table, ant.Columns, sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32))
+	_spec := sqlgraph.NewUpdateSpec(agent.Table, agent.Columns, sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32))
 	id, ok := auo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Ant.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Agent.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := auo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, ant.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, agent.FieldID)
 		for _, f := range fields {
-			if !ant.ValidColumn(f) {
+			if !agent.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != ant.FieldID {
+			if f != agent.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -1485,119 +1485,119 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		}
 	}
 	if value, ok := auo.mutation.UpdatedAt(); ok {
-		_spec.SetField(ant.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.DeletedAt(); ok {
-		_spec.SetField(ant.FieldDeletedAt, field.TypeTime, value)
+		_spec.SetField(agent.FieldDeletedAt, field.TypeTime, value)
 	}
 	if auo.mutation.DeletedAtCleared() {
-		_spec.ClearField(ant.FieldDeletedAt, field.TypeTime)
+		_spec.ClearField(agent.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := auo.mutation.ExtIP(); ok {
-		_spec.SetField(ant.FieldExtIP, field.TypeString, value)
+		_spec.SetField(agent.FieldExtIP, field.TypeString, value)
 	}
 	if auo.mutation.ExtIPCleared() {
-		_spec.ClearField(ant.FieldExtIP, field.TypeString)
+		_spec.ClearField(agent.FieldExtIP, field.TypeString)
 	}
 	if value, ok := auo.mutation.IntIP(); ok {
-		_spec.SetField(ant.FieldIntIP, field.TypeString, value)
+		_spec.SetField(agent.FieldIntIP, field.TypeString, value)
 	}
 	if auo.mutation.IntIPCleared() {
-		_spec.ClearField(ant.FieldIntIP, field.TypeString)
+		_spec.ClearField(agent.FieldIntIP, field.TypeString)
 	}
 	if value, ok := auo.mutation.Os(); ok {
-		_spec.SetField(ant.FieldOs, field.TypeEnum, value)
+		_spec.SetField(agent.FieldOs, field.TypeEnum, value)
 	}
 	if value, ok := auo.mutation.OsMeta(); ok {
-		_spec.SetField(ant.FieldOsMeta, field.TypeString, value)
+		_spec.SetField(agent.FieldOsMeta, field.TypeString, value)
 	}
 	if auo.mutation.OsMetaCleared() {
-		_spec.ClearField(ant.FieldOsMeta, field.TypeString)
+		_spec.ClearField(agent.FieldOsMeta, field.TypeString)
 	}
 	if value, ok := auo.mutation.Hostname(); ok {
-		_spec.SetField(ant.FieldHostname, field.TypeString, value)
+		_spec.SetField(agent.FieldHostname, field.TypeString, value)
 	}
 	if auo.mutation.HostnameCleared() {
-		_spec.ClearField(ant.FieldHostname, field.TypeString)
+		_spec.ClearField(agent.FieldHostname, field.TypeString)
 	}
 	if value, ok := auo.mutation.Username(); ok {
-		_spec.SetField(ant.FieldUsername, field.TypeString, value)
+		_spec.SetField(agent.FieldUsername, field.TypeString, value)
 	}
 	if auo.mutation.UsernameCleared() {
-		_spec.ClearField(ant.FieldUsername, field.TypeString)
+		_spec.ClearField(agent.FieldUsername, field.TypeString)
 	}
 	if value, ok := auo.mutation.Domain(); ok {
-		_spec.SetField(ant.FieldDomain, field.TypeString, value)
+		_spec.SetField(agent.FieldDomain, field.TypeString, value)
 	}
 	if auo.mutation.DomainCleared() {
-		_spec.ClearField(ant.FieldDomain, field.TypeString)
+		_spec.ClearField(agent.FieldDomain, field.TypeString)
 	}
 	if value, ok := auo.mutation.Privileged(); ok {
-		_spec.SetField(ant.FieldPrivileged, field.TypeBool, value)
+		_spec.SetField(agent.FieldPrivileged, field.TypeBool, value)
 	}
 	if auo.mutation.PrivilegedCleared() {
-		_spec.ClearField(ant.FieldPrivileged, field.TypeBool)
+		_spec.ClearField(agent.FieldPrivileged, field.TypeBool)
 	}
 	if value, ok := auo.mutation.ProcessName(); ok {
-		_spec.SetField(ant.FieldProcessName, field.TypeString, value)
+		_spec.SetField(agent.FieldProcessName, field.TypeString, value)
 	}
 	if auo.mutation.ProcessNameCleared() {
-		_spec.ClearField(ant.FieldProcessName, field.TypeString)
+		_spec.ClearField(agent.FieldProcessName, field.TypeString)
 	}
 	if value, ok := auo.mutation.Pid(); ok {
-		_spec.SetField(ant.FieldPid, field.TypeInt64, value)
+		_spec.SetField(agent.FieldPid, field.TypeInt64, value)
 	}
 	if value, ok := auo.mutation.AddedPid(); ok {
-		_spec.AddField(ant.FieldPid, field.TypeInt64, value)
+		_spec.AddField(agent.FieldPid, field.TypeInt64, value)
 	}
 	if auo.mutation.PidCleared() {
-		_spec.ClearField(ant.FieldPid, field.TypeInt64)
+		_spec.ClearField(agent.FieldPid, field.TypeInt64)
 	}
 	if value, ok := auo.mutation.Arch(); ok {
-		_spec.SetField(ant.FieldArch, field.TypeEnum, value)
+		_spec.SetField(agent.FieldArch, field.TypeEnum, value)
 	}
 	if value, ok := auo.mutation.Sleep(); ok {
-		_spec.SetField(ant.FieldSleep, field.TypeUint32, value)
+		_spec.SetField(agent.FieldSleep, field.TypeUint32, value)
 	}
 	if value, ok := auo.mutation.AddedSleep(); ok {
-		_spec.AddField(ant.FieldSleep, field.TypeUint32, value)
+		_spec.AddField(agent.FieldSleep, field.TypeUint32, value)
 	}
 	if value, ok := auo.mutation.Jitter(); ok {
-		_spec.SetField(ant.FieldJitter, field.TypeUint8, value)
+		_spec.SetField(agent.FieldJitter, field.TypeUint8, value)
 	}
 	if value, ok := auo.mutation.AddedJitter(); ok {
-		_spec.AddField(ant.FieldJitter, field.TypeUint8, value)
+		_spec.AddField(agent.FieldJitter, field.TypeUint8, value)
 	}
 	if value, ok := auo.mutation.First(); ok {
-		_spec.SetField(ant.FieldFirst, field.TypeTime, value)
+		_spec.SetField(agent.FieldFirst, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.Last(); ok {
-		_spec.SetField(ant.FieldLast, field.TypeTime, value)
+		_spec.SetField(agent.FieldLast, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.Caps(); ok {
-		_spec.SetField(ant.FieldCaps, field.TypeUint32, value)
+		_spec.SetField(agent.FieldCaps, field.TypeUint32, value)
 	}
 	if value, ok := auo.mutation.AddedCaps(); ok {
-		_spec.AddField(ant.FieldCaps, field.TypeUint32, value)
+		_spec.AddField(agent.FieldCaps, field.TypeUint32, value)
 	}
 	if value, ok := auo.mutation.Note(); ok {
-		_spec.SetField(ant.FieldNote, field.TypeString, value)
+		_spec.SetField(agent.FieldNote, field.TypeString, value)
 	}
 	if auo.mutation.NoteCleared() {
-		_spec.ClearField(ant.FieldNote, field.TypeString)
+		_spec.ClearField(agent.FieldNote, field.TypeString)
 	}
 	if value, ok := auo.mutation.Color(); ok {
-		_spec.SetField(ant.FieldColor, field.TypeUint32, value)
+		_spec.SetField(agent.FieldColor, field.TypeUint32, value)
 	}
 	if value, ok := auo.mutation.AddedColor(); ok {
-		_spec.AddField(ant.FieldColor, field.TypeUint32, value)
+		_spec.AddField(agent.FieldColor, field.TypeUint32, value)
 	}
 	if auo.mutation.ListenerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   ant.ListenerTable,
-			Columns: []string{ant.ListenerColumn},
+			Table:   agent.ListenerTable,
+			Columns: []string{agent.ListenerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(listener.FieldID, field.TypeInt64),
@@ -1609,8 +1609,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   ant.ListenerTable,
-			Columns: []string{ant.ListenerColumn},
+			Table:   agent.ListenerTable,
+			Columns: []string{agent.ListenerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(listener.FieldID, field.TypeInt64),
@@ -1625,8 +1625,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -1638,8 +1638,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -1654,8 +1654,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.CommandTable,
-			Columns: []string{ant.CommandColumn},
+			Table:   agent.CommandTable,
+			Columns: []string{agent.CommandColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(command.FieldID, field.TypeInt64),
@@ -1670,8 +1670,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -1683,8 +1683,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -1699,8 +1699,8 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   ant.TaskTable,
-			Columns: []string{ant.TaskColumn},
+			Table:   agent.TaskTable,
+			Columns: []string{agent.TaskColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(task.FieldID, field.TypeInt64),
@@ -1711,12 +1711,12 @@ func (auo *AntUpdateOne) sqlSave(ctx context.Context) (_node *Ant, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Ant{config: auo.config}
+	_node = &Agent{config: auo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{ant.Label}
+			err = &NotFoundError{agent.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/predicate"
 )
 
-// AntDelete is the builder for deleting a Ant entity.
-type AntDelete struct {
+// AgentDelete is the builder for deleting a Agent entity.
+type AgentDelete struct {
 	config
 	hooks    []Hook
-	mutation *AntMutation
+	mutation *AgentMutation
 }
 
-// Where appends a list predicates to the AntDelete builder.
-func (ad *AntDelete) Where(ps ...predicate.Ant) *AntDelete {
+// Where appends a list predicates to the AgentDelete builder.
+func (ad *AgentDelete) Where(ps ...predicate.Agent) *AgentDelete {
 	ad.mutation.Where(ps...)
 	return ad
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ad *AntDelete) Exec(ctx context.Context) (int, error) {
+func (ad *AgentDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, ad.sqlExec, ad.mutation, ad.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ad *AntDelete) ExecX(ctx context.Context) int {
+func (ad *AgentDelete) ExecX(ctx context.Context) int {
 	n, err := ad.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (ad *AntDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (ad *AntDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(ant.Table, sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32))
+func (ad *AgentDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(agent.Table, sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32))
 	if ps := ad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (ad *AntDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// AntDeleteOne is the builder for deleting a single Ant entity.
-type AntDeleteOne struct {
-	ad *AntDelete
+// AgentDeleteOne is the builder for deleting a single Agent entity.
+type AgentDeleteOne struct {
+	ad *AgentDelete
 }
 
-// Where appends a list predicates to the AntDelete builder.
-func (ado *AntDeleteOne) Where(ps ...predicate.Ant) *AntDeleteOne {
+// Where appends a list predicates to the AgentDelete builder.
+func (ado *AgentDeleteOne) Where(ps ...predicate.Agent) *AgentDeleteOne {
 	ado.ad.mutation.Where(ps...)
 	return ado
 }
 
 // Exec executes the deletion query.
-func (ado *AntDeleteOne) Exec(ctx context.Context) error {
+func (ado *AgentDeleteOne) Exec(ctx context.Context) error {
 	n, err := ado.ad.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{ant.Label}
+		return &NotFoundError{agent.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ado *AntDeleteOne) ExecX(ctx context.Context) {
+func (ado *AgentDeleteOne) ExecX(ctx context.Context) {
 	if err := ado.Exec(ctx); err != nil {
 		panic(err)
 	}

@@ -15,7 +15,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/chat"
 	"github.com/PicoTools/pico/internal/ent/command"
@@ -32,8 +32,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Ant is the client for interacting with the Ant builders.
-	Ant *AntClient
+	// Agent is the client for interacting with the Agent builders.
+	Agent *AgentClient
 	// Blobber is the client for interacting with the Blobber builders.
 	Blobber *BlobberClient
 	// Chat is the client for interacting with the Chat builders.
@@ -63,7 +63,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Ant = NewAntClient(c.config)
+	c.Agent = NewAgentClient(c.config)
 	c.Blobber = NewBlobberClient(c.config)
 	c.Chat = NewChatClient(c.config)
 	c.Command = NewCommandClient(c.config)
@@ -165,7 +165,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:        ctx,
 		config:     cfg,
-		Ant:        NewAntClient(cfg),
+		Agent:      NewAgentClient(cfg),
 		Blobber:    NewBlobberClient(cfg),
 		Chat:       NewChatClient(cfg),
 		Command:    NewCommandClient(cfg),
@@ -194,7 +194,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:        ctx,
 		config:     cfg,
-		Ant:        NewAntClient(cfg),
+		Agent:      NewAgentClient(cfg),
 		Blobber:    NewBlobberClient(cfg),
 		Chat:       NewChatClient(cfg),
 		Command:    NewCommandClient(cfg),
@@ -210,7 +210,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Ant.
+//		Agent.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -233,7 +233,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Ant, c.Blobber, c.Chat, c.Command, c.Credential, c.Listener, c.Message,
+		c.Agent, c.Blobber, c.Chat, c.Command, c.Credential, c.Listener, c.Message,
 		c.Operator, c.Pki, c.Task,
 	} {
 		n.Use(hooks...)
@@ -244,7 +244,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Ant, c.Blobber, c.Chat, c.Command, c.Credential, c.Listener, c.Message,
+		c.Agent, c.Blobber, c.Chat, c.Command, c.Credential, c.Listener, c.Message,
 		c.Operator, c.Pki, c.Task,
 	} {
 		n.Intercept(interceptors...)
@@ -254,8 +254,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *AntMutation:
-		return c.Ant.mutate(ctx, m)
+	case *AgentMutation:
+		return c.Agent.mutate(ctx, m)
 	case *BlobberMutation:
 		return c.Blobber.mutate(ctx, m)
 	case *ChatMutation:
@@ -279,107 +279,107 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	}
 }
 
-// AntClient is a client for the Ant schema.
-type AntClient struct {
+// AgentClient is a client for the Agent schema.
+type AgentClient struct {
 	config
 }
 
-// NewAntClient returns a client for the Ant from the given config.
-func NewAntClient(c config) *AntClient {
-	return &AntClient{config: c}
+// NewAgentClient returns a client for the Agent from the given config.
+func NewAgentClient(c config) *AgentClient {
+	return &AgentClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `ant.Hooks(f(g(h())))`.
-func (c *AntClient) Use(hooks ...Hook) {
-	c.hooks.Ant = append(c.hooks.Ant, hooks...)
+// A call to `Use(f, g, h)` equals to `agent.Hooks(f(g(h())))`.
+func (c *AgentClient) Use(hooks ...Hook) {
+	c.hooks.Agent = append(c.hooks.Agent, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `ant.Intercept(f(g(h())))`.
-func (c *AntClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Ant = append(c.inters.Ant, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `agent.Intercept(f(g(h())))`.
+func (c *AgentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Agent = append(c.inters.Agent, interceptors...)
 }
 
-// Create returns a builder for creating a Ant entity.
-func (c *AntClient) Create() *AntCreate {
-	mutation := newAntMutation(c.config, OpCreate)
-	return &AntCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Agent entity.
+func (c *AgentClient) Create() *AgentCreate {
+	mutation := newAgentMutation(c.config, OpCreate)
+	return &AgentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Ant entities.
-func (c *AntClient) CreateBulk(builders ...*AntCreate) *AntCreateBulk {
-	return &AntCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Agent entities.
+func (c *AgentClient) CreateBulk(builders ...*AgentCreate) *AgentCreateBulk {
+	return &AgentCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *AntClient) MapCreateBulk(slice any, setFunc func(*AntCreate, int)) *AntCreateBulk {
+func (c *AgentClient) MapCreateBulk(slice any, setFunc func(*AgentCreate, int)) *AgentCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &AntCreateBulk{err: fmt.Errorf("calling to AntClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &AgentCreateBulk{err: fmt.Errorf("calling to AgentClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*AntCreate, rv.Len())
+	builders := make([]*AgentCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &AntCreateBulk{config: c.config, builders: builders}
+	return &AgentCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Ant.
-func (c *AntClient) Update() *AntUpdate {
-	mutation := newAntMutation(c.config, OpUpdate)
-	return &AntUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Agent.
+func (c *AgentClient) Update() *AgentUpdate {
+	mutation := newAgentMutation(c.config, OpUpdate)
+	return &AgentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AntClient) UpdateOne(a *Ant) *AntUpdateOne {
-	mutation := newAntMutation(c.config, OpUpdateOne, withAnt(a))
-	return &AntUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AgentClient) UpdateOne(a *Agent) *AgentUpdateOne {
+	mutation := newAgentMutation(c.config, OpUpdateOne, withAgent(a))
+	return &AgentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AntClient) UpdateOneID(id uint32) *AntUpdateOne {
-	mutation := newAntMutation(c.config, OpUpdateOne, withAntID(id))
-	return &AntUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AgentClient) UpdateOneID(id uint32) *AgentUpdateOne {
+	mutation := newAgentMutation(c.config, OpUpdateOne, withAgentID(id))
+	return &AgentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Ant.
-func (c *AntClient) Delete() *AntDelete {
-	mutation := newAntMutation(c.config, OpDelete)
-	return &AntDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Agent.
+func (c *AgentClient) Delete() *AgentDelete {
+	mutation := newAgentMutation(c.config, OpDelete)
+	return &AgentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *AntClient) DeleteOne(a *Ant) *AntDeleteOne {
+func (c *AgentClient) DeleteOne(a *Agent) *AgentDeleteOne {
 	return c.DeleteOneID(a.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AntClient) DeleteOneID(id uint32) *AntDeleteOne {
-	builder := c.Delete().Where(ant.ID(id))
+func (c *AgentClient) DeleteOneID(id uint32) *AgentDeleteOne {
+	builder := c.Delete().Where(agent.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AntDeleteOne{builder}
+	return &AgentDeleteOne{builder}
 }
 
-// Query returns a query builder for Ant.
-func (c *AntClient) Query() *AntQuery {
-	return &AntQuery{
+// Query returns a query builder for Agent.
+func (c *AgentClient) Query() *AgentQuery {
+	return &AgentQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeAnt},
+		ctx:    &QueryContext{Type: TypeAgent},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Ant entity by its id.
-func (c *AntClient) Get(ctx context.Context, id uint32) (*Ant, error) {
-	return c.Query().Where(ant.ID(id)).Only(ctx)
+// Get returns a Agent entity by its id.
+func (c *AgentClient) Get(ctx context.Context, id uint32) (*Agent, error) {
+	return c.Query().Where(agent.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AntClient) GetX(ctx context.Context, id uint32) *Ant {
+func (c *AgentClient) GetX(ctx context.Context, id uint32) *Agent {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -387,15 +387,15 @@ func (c *AntClient) GetX(ctx context.Context, id uint32) *Ant {
 	return obj
 }
 
-// QueryListener queries the listener edge of a Ant.
-func (c *AntClient) QueryListener(a *Ant) *ListenerQuery {
+// QueryListener queries the listener edge of a Agent.
+func (c *AgentClient) QueryListener(a *Agent) *ListenerQuery {
 	query := (&ListenerClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, id),
+			sqlgraph.From(agent.Table, agent.FieldID, id),
 			sqlgraph.To(listener.Table, listener.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ant.ListenerTable, ant.ListenerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, agent.ListenerTable, agent.ListenerColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -403,15 +403,15 @@ func (c *AntClient) QueryListener(a *Ant) *ListenerQuery {
 	return query
 }
 
-// QueryCommand queries the command edge of a Ant.
-func (c *AntClient) QueryCommand(a *Ant) *CommandQuery {
+// QueryCommand queries the command edge of a Agent.
+func (c *AgentClient) QueryCommand(a *Agent) *CommandQuery {
 	query := (&CommandClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, id),
+			sqlgraph.From(agent.Table, agent.FieldID, id),
 			sqlgraph.To(command.Table, command.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ant.CommandTable, ant.CommandColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, agent.CommandTable, agent.CommandColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -419,15 +419,15 @@ func (c *AntClient) QueryCommand(a *Ant) *CommandQuery {
 	return query
 }
 
-// QueryTask queries the task edge of a Ant.
-func (c *AntClient) QueryTask(a *Ant) *TaskQuery {
+// QueryTask queries the task edge of a Agent.
+func (c *AgentClient) QueryTask(a *Agent) *TaskQuery {
 	query := (&TaskClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, id),
+			sqlgraph.From(agent.Table, agent.FieldID, id),
 			sqlgraph.To(task.Table, task.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ant.TaskTable, ant.TaskColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, agent.TaskTable, agent.TaskColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -436,29 +436,29 @@ func (c *AntClient) QueryTask(a *Ant) *TaskQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *AntClient) Hooks() []Hook {
-	hooks := c.hooks.Ant
-	return append(hooks[:len(hooks):len(hooks)], ant.Hooks[:]...)
+func (c *AgentClient) Hooks() []Hook {
+	hooks := c.hooks.Agent
+	return append(hooks[:len(hooks):len(hooks)], agent.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *AntClient) Interceptors() []Interceptor {
-	inters := c.inters.Ant
-	return append(inters[:len(inters):len(inters)], ant.Interceptors[:]...)
+func (c *AgentClient) Interceptors() []Interceptor {
+	inters := c.inters.Agent
+	return append(inters[:len(inters):len(inters)], agent.Interceptors[:]...)
 }
 
-func (c *AntClient) mutate(ctx context.Context, m *AntMutation) (Value, error) {
+func (c *AgentClient) mutate(ctx context.Context, m *AgentMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&AntCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AgentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&AntUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AgentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&AntUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AgentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&AntDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&AgentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Ant mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Agent mutation op: %q", m.Op())
 	}
 }
 
@@ -886,15 +886,15 @@ func (c *CommandClient) GetX(ctx context.Context, id int64) *Command {
 	return obj
 }
 
-// QueryAnt queries the ant edge of a Command.
-func (c *CommandClient) QueryAnt(co *Command) *AntQuery {
-	query := (&AntClient{config: c.config}).Query()
+// QueryAgent queries the agent edge of a Command.
+func (c *CommandClient) QueryAgent(co *Command) *AgentQuery {
+	query := (&AgentClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := co.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(command.Table, command.FieldID, id),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, command.AntTable, command.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, command.AgentTable, command.AgentColumn),
 		)
 		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
 		return fromV, nil
@@ -1218,15 +1218,15 @@ func (c *ListenerClient) GetX(ctx context.Context, id int64) *Listener {
 	return obj
 }
 
-// QueryAnt queries the ant edge of a Listener.
-func (c *ListenerClient) QueryAnt(l *Listener) *AntQuery {
-	query := (&AntClient{config: c.config}).Query()
+// QueryAgent queries the agent edge of a Listener.
+func (c *ListenerClient) QueryAgent(l *Listener) *AgentQuery {
+	query := (&AgentClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := l.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(listener.Table, listener.FieldID, id),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, listener.AntTable, listener.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, listener.AgentTable, listener.AgentColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
 		return fromV, nil
@@ -1836,15 +1836,15 @@ func (c *TaskClient) QueryCommand(t *Task) *CommandQuery {
 	return query
 }
 
-// QueryAnt queries the ant edge of a Task.
-func (c *TaskClient) QueryAnt(t *Task) *AntQuery {
-	query := (&AntClient{config: c.config}).Query()
+// QueryAgent queries the agent edge of a Task.
+func (c *TaskClient) QueryAgent(t *Task) *AgentQuery {
+	query := (&AgentClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := t.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(task.Table, task.FieldID, id),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, task.AntTable, task.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, task.AgentTable, task.AgentColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil
@@ -1912,11 +1912,11 @@ func (c *TaskClient) mutate(ctx context.Context, m *TaskMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Ant, Blobber, Chat, Command, Credential, Listener, Message, Operator, Pki,
+		Agent, Blobber, Chat, Command, Credential, Listener, Message, Operator, Pki,
 		Task []ent.Hook
 	}
 	inters struct {
-		Ant, Blobber, Chat, Command, Credential, Listener, Message, Operator, Pki,
+		Agent, Blobber, Chat, Command, Credential, Listener, Message, Operator, Pki,
 		Task []ent.Interceptor
 	}
 )

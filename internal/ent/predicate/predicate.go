@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Ant is the predicate function for ant builders.
-type Ant func(*sql.Selector)
+// Agent is the predicate function for agent builders.
+type Agent func(*sql.Selector)
 
 // Blobber is the predicate function for blobber builders.
 type Blobber func(*sql.Selector)

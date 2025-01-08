@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/message"
 	"github.com/PicoTools/pico/internal/ent/operator"
@@ -32,16 +32,16 @@ func (cu *CommandUpdate) Where(ps ...predicate.Command) *CommandUpdate {
 	return cu
 }
 
-// SetAntID sets the "ant_id" field.
-func (cu *CommandUpdate) SetAntID(u uint32) *CommandUpdate {
-	cu.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (cu *CommandUpdate) SetAgentID(u uint32) *CommandUpdate {
+	cu.mutation.SetAgentID(u)
 	return cu
 }
 
-// SetNillableAntID sets the "ant_id" field if the given value is not nil.
-func (cu *CommandUpdate) SetNillableAntID(u *uint32) *CommandUpdate {
+// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
+func (cu *CommandUpdate) SetNillableAgentID(u *uint32) *CommandUpdate {
 	if u != nil {
-		cu.SetAntID(*u)
+		cu.SetAgentID(*u)
 	}
 	return cu
 }
@@ -122,9 +122,9 @@ func (cu *CommandUpdate) ClearClosedAt() *CommandUpdate {
 	return cu
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (cu *CommandUpdate) SetAnt(a *Ant) *CommandUpdate {
-	return cu.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (cu *CommandUpdate) SetAgent(a *Agent) *CommandUpdate {
+	return cu.SetAgentID(a.ID)
 }
 
 // SetOperatorID sets the "operator" edge to the Operator entity by ID.
@@ -173,9 +173,9 @@ func (cu *CommandUpdate) Mutation() *CommandMutation {
 	return cu.mutation
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (cu *CommandUpdate) ClearAnt() *CommandUpdate {
-	cu.mutation.ClearAnt()
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (cu *CommandUpdate) ClearAgent() *CommandUpdate {
+	cu.mutation.ClearAgent()
 	return cu
 }
 
@@ -261,8 +261,8 @@ func (cu *CommandUpdate) check() error {
 			return &ValidationError{Name: "cmd", err: fmt.Errorf(`ent: validator failed for field "Command.cmd": %w`, err)}
 		}
 	}
-	if cu.mutation.AntCleared() && len(cu.mutation.AntIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Command.ant"`)
+	if cu.mutation.AgentCleared() && len(cu.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Command.agent"`)
 	}
 	if cu.mutation.OperatorCleared() && len(cu.mutation.OperatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Command.operator"`)
@@ -297,28 +297,28 @@ func (cu *CommandUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if cu.mutation.ClosedAtCleared() {
 		_spec.ClearField(command.FieldClosedAt, field.TypeTime)
 	}
-	if cu.mutation.AntCleared() {
+	if cu.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   command.AntTable,
-			Columns: []string{command.AntColumn},
+			Table:   command.AgentTable,
+			Columns: []string{command.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := cu.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   command.AntTable,
-			Columns: []string{command.AntColumn},
+			Table:   command.AgentTable,
+			Columns: []string{command.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
@@ -465,16 +465,16 @@ type CommandUpdateOne struct {
 	mutation *CommandMutation
 }
 
-// SetAntID sets the "ant_id" field.
-func (cuo *CommandUpdateOne) SetAntID(u uint32) *CommandUpdateOne {
-	cuo.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (cuo *CommandUpdateOne) SetAgentID(u uint32) *CommandUpdateOne {
+	cuo.mutation.SetAgentID(u)
 	return cuo
 }
 
-// SetNillableAntID sets the "ant_id" field if the given value is not nil.
-func (cuo *CommandUpdateOne) SetNillableAntID(u *uint32) *CommandUpdateOne {
+// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
+func (cuo *CommandUpdateOne) SetNillableAgentID(u *uint32) *CommandUpdateOne {
 	if u != nil {
-		cuo.SetAntID(*u)
+		cuo.SetAgentID(*u)
 	}
 	return cuo
 }
@@ -555,9 +555,9 @@ func (cuo *CommandUpdateOne) ClearClosedAt() *CommandUpdateOne {
 	return cuo
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (cuo *CommandUpdateOne) SetAnt(a *Ant) *CommandUpdateOne {
-	return cuo.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (cuo *CommandUpdateOne) SetAgent(a *Agent) *CommandUpdateOne {
+	return cuo.SetAgentID(a.ID)
 }
 
 // SetOperatorID sets the "operator" edge to the Operator entity by ID.
@@ -606,9 +606,9 @@ func (cuo *CommandUpdateOne) Mutation() *CommandMutation {
 	return cuo.mutation
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (cuo *CommandUpdateOne) ClearAnt() *CommandUpdateOne {
-	cuo.mutation.ClearAnt()
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (cuo *CommandUpdateOne) ClearAgent() *CommandUpdateOne {
+	cuo.mutation.ClearAgent()
 	return cuo
 }
 
@@ -707,8 +707,8 @@ func (cuo *CommandUpdateOne) check() error {
 			return &ValidationError{Name: "cmd", err: fmt.Errorf(`ent: validator failed for field "Command.cmd": %w`, err)}
 		}
 	}
-	if cuo.mutation.AntCleared() && len(cuo.mutation.AntIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Command.ant"`)
+	if cuo.mutation.AgentCleared() && len(cuo.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Command.agent"`)
 	}
 	if cuo.mutation.OperatorCleared() && len(cuo.mutation.OperatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Command.operator"`)
@@ -760,28 +760,28 @@ func (cuo *CommandUpdateOne) sqlSave(ctx context.Context) (_node *Command, err e
 	if cuo.mutation.ClosedAtCleared() {
 		_spec.ClearField(command.FieldClosedAt, field.TypeTime)
 	}
-	if cuo.mutation.AntCleared() {
+	if cuo.mutation.AgentCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   command.AntTable,
-			Columns: []string{command.AntColumn},
+			Table:   command.AgentTable,
+			Columns: []string{command.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := cuo.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   command.AntTable,
-			Columns: []string{command.AntColumn},
+			Table:   command.AgentTable,
+			Columns: []string{command.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {

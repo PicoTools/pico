@@ -4,18 +4,18 @@ import (
 	"database/sql/driver"
 )
 
-// represents custom type to hold ant's operating system type
-type AntOs uint8
+// represents custom type to hold agent's operating system type
+type AgentOs uint8
 
 const (
-	OsUnknown AntOs = iota
+	OsUnknown AgentOs = iota
 	OsLinux
 	OsWindows
 	OsMac
 )
 
 // Values returns list of strings represented names of capability types
-func (AntOs) Values() []string {
+func (AgentOs) Values() []string {
 	return []string{
 		OsUnknown.String(),
 		OsLinux.String(),
@@ -25,12 +25,12 @@ func (AntOs) Values() []string {
 }
 
 // Value return database ready value for further processing
-func (a AntOs) Value() (driver.Value, error) {
+func (a AgentOs) Value() (driver.Value, error) {
 	return a.String(), nil
 }
 
 // Scan converts value to operating system type
-func (a *AntOs) Scan(val any) error {
+func (a *AgentOs) Scan(val any) error {
 	var s string
 
 	switch v := val.(type) {
@@ -56,7 +56,7 @@ func (a *AntOs) Scan(val any) error {
 }
 
 // String returns string representation of operating system type
-func (a AntOs) String() string {
+func (a AgentOs) String() string {
 	switch a {
 	case OsLinux:
 		return "linux"
@@ -70,7 +70,7 @@ func (a AntOs) String() string {
 }
 
 // String returns short string representation of operating system type
-func (a AntOs) StringShort() string {
+func (a AgentOs) StringShort() string {
 	switch a {
 	case OsLinux:
 		return "lin"

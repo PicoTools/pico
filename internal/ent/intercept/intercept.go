@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/PicoTools/pico/internal/ent"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/chat"
 	"github.com/PicoTools/pico/internal/ent/command"
@@ -77,31 +77,31 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 	return f(ctx, query)
 }
 
-// The AntFunc type is an adapter to allow the use of ordinary function as a Querier.
-type AntFunc func(context.Context, *ent.AntQuery) (ent.Value, error)
+// The AgentFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AgentFunc func(context.Context, *ent.AgentQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f AntFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.AntQuery); ok {
+func (f AgentFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AgentQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AntQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AgentQuery", q)
 }
 
-// The TraverseAnt type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseAnt func(context.Context, *ent.AntQuery) error
+// The TraverseAgent type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAgent func(context.Context, *ent.AgentQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseAnt) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseAgent) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseAnt) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.AntQuery); ok {
+func (f TraverseAgent) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AgentQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.AntQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.AgentQuery", q)
 }
 
 // The BlobberFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -350,8 +350,8 @@ func (f TraverseTask) Traverse(ctx context.Context, q ent.Query) error {
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
-	case *ent.AntQuery:
-		return &query[*ent.AntQuery, predicate.Ant, ant.OrderOption]{typ: ent.TypeAnt, tq: q}, nil
+	case *ent.AgentQuery:
+		return &query[*ent.AgentQuery, predicate.Agent, agent.OrderOption]{typ: ent.TypeAgent, tq: q}, nil
 	case *ent.BlobberQuery:
 		return &query[*ent.BlobberQuery, predicate.Blobber, blobber.OrderOption]{typ: ent.TypeBlobber, tq: q}, nil
 	case *ent.ChatQuery:

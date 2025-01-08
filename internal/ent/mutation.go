@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/chat"
 	"github.com/PicoTools/pico/internal/ent/command"
@@ -35,7 +35,7 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAnt        = "Ant"
+	TypeAgent      = "Agent"
 	TypeBlobber    = "Blobber"
 	TypeChat       = "Chat"
 	TypeCommand    = "Command"
@@ -47,8 +47,8 @@ const (
 	TypeTask       = "Task"
 )
 
-// AntMutation represents an operation that mutates the Ant nodes in the graph.
-type AntMutation struct {
+// AgentMutation represents an operation that mutates the Agent nodes in the graph.
+type AgentMutation struct {
 	config
 	op              Op
 	typ             string
@@ -58,7 +58,7 @@ type AntMutation struct {
 	deleted_at      *time.Time
 	ext_ip          *types.Inet
 	int_ip          *types.Inet
-	os              *shared.AntOs
+	os              *shared.AgentOs
 	os_meta         *string
 	hostname        *string
 	username        *string
@@ -67,7 +67,7 @@ type AntMutation struct {
 	process_name    *string
 	pid             *int64
 	addpid          *int64
-	arch            *shared.AntArch
+	arch            *shared.AgentArch
 	sleep           *uint32
 	addsleep        *int32
 	jitter          *uint8
@@ -89,21 +89,21 @@ type AntMutation struct {
 	removedtask     map[int64]struct{}
 	clearedtask     bool
 	done            bool
-	oldValue        func(context.Context) (*Ant, error)
-	predicates      []predicate.Ant
+	oldValue        func(context.Context) (*Agent, error)
+	predicates      []predicate.Agent
 }
 
-var _ ent.Mutation = (*AntMutation)(nil)
+var _ ent.Mutation = (*AgentMutation)(nil)
 
-// antOption allows management of the mutation configuration using functional options.
-type antOption func(*AntMutation)
+// agentOption allows management of the mutation configuration using functional options.
+type agentOption func(*AgentMutation)
 
-// newAntMutation creates new mutation for the Ant entity.
-func newAntMutation(c config, op Op, opts ...antOption) *AntMutation {
-	m := &AntMutation{
+// newAgentMutation creates new mutation for the Agent entity.
+func newAgentMutation(c config, op Op, opts ...agentOption) *AgentMutation {
+	m := &AgentMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeAnt,
+		typ:           TypeAgent,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -112,20 +112,20 @@ func newAntMutation(c config, op Op, opts ...antOption) *AntMutation {
 	return m
 }
 
-// withAntID sets the ID field of the mutation.
-func withAntID(id uint32) antOption {
-	return func(m *AntMutation) {
+// withAgentID sets the ID field of the mutation.
+func withAgentID(id uint32) agentOption {
+	return func(m *AgentMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Ant
+			value *Agent
 		)
-		m.oldValue = func(ctx context.Context) (*Ant, error) {
+		m.oldValue = func(ctx context.Context) (*Agent, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Ant.Get(ctx, id)
+					value, err = m.Client().Agent.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -134,10 +134,10 @@ func withAntID(id uint32) antOption {
 	}
 }
 
-// withAnt sets the old Ant of the mutation.
-func withAnt(node *Ant) antOption {
-	return func(m *AntMutation) {
-		m.oldValue = func(context.Context) (*Ant, error) {
+// withAgent sets the old Agent of the mutation.
+func withAgent(node *Agent) agentOption {
+	return func(m *AgentMutation) {
+		m.oldValue = func(context.Context) (*Agent, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -146,7 +146,7 @@ func withAnt(node *Ant) antOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AntMutation) Client() *Client {
+func (m AgentMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -154,7 +154,7 @@ func (m AntMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m AntMutation) Tx() (*Tx, error) {
+func (m AgentMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -164,14 +164,14 @@ func (m AntMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Ant entities.
-func (m *AntMutation) SetID(id uint32) {
+// operation is only accepted on creation of Agent entities.
+func (m *AgentMutation) SetID(id uint32) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AntMutation) ID() (id uint32, exists bool) {
+func (m *AgentMutation) ID() (id uint32, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -182,7 +182,7 @@ func (m *AntMutation) ID() (id uint32, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AntMutation) IDs(ctx context.Context) ([]uint32, error) {
+func (m *AgentMutation) IDs(ctx context.Context) ([]uint32, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -191,19 +191,19 @@ func (m *AntMutation) IDs(ctx context.Context) ([]uint32, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Ant.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Agent.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *AntMutation) SetCreatedAt(t time.Time) {
+func (m *AgentMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *AntMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *AgentMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -211,10 +211,10 @@ func (m *AntMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AgentMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -229,17 +229,17 @@ func (m *AntMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error)
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *AntMutation) ResetCreatedAt() {
+func (m *AgentMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *AntMutation) SetUpdatedAt(t time.Time) {
+func (m *AgentMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *AntMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *AgentMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -247,10 +247,10 @@ func (m *AntMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AgentMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -265,17 +265,17 @@ func (m *AntMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error)
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *AntMutation) ResetUpdatedAt() {
+func (m *AgentMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (m *AntMutation) SetDeletedAt(t time.Time) {
+func (m *AgentMutation) SetDeletedAt(t time.Time) {
 	m.deleted_at = &t
 }
 
 // DeletedAt returns the value of the "deleted_at" field in the mutation.
-func (m *AntMutation) DeletedAt() (r time.Time, exists bool) {
+func (m *AgentMutation) DeletedAt() (r time.Time, exists bool) {
 	v := m.deleted_at
 	if v == nil {
 		return
@@ -283,10 +283,10 @@ func (m *AntMutation) DeletedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldDeletedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AgentMutation) OldDeletedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
 	}
@@ -301,30 +301,30 @@ func (m *AntMutation) OldDeletedAt(ctx context.Context) (v time.Time, err error)
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (m *AntMutation) ClearDeletedAt() {
+func (m *AgentMutation) ClearDeletedAt() {
 	m.deleted_at = nil
-	m.clearedFields[ant.FieldDeletedAt] = struct{}{}
+	m.clearedFields[agent.FieldDeletedAt] = struct{}{}
 }
 
 // DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
-func (m *AntMutation) DeletedAtCleared() bool {
-	_, ok := m.clearedFields[ant.FieldDeletedAt]
+func (m *AgentMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[agent.FieldDeletedAt]
 	return ok
 }
 
 // ResetDeletedAt resets all changes to the "deleted_at" field.
-func (m *AntMutation) ResetDeletedAt() {
+func (m *AgentMutation) ResetDeletedAt() {
 	m.deleted_at = nil
-	delete(m.clearedFields, ant.FieldDeletedAt)
+	delete(m.clearedFields, agent.FieldDeletedAt)
 }
 
 // SetListenerID sets the "listener_id" field.
-func (m *AntMutation) SetListenerID(i int64) {
+func (m *AgentMutation) SetListenerID(i int64) {
 	m.listener = &i
 }
 
 // ListenerID returns the value of the "listener_id" field in the mutation.
-func (m *AntMutation) ListenerID() (r int64, exists bool) {
+func (m *AgentMutation) ListenerID() (r int64, exists bool) {
 	v := m.listener
 	if v == nil {
 		return
@@ -332,10 +332,10 @@ func (m *AntMutation) ListenerID() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldListenerID returns the old "listener_id" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldListenerID returns the old "listener_id" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldListenerID(ctx context.Context) (v int64, err error) {
+func (m *AgentMutation) OldListenerID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldListenerID is only allowed on UpdateOne operations")
 	}
@@ -350,17 +350,17 @@ func (m *AntMutation) OldListenerID(ctx context.Context) (v int64, err error) {
 }
 
 // ResetListenerID resets all changes to the "listener_id" field.
-func (m *AntMutation) ResetListenerID() {
+func (m *AgentMutation) ResetListenerID() {
 	m.listener = nil
 }
 
 // SetExtIP sets the "ext_ip" field.
-func (m *AntMutation) SetExtIP(t types.Inet) {
+func (m *AgentMutation) SetExtIP(t types.Inet) {
 	m.ext_ip = &t
 }
 
 // ExtIP returns the value of the "ext_ip" field in the mutation.
-func (m *AntMutation) ExtIP() (r types.Inet, exists bool) {
+func (m *AgentMutation) ExtIP() (r types.Inet, exists bool) {
 	v := m.ext_ip
 	if v == nil {
 		return
@@ -368,10 +368,10 @@ func (m *AntMutation) ExtIP() (r types.Inet, exists bool) {
 	return *v, true
 }
 
-// OldExtIP returns the old "ext_ip" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldExtIP returns the old "ext_ip" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldExtIP(ctx context.Context) (v types.Inet, err error) {
+func (m *AgentMutation) OldExtIP(ctx context.Context) (v types.Inet, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldExtIP is only allowed on UpdateOne operations")
 	}
@@ -386,30 +386,30 @@ func (m *AntMutation) OldExtIP(ctx context.Context) (v types.Inet, err error) {
 }
 
 // ClearExtIP clears the value of the "ext_ip" field.
-func (m *AntMutation) ClearExtIP() {
+func (m *AgentMutation) ClearExtIP() {
 	m.ext_ip = nil
-	m.clearedFields[ant.FieldExtIP] = struct{}{}
+	m.clearedFields[agent.FieldExtIP] = struct{}{}
 }
 
 // ExtIPCleared returns if the "ext_ip" field was cleared in this mutation.
-func (m *AntMutation) ExtIPCleared() bool {
-	_, ok := m.clearedFields[ant.FieldExtIP]
+func (m *AgentMutation) ExtIPCleared() bool {
+	_, ok := m.clearedFields[agent.FieldExtIP]
 	return ok
 }
 
 // ResetExtIP resets all changes to the "ext_ip" field.
-func (m *AntMutation) ResetExtIP() {
+func (m *AgentMutation) ResetExtIP() {
 	m.ext_ip = nil
-	delete(m.clearedFields, ant.FieldExtIP)
+	delete(m.clearedFields, agent.FieldExtIP)
 }
 
 // SetIntIP sets the "int_ip" field.
-func (m *AntMutation) SetIntIP(t types.Inet) {
+func (m *AgentMutation) SetIntIP(t types.Inet) {
 	m.int_ip = &t
 }
 
 // IntIP returns the value of the "int_ip" field in the mutation.
-func (m *AntMutation) IntIP() (r types.Inet, exists bool) {
+func (m *AgentMutation) IntIP() (r types.Inet, exists bool) {
 	v := m.int_ip
 	if v == nil {
 		return
@@ -417,10 +417,10 @@ func (m *AntMutation) IntIP() (r types.Inet, exists bool) {
 	return *v, true
 }
 
-// OldIntIP returns the old "int_ip" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldIntIP returns the old "int_ip" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldIntIP(ctx context.Context) (v types.Inet, err error) {
+func (m *AgentMutation) OldIntIP(ctx context.Context) (v types.Inet, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIntIP is only allowed on UpdateOne operations")
 	}
@@ -435,30 +435,30 @@ func (m *AntMutation) OldIntIP(ctx context.Context) (v types.Inet, err error) {
 }
 
 // ClearIntIP clears the value of the "int_ip" field.
-func (m *AntMutation) ClearIntIP() {
+func (m *AgentMutation) ClearIntIP() {
 	m.int_ip = nil
-	m.clearedFields[ant.FieldIntIP] = struct{}{}
+	m.clearedFields[agent.FieldIntIP] = struct{}{}
 }
 
 // IntIPCleared returns if the "int_ip" field was cleared in this mutation.
-func (m *AntMutation) IntIPCleared() bool {
-	_, ok := m.clearedFields[ant.FieldIntIP]
+func (m *AgentMutation) IntIPCleared() bool {
+	_, ok := m.clearedFields[agent.FieldIntIP]
 	return ok
 }
 
 // ResetIntIP resets all changes to the "int_ip" field.
-func (m *AntMutation) ResetIntIP() {
+func (m *AgentMutation) ResetIntIP() {
 	m.int_ip = nil
-	delete(m.clearedFields, ant.FieldIntIP)
+	delete(m.clearedFields, agent.FieldIntIP)
 }
 
 // SetOs sets the "os" field.
-func (m *AntMutation) SetOs(so shared.AntOs) {
+func (m *AgentMutation) SetOs(so shared.AgentOs) {
 	m.os = &so
 }
 
 // Os returns the value of the "os" field in the mutation.
-func (m *AntMutation) Os() (r shared.AntOs, exists bool) {
+func (m *AgentMutation) Os() (r shared.AgentOs, exists bool) {
 	v := m.os
 	if v == nil {
 		return
@@ -466,10 +466,10 @@ func (m *AntMutation) Os() (r shared.AntOs, exists bool) {
 	return *v, true
 }
 
-// OldOs returns the old "os" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldOs returns the old "os" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldOs(ctx context.Context) (v shared.AntOs, err error) {
+func (m *AgentMutation) OldOs(ctx context.Context) (v shared.AgentOs, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOs is only allowed on UpdateOne operations")
 	}
@@ -484,17 +484,17 @@ func (m *AntMutation) OldOs(ctx context.Context) (v shared.AntOs, err error) {
 }
 
 // ResetOs resets all changes to the "os" field.
-func (m *AntMutation) ResetOs() {
+func (m *AgentMutation) ResetOs() {
 	m.os = nil
 }
 
 // SetOsMeta sets the "os_meta" field.
-func (m *AntMutation) SetOsMeta(s string) {
+func (m *AgentMutation) SetOsMeta(s string) {
 	m.os_meta = &s
 }
 
 // OsMeta returns the value of the "os_meta" field in the mutation.
-func (m *AntMutation) OsMeta() (r string, exists bool) {
+func (m *AgentMutation) OsMeta() (r string, exists bool) {
 	v := m.os_meta
 	if v == nil {
 		return
@@ -502,10 +502,10 @@ func (m *AntMutation) OsMeta() (r string, exists bool) {
 	return *v, true
 }
 
-// OldOsMeta returns the old "os_meta" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldOsMeta returns the old "os_meta" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldOsMeta(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldOsMeta(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOsMeta is only allowed on UpdateOne operations")
 	}
@@ -520,30 +520,30 @@ func (m *AntMutation) OldOsMeta(ctx context.Context) (v string, err error) {
 }
 
 // ClearOsMeta clears the value of the "os_meta" field.
-func (m *AntMutation) ClearOsMeta() {
+func (m *AgentMutation) ClearOsMeta() {
 	m.os_meta = nil
-	m.clearedFields[ant.FieldOsMeta] = struct{}{}
+	m.clearedFields[agent.FieldOsMeta] = struct{}{}
 }
 
 // OsMetaCleared returns if the "os_meta" field was cleared in this mutation.
-func (m *AntMutation) OsMetaCleared() bool {
-	_, ok := m.clearedFields[ant.FieldOsMeta]
+func (m *AgentMutation) OsMetaCleared() bool {
+	_, ok := m.clearedFields[agent.FieldOsMeta]
 	return ok
 }
 
 // ResetOsMeta resets all changes to the "os_meta" field.
-func (m *AntMutation) ResetOsMeta() {
+func (m *AgentMutation) ResetOsMeta() {
 	m.os_meta = nil
-	delete(m.clearedFields, ant.FieldOsMeta)
+	delete(m.clearedFields, agent.FieldOsMeta)
 }
 
 // SetHostname sets the "hostname" field.
-func (m *AntMutation) SetHostname(s string) {
+func (m *AgentMutation) SetHostname(s string) {
 	m.hostname = &s
 }
 
 // Hostname returns the value of the "hostname" field in the mutation.
-func (m *AntMutation) Hostname() (r string, exists bool) {
+func (m *AgentMutation) Hostname() (r string, exists bool) {
 	v := m.hostname
 	if v == nil {
 		return
@@ -551,10 +551,10 @@ func (m *AntMutation) Hostname() (r string, exists bool) {
 	return *v, true
 }
 
-// OldHostname returns the old "hostname" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldHostname returns the old "hostname" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldHostname(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldHostname(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldHostname is only allowed on UpdateOne operations")
 	}
@@ -569,30 +569,30 @@ func (m *AntMutation) OldHostname(ctx context.Context) (v string, err error) {
 }
 
 // ClearHostname clears the value of the "hostname" field.
-func (m *AntMutation) ClearHostname() {
+func (m *AgentMutation) ClearHostname() {
 	m.hostname = nil
-	m.clearedFields[ant.FieldHostname] = struct{}{}
+	m.clearedFields[agent.FieldHostname] = struct{}{}
 }
 
 // HostnameCleared returns if the "hostname" field was cleared in this mutation.
-func (m *AntMutation) HostnameCleared() bool {
-	_, ok := m.clearedFields[ant.FieldHostname]
+func (m *AgentMutation) HostnameCleared() bool {
+	_, ok := m.clearedFields[agent.FieldHostname]
 	return ok
 }
 
 // ResetHostname resets all changes to the "hostname" field.
-func (m *AntMutation) ResetHostname() {
+func (m *AgentMutation) ResetHostname() {
 	m.hostname = nil
-	delete(m.clearedFields, ant.FieldHostname)
+	delete(m.clearedFields, agent.FieldHostname)
 }
 
 // SetUsername sets the "username" field.
-func (m *AntMutation) SetUsername(s string) {
+func (m *AgentMutation) SetUsername(s string) {
 	m.username = &s
 }
 
 // Username returns the value of the "username" field in the mutation.
-func (m *AntMutation) Username() (r string, exists bool) {
+func (m *AgentMutation) Username() (r string, exists bool) {
 	v := m.username
 	if v == nil {
 		return
@@ -600,10 +600,10 @@ func (m *AntMutation) Username() (r string, exists bool) {
 	return *v, true
 }
 
-// OldUsername returns the old "username" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldUsername returns the old "username" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldUsername(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldUsername(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
 	}
@@ -618,30 +618,30 @@ func (m *AntMutation) OldUsername(ctx context.Context) (v string, err error) {
 }
 
 // ClearUsername clears the value of the "username" field.
-func (m *AntMutation) ClearUsername() {
+func (m *AgentMutation) ClearUsername() {
 	m.username = nil
-	m.clearedFields[ant.FieldUsername] = struct{}{}
+	m.clearedFields[agent.FieldUsername] = struct{}{}
 }
 
 // UsernameCleared returns if the "username" field was cleared in this mutation.
-func (m *AntMutation) UsernameCleared() bool {
-	_, ok := m.clearedFields[ant.FieldUsername]
+func (m *AgentMutation) UsernameCleared() bool {
+	_, ok := m.clearedFields[agent.FieldUsername]
 	return ok
 }
 
 // ResetUsername resets all changes to the "username" field.
-func (m *AntMutation) ResetUsername() {
+func (m *AgentMutation) ResetUsername() {
 	m.username = nil
-	delete(m.clearedFields, ant.FieldUsername)
+	delete(m.clearedFields, agent.FieldUsername)
 }
 
 // SetDomain sets the "domain" field.
-func (m *AntMutation) SetDomain(s string) {
+func (m *AgentMutation) SetDomain(s string) {
 	m.domain = &s
 }
 
 // Domain returns the value of the "domain" field in the mutation.
-func (m *AntMutation) Domain() (r string, exists bool) {
+func (m *AgentMutation) Domain() (r string, exists bool) {
 	v := m.domain
 	if v == nil {
 		return
@@ -649,10 +649,10 @@ func (m *AntMutation) Domain() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDomain returns the old "domain" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldDomain returns the old "domain" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldDomain(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldDomain(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDomain is only allowed on UpdateOne operations")
 	}
@@ -667,30 +667,30 @@ func (m *AntMutation) OldDomain(ctx context.Context) (v string, err error) {
 }
 
 // ClearDomain clears the value of the "domain" field.
-func (m *AntMutation) ClearDomain() {
+func (m *AgentMutation) ClearDomain() {
 	m.domain = nil
-	m.clearedFields[ant.FieldDomain] = struct{}{}
+	m.clearedFields[agent.FieldDomain] = struct{}{}
 }
 
 // DomainCleared returns if the "domain" field was cleared in this mutation.
-func (m *AntMutation) DomainCleared() bool {
-	_, ok := m.clearedFields[ant.FieldDomain]
+func (m *AgentMutation) DomainCleared() bool {
+	_, ok := m.clearedFields[agent.FieldDomain]
 	return ok
 }
 
 // ResetDomain resets all changes to the "domain" field.
-func (m *AntMutation) ResetDomain() {
+func (m *AgentMutation) ResetDomain() {
 	m.domain = nil
-	delete(m.clearedFields, ant.FieldDomain)
+	delete(m.clearedFields, agent.FieldDomain)
 }
 
 // SetPrivileged sets the "privileged" field.
-func (m *AntMutation) SetPrivileged(b bool) {
+func (m *AgentMutation) SetPrivileged(b bool) {
 	m.privileged = &b
 }
 
 // Privileged returns the value of the "privileged" field in the mutation.
-func (m *AntMutation) Privileged() (r bool, exists bool) {
+func (m *AgentMutation) Privileged() (r bool, exists bool) {
 	v := m.privileged
 	if v == nil {
 		return
@@ -698,10 +698,10 @@ func (m *AntMutation) Privileged() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldPrivileged returns the old "privileged" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldPrivileged returns the old "privileged" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldPrivileged(ctx context.Context) (v bool, err error) {
+func (m *AgentMutation) OldPrivileged(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPrivileged is only allowed on UpdateOne operations")
 	}
@@ -716,30 +716,30 @@ func (m *AntMutation) OldPrivileged(ctx context.Context) (v bool, err error) {
 }
 
 // ClearPrivileged clears the value of the "privileged" field.
-func (m *AntMutation) ClearPrivileged() {
+func (m *AgentMutation) ClearPrivileged() {
 	m.privileged = nil
-	m.clearedFields[ant.FieldPrivileged] = struct{}{}
+	m.clearedFields[agent.FieldPrivileged] = struct{}{}
 }
 
 // PrivilegedCleared returns if the "privileged" field was cleared in this mutation.
-func (m *AntMutation) PrivilegedCleared() bool {
-	_, ok := m.clearedFields[ant.FieldPrivileged]
+func (m *AgentMutation) PrivilegedCleared() bool {
+	_, ok := m.clearedFields[agent.FieldPrivileged]
 	return ok
 }
 
 // ResetPrivileged resets all changes to the "privileged" field.
-func (m *AntMutation) ResetPrivileged() {
+func (m *AgentMutation) ResetPrivileged() {
 	m.privileged = nil
-	delete(m.clearedFields, ant.FieldPrivileged)
+	delete(m.clearedFields, agent.FieldPrivileged)
 }
 
 // SetProcessName sets the "process_name" field.
-func (m *AntMutation) SetProcessName(s string) {
+func (m *AgentMutation) SetProcessName(s string) {
 	m.process_name = &s
 }
 
 // ProcessName returns the value of the "process_name" field in the mutation.
-func (m *AntMutation) ProcessName() (r string, exists bool) {
+func (m *AgentMutation) ProcessName() (r string, exists bool) {
 	v := m.process_name
 	if v == nil {
 		return
@@ -747,10 +747,10 @@ func (m *AntMutation) ProcessName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldProcessName returns the old "process_name" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldProcessName returns the old "process_name" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldProcessName(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldProcessName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldProcessName is only allowed on UpdateOne operations")
 	}
@@ -765,31 +765,31 @@ func (m *AntMutation) OldProcessName(ctx context.Context) (v string, err error) 
 }
 
 // ClearProcessName clears the value of the "process_name" field.
-func (m *AntMutation) ClearProcessName() {
+func (m *AgentMutation) ClearProcessName() {
 	m.process_name = nil
-	m.clearedFields[ant.FieldProcessName] = struct{}{}
+	m.clearedFields[agent.FieldProcessName] = struct{}{}
 }
 
 // ProcessNameCleared returns if the "process_name" field was cleared in this mutation.
-func (m *AntMutation) ProcessNameCleared() bool {
-	_, ok := m.clearedFields[ant.FieldProcessName]
+func (m *AgentMutation) ProcessNameCleared() bool {
+	_, ok := m.clearedFields[agent.FieldProcessName]
 	return ok
 }
 
 // ResetProcessName resets all changes to the "process_name" field.
-func (m *AntMutation) ResetProcessName() {
+func (m *AgentMutation) ResetProcessName() {
 	m.process_name = nil
-	delete(m.clearedFields, ant.FieldProcessName)
+	delete(m.clearedFields, agent.FieldProcessName)
 }
 
 // SetPid sets the "pid" field.
-func (m *AntMutation) SetPid(i int64) {
+func (m *AgentMutation) SetPid(i int64) {
 	m.pid = &i
 	m.addpid = nil
 }
 
 // Pid returns the value of the "pid" field in the mutation.
-func (m *AntMutation) Pid() (r int64, exists bool) {
+func (m *AgentMutation) Pid() (r int64, exists bool) {
 	v := m.pid
 	if v == nil {
 		return
@@ -797,10 +797,10 @@ func (m *AntMutation) Pid() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldPid returns the old "pid" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldPid returns the old "pid" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldPid(ctx context.Context) (v int64, err error) {
+func (m *AgentMutation) OldPid(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPid is only allowed on UpdateOne operations")
 	}
@@ -815,7 +815,7 @@ func (m *AntMutation) OldPid(ctx context.Context) (v int64, err error) {
 }
 
 // AddPid adds i to the "pid" field.
-func (m *AntMutation) AddPid(i int64) {
+func (m *AgentMutation) AddPid(i int64) {
 	if m.addpid != nil {
 		*m.addpid += i
 	} else {
@@ -824,7 +824,7 @@ func (m *AntMutation) AddPid(i int64) {
 }
 
 // AddedPid returns the value that was added to the "pid" field in this mutation.
-func (m *AntMutation) AddedPid() (r int64, exists bool) {
+func (m *AgentMutation) AddedPid() (r int64, exists bool) {
 	v := m.addpid
 	if v == nil {
 		return
@@ -833,32 +833,32 @@ func (m *AntMutation) AddedPid() (r int64, exists bool) {
 }
 
 // ClearPid clears the value of the "pid" field.
-func (m *AntMutation) ClearPid() {
+func (m *AgentMutation) ClearPid() {
 	m.pid = nil
 	m.addpid = nil
-	m.clearedFields[ant.FieldPid] = struct{}{}
+	m.clearedFields[agent.FieldPid] = struct{}{}
 }
 
 // PidCleared returns if the "pid" field was cleared in this mutation.
-func (m *AntMutation) PidCleared() bool {
-	_, ok := m.clearedFields[ant.FieldPid]
+func (m *AgentMutation) PidCleared() bool {
+	_, ok := m.clearedFields[agent.FieldPid]
 	return ok
 }
 
 // ResetPid resets all changes to the "pid" field.
-func (m *AntMutation) ResetPid() {
+func (m *AgentMutation) ResetPid() {
 	m.pid = nil
 	m.addpid = nil
-	delete(m.clearedFields, ant.FieldPid)
+	delete(m.clearedFields, agent.FieldPid)
 }
 
 // SetArch sets the "arch" field.
-func (m *AntMutation) SetArch(sa shared.AntArch) {
+func (m *AgentMutation) SetArch(sa shared.AgentArch) {
 	m.arch = &sa
 }
 
 // Arch returns the value of the "arch" field in the mutation.
-func (m *AntMutation) Arch() (r shared.AntArch, exists bool) {
+func (m *AgentMutation) Arch() (r shared.AgentArch, exists bool) {
 	v := m.arch
 	if v == nil {
 		return
@@ -866,10 +866,10 @@ func (m *AntMutation) Arch() (r shared.AntArch, exists bool) {
 	return *v, true
 }
 
-// OldArch returns the old "arch" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldArch returns the old "arch" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldArch(ctx context.Context) (v shared.AntArch, err error) {
+func (m *AgentMutation) OldArch(ctx context.Context) (v shared.AgentArch, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldArch is only allowed on UpdateOne operations")
 	}
@@ -884,18 +884,18 @@ func (m *AntMutation) OldArch(ctx context.Context) (v shared.AntArch, err error)
 }
 
 // ResetArch resets all changes to the "arch" field.
-func (m *AntMutation) ResetArch() {
+func (m *AgentMutation) ResetArch() {
 	m.arch = nil
 }
 
 // SetSleep sets the "sleep" field.
-func (m *AntMutation) SetSleep(u uint32) {
+func (m *AgentMutation) SetSleep(u uint32) {
 	m.sleep = &u
 	m.addsleep = nil
 }
 
 // Sleep returns the value of the "sleep" field in the mutation.
-func (m *AntMutation) Sleep() (r uint32, exists bool) {
+func (m *AgentMutation) Sleep() (r uint32, exists bool) {
 	v := m.sleep
 	if v == nil {
 		return
@@ -903,10 +903,10 @@ func (m *AntMutation) Sleep() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldSleep returns the old "sleep" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldSleep returns the old "sleep" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldSleep(ctx context.Context) (v uint32, err error) {
+func (m *AgentMutation) OldSleep(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSleep is only allowed on UpdateOne operations")
 	}
@@ -921,7 +921,7 @@ func (m *AntMutation) OldSleep(ctx context.Context) (v uint32, err error) {
 }
 
 // AddSleep adds u to the "sleep" field.
-func (m *AntMutation) AddSleep(u int32) {
+func (m *AgentMutation) AddSleep(u int32) {
 	if m.addsleep != nil {
 		*m.addsleep += u
 	} else {
@@ -930,7 +930,7 @@ func (m *AntMutation) AddSleep(u int32) {
 }
 
 // AddedSleep returns the value that was added to the "sleep" field in this mutation.
-func (m *AntMutation) AddedSleep() (r int32, exists bool) {
+func (m *AgentMutation) AddedSleep() (r int32, exists bool) {
 	v := m.addsleep
 	if v == nil {
 		return
@@ -939,19 +939,19 @@ func (m *AntMutation) AddedSleep() (r int32, exists bool) {
 }
 
 // ResetSleep resets all changes to the "sleep" field.
-func (m *AntMutation) ResetSleep() {
+func (m *AgentMutation) ResetSleep() {
 	m.sleep = nil
 	m.addsleep = nil
 }
 
 // SetJitter sets the "jitter" field.
-func (m *AntMutation) SetJitter(u uint8) {
+func (m *AgentMutation) SetJitter(u uint8) {
 	m.jitter = &u
 	m.addjitter = nil
 }
 
 // Jitter returns the value of the "jitter" field in the mutation.
-func (m *AntMutation) Jitter() (r uint8, exists bool) {
+func (m *AgentMutation) Jitter() (r uint8, exists bool) {
 	v := m.jitter
 	if v == nil {
 		return
@@ -959,10 +959,10 @@ func (m *AntMutation) Jitter() (r uint8, exists bool) {
 	return *v, true
 }
 
-// OldJitter returns the old "jitter" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldJitter returns the old "jitter" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldJitter(ctx context.Context) (v uint8, err error) {
+func (m *AgentMutation) OldJitter(ctx context.Context) (v uint8, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldJitter is only allowed on UpdateOne operations")
 	}
@@ -977,7 +977,7 @@ func (m *AntMutation) OldJitter(ctx context.Context) (v uint8, err error) {
 }
 
 // AddJitter adds u to the "jitter" field.
-func (m *AntMutation) AddJitter(u int8) {
+func (m *AgentMutation) AddJitter(u int8) {
 	if m.addjitter != nil {
 		*m.addjitter += u
 	} else {
@@ -986,7 +986,7 @@ func (m *AntMutation) AddJitter(u int8) {
 }
 
 // AddedJitter returns the value that was added to the "jitter" field in this mutation.
-func (m *AntMutation) AddedJitter() (r int8, exists bool) {
+func (m *AgentMutation) AddedJitter() (r int8, exists bool) {
 	v := m.addjitter
 	if v == nil {
 		return
@@ -995,18 +995,18 @@ func (m *AntMutation) AddedJitter() (r int8, exists bool) {
 }
 
 // ResetJitter resets all changes to the "jitter" field.
-func (m *AntMutation) ResetJitter() {
+func (m *AgentMutation) ResetJitter() {
 	m.jitter = nil
 	m.addjitter = nil
 }
 
 // SetFirst sets the "first" field.
-func (m *AntMutation) SetFirst(t time.Time) {
+func (m *AgentMutation) SetFirst(t time.Time) {
 	m.first = &t
 }
 
 // First returns the value of the "first" field in the mutation.
-func (m *AntMutation) First() (r time.Time, exists bool) {
+func (m *AgentMutation) First() (r time.Time, exists bool) {
 	v := m.first
 	if v == nil {
 		return
@@ -1014,10 +1014,10 @@ func (m *AntMutation) First() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldFirst returns the old "first" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldFirst returns the old "first" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldFirst(ctx context.Context) (v time.Time, err error) {
+func (m *AgentMutation) OldFirst(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFirst is only allowed on UpdateOne operations")
 	}
@@ -1032,17 +1032,17 @@ func (m *AntMutation) OldFirst(ctx context.Context) (v time.Time, err error) {
 }
 
 // ResetFirst resets all changes to the "first" field.
-func (m *AntMutation) ResetFirst() {
+func (m *AgentMutation) ResetFirst() {
 	m.first = nil
 }
 
 // SetLast sets the "last" field.
-func (m *AntMutation) SetLast(t time.Time) {
+func (m *AgentMutation) SetLast(t time.Time) {
 	m.last = &t
 }
 
 // Last returns the value of the "last" field in the mutation.
-func (m *AntMutation) Last() (r time.Time, exists bool) {
+func (m *AgentMutation) Last() (r time.Time, exists bool) {
 	v := m.last
 	if v == nil {
 		return
@@ -1050,10 +1050,10 @@ func (m *AntMutation) Last() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldLast returns the old "last" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldLast returns the old "last" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldLast(ctx context.Context) (v time.Time, err error) {
+func (m *AgentMutation) OldLast(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLast is only allowed on UpdateOne operations")
 	}
@@ -1068,18 +1068,18 @@ func (m *AntMutation) OldLast(ctx context.Context) (v time.Time, err error) {
 }
 
 // ResetLast resets all changes to the "last" field.
-func (m *AntMutation) ResetLast() {
+func (m *AgentMutation) ResetLast() {
 	m.last = nil
 }
 
 // SetCaps sets the "caps" field.
-func (m *AntMutation) SetCaps(u uint32) {
+func (m *AgentMutation) SetCaps(u uint32) {
 	m.caps = &u
 	m.addcaps = nil
 }
 
 // Caps returns the value of the "caps" field in the mutation.
-func (m *AntMutation) Caps() (r uint32, exists bool) {
+func (m *AgentMutation) Caps() (r uint32, exists bool) {
 	v := m.caps
 	if v == nil {
 		return
@@ -1087,10 +1087,10 @@ func (m *AntMutation) Caps() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCaps returns the old "caps" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldCaps returns the old "caps" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldCaps(ctx context.Context) (v uint32, err error) {
+func (m *AgentMutation) OldCaps(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCaps is only allowed on UpdateOne operations")
 	}
@@ -1105,7 +1105,7 @@ func (m *AntMutation) OldCaps(ctx context.Context) (v uint32, err error) {
 }
 
 // AddCaps adds u to the "caps" field.
-func (m *AntMutation) AddCaps(u int32) {
+func (m *AgentMutation) AddCaps(u int32) {
 	if m.addcaps != nil {
 		*m.addcaps += u
 	} else {
@@ -1114,7 +1114,7 @@ func (m *AntMutation) AddCaps(u int32) {
 }
 
 // AddedCaps returns the value that was added to the "caps" field in this mutation.
-func (m *AntMutation) AddedCaps() (r int32, exists bool) {
+func (m *AgentMutation) AddedCaps() (r int32, exists bool) {
 	v := m.addcaps
 	if v == nil {
 		return
@@ -1123,18 +1123,18 @@ func (m *AntMutation) AddedCaps() (r int32, exists bool) {
 }
 
 // ResetCaps resets all changes to the "caps" field.
-func (m *AntMutation) ResetCaps() {
+func (m *AgentMutation) ResetCaps() {
 	m.caps = nil
 	m.addcaps = nil
 }
 
 // SetNote sets the "note" field.
-func (m *AntMutation) SetNote(s string) {
+func (m *AgentMutation) SetNote(s string) {
 	m.note = &s
 }
 
 // Note returns the value of the "note" field in the mutation.
-func (m *AntMutation) Note() (r string, exists bool) {
+func (m *AgentMutation) Note() (r string, exists bool) {
 	v := m.note
 	if v == nil {
 		return
@@ -1142,10 +1142,10 @@ func (m *AntMutation) Note() (r string, exists bool) {
 	return *v, true
 }
 
-// OldNote returns the old "note" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldNote returns the old "note" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldNote(ctx context.Context) (v string, err error) {
+func (m *AgentMutation) OldNote(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldNote is only allowed on UpdateOne operations")
 	}
@@ -1160,31 +1160,31 @@ func (m *AntMutation) OldNote(ctx context.Context) (v string, err error) {
 }
 
 // ClearNote clears the value of the "note" field.
-func (m *AntMutation) ClearNote() {
+func (m *AgentMutation) ClearNote() {
 	m.note = nil
-	m.clearedFields[ant.FieldNote] = struct{}{}
+	m.clearedFields[agent.FieldNote] = struct{}{}
 }
 
 // NoteCleared returns if the "note" field was cleared in this mutation.
-func (m *AntMutation) NoteCleared() bool {
-	_, ok := m.clearedFields[ant.FieldNote]
+func (m *AgentMutation) NoteCleared() bool {
+	_, ok := m.clearedFields[agent.FieldNote]
 	return ok
 }
 
 // ResetNote resets all changes to the "note" field.
-func (m *AntMutation) ResetNote() {
+func (m *AgentMutation) ResetNote() {
 	m.note = nil
-	delete(m.clearedFields, ant.FieldNote)
+	delete(m.clearedFields, agent.FieldNote)
 }
 
 // SetColor sets the "color" field.
-func (m *AntMutation) SetColor(u uint32) {
+func (m *AgentMutation) SetColor(u uint32) {
 	m.color = &u
 	m.addcolor = nil
 }
 
 // Color returns the value of the "color" field in the mutation.
-func (m *AntMutation) Color() (r uint32, exists bool) {
+func (m *AgentMutation) Color() (r uint32, exists bool) {
 	v := m.color
 	if v == nil {
 		return
@@ -1192,10 +1192,10 @@ func (m *AntMutation) Color() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldColor returns the old "color" field's value of the Ant entity.
-// If the Ant object wasn't provided to the builder, the object is fetched from the database.
+// OldColor returns the old "color" field's value of the Agent entity.
+// If the Agent object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AntMutation) OldColor(ctx context.Context) (v uint32, err error) {
+func (m *AgentMutation) OldColor(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldColor is only allowed on UpdateOne operations")
 	}
@@ -1210,7 +1210,7 @@ func (m *AntMutation) OldColor(ctx context.Context) (v uint32, err error) {
 }
 
 // AddColor adds u to the "color" field.
-func (m *AntMutation) AddColor(u int32) {
+func (m *AgentMutation) AddColor(u int32) {
 	if m.addcolor != nil {
 		*m.addcolor += u
 	} else {
@@ -1219,7 +1219,7 @@ func (m *AntMutation) AddColor(u int32) {
 }
 
 // AddedColor returns the value that was added to the "color" field in this mutation.
-func (m *AntMutation) AddedColor() (r int32, exists bool) {
+func (m *AgentMutation) AddedColor() (r int32, exists bool) {
 	v := m.addcolor
 	if v == nil {
 		return
@@ -1228,26 +1228,26 @@ func (m *AntMutation) AddedColor() (r int32, exists bool) {
 }
 
 // ResetColor resets all changes to the "color" field.
-func (m *AntMutation) ResetColor() {
+func (m *AgentMutation) ResetColor() {
 	m.color = nil
 	m.addcolor = nil
 }
 
 // ClearListener clears the "listener" edge to the Listener entity.
-func (m *AntMutation) ClearListener() {
+func (m *AgentMutation) ClearListener() {
 	m.clearedlistener = true
-	m.clearedFields[ant.FieldListenerID] = struct{}{}
+	m.clearedFields[agent.FieldListenerID] = struct{}{}
 }
 
 // ListenerCleared reports if the "listener" edge to the Listener entity was cleared.
-func (m *AntMutation) ListenerCleared() bool {
+func (m *AgentMutation) ListenerCleared() bool {
 	return m.clearedlistener
 }
 
 // ListenerIDs returns the "listener" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ListenerID instead. It exists only for internal usage by the builders.
-func (m *AntMutation) ListenerIDs() (ids []int64) {
+func (m *AgentMutation) ListenerIDs() (ids []int64) {
 	if id := m.listener; id != nil {
 		ids = append(ids, *id)
 	}
@@ -1255,13 +1255,13 @@ func (m *AntMutation) ListenerIDs() (ids []int64) {
 }
 
 // ResetListener resets all changes to the "listener" edge.
-func (m *AntMutation) ResetListener() {
+func (m *AgentMutation) ResetListener() {
 	m.listener = nil
 	m.clearedlistener = false
 }
 
 // AddCommandIDs adds the "command" edge to the Command entity by ids.
-func (m *AntMutation) AddCommandIDs(ids ...int64) {
+func (m *AgentMutation) AddCommandIDs(ids ...int64) {
 	if m.command == nil {
 		m.command = make(map[int64]struct{})
 	}
@@ -1271,17 +1271,17 @@ func (m *AntMutation) AddCommandIDs(ids ...int64) {
 }
 
 // ClearCommand clears the "command" edge to the Command entity.
-func (m *AntMutation) ClearCommand() {
+func (m *AgentMutation) ClearCommand() {
 	m.clearedcommand = true
 }
 
 // CommandCleared reports if the "command" edge to the Command entity was cleared.
-func (m *AntMutation) CommandCleared() bool {
+func (m *AgentMutation) CommandCleared() bool {
 	return m.clearedcommand
 }
 
 // RemoveCommandIDs removes the "command" edge to the Command entity by IDs.
-func (m *AntMutation) RemoveCommandIDs(ids ...int64) {
+func (m *AgentMutation) RemoveCommandIDs(ids ...int64) {
 	if m.removedcommand == nil {
 		m.removedcommand = make(map[int64]struct{})
 	}
@@ -1292,7 +1292,7 @@ func (m *AntMutation) RemoveCommandIDs(ids ...int64) {
 }
 
 // RemovedCommand returns the removed IDs of the "command" edge to the Command entity.
-func (m *AntMutation) RemovedCommandIDs() (ids []int64) {
+func (m *AgentMutation) RemovedCommandIDs() (ids []int64) {
 	for id := range m.removedcommand {
 		ids = append(ids, id)
 	}
@@ -1300,7 +1300,7 @@ func (m *AntMutation) RemovedCommandIDs() (ids []int64) {
 }
 
 // CommandIDs returns the "command" edge IDs in the mutation.
-func (m *AntMutation) CommandIDs() (ids []int64) {
+func (m *AgentMutation) CommandIDs() (ids []int64) {
 	for id := range m.command {
 		ids = append(ids, id)
 	}
@@ -1308,14 +1308,14 @@ func (m *AntMutation) CommandIDs() (ids []int64) {
 }
 
 // ResetCommand resets all changes to the "command" edge.
-func (m *AntMutation) ResetCommand() {
+func (m *AgentMutation) ResetCommand() {
 	m.command = nil
 	m.clearedcommand = false
 	m.removedcommand = nil
 }
 
 // AddTaskIDs adds the "task" edge to the Task entity by ids.
-func (m *AntMutation) AddTaskIDs(ids ...int64) {
+func (m *AgentMutation) AddTaskIDs(ids ...int64) {
 	if m.task == nil {
 		m.task = make(map[int64]struct{})
 	}
@@ -1325,17 +1325,17 @@ func (m *AntMutation) AddTaskIDs(ids ...int64) {
 }
 
 // ClearTask clears the "task" edge to the Task entity.
-func (m *AntMutation) ClearTask() {
+func (m *AgentMutation) ClearTask() {
 	m.clearedtask = true
 }
 
 // TaskCleared reports if the "task" edge to the Task entity was cleared.
-func (m *AntMutation) TaskCleared() bool {
+func (m *AgentMutation) TaskCleared() bool {
 	return m.clearedtask
 }
 
 // RemoveTaskIDs removes the "task" edge to the Task entity by IDs.
-func (m *AntMutation) RemoveTaskIDs(ids ...int64) {
+func (m *AgentMutation) RemoveTaskIDs(ids ...int64) {
 	if m.removedtask == nil {
 		m.removedtask = make(map[int64]struct{})
 	}
@@ -1346,7 +1346,7 @@ func (m *AntMutation) RemoveTaskIDs(ids ...int64) {
 }
 
 // RemovedTask returns the removed IDs of the "task" edge to the Task entity.
-func (m *AntMutation) RemovedTaskIDs() (ids []int64) {
+func (m *AgentMutation) RemovedTaskIDs() (ids []int64) {
 	for id := range m.removedtask {
 		ids = append(ids, id)
 	}
@@ -1354,7 +1354,7 @@ func (m *AntMutation) RemovedTaskIDs() (ids []int64) {
 }
 
 // TaskIDs returns the "task" edge IDs in the mutation.
-func (m *AntMutation) TaskIDs() (ids []int64) {
+func (m *AgentMutation) TaskIDs() (ids []int64) {
 	for id := range m.task {
 		ids = append(ids, id)
 	}
@@ -1362,21 +1362,21 @@ func (m *AntMutation) TaskIDs() (ids []int64) {
 }
 
 // ResetTask resets all changes to the "task" edge.
-func (m *AntMutation) ResetTask() {
+func (m *AgentMutation) ResetTask() {
 	m.task = nil
 	m.clearedtask = false
 	m.removedtask = nil
 }
 
-// Where appends a list predicates to the AntMutation builder.
-func (m *AntMutation) Where(ps ...predicate.Ant) {
+// Where appends a list predicates to the AgentMutation builder.
+func (m *AgentMutation) Where(ps ...predicate.Agent) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the AntMutation builder. Using this method,
+// WhereP appends storage-level predicates to the AgentMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AntMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Ant, len(ps))
+func (m *AgentMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Agent, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -1384,90 +1384,90 @@ func (m *AntMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *AntMutation) Op() Op {
+func (m *AgentMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *AntMutation) SetOp(op Op) {
+func (m *AgentMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (Ant).
-func (m *AntMutation) Type() string {
+// Type returns the node type of this mutation (Agent).
+func (m *AgentMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *AntMutation) Fields() []string {
+func (m *AgentMutation) Fields() []string {
 	fields := make([]string, 0, 22)
 	if m.created_at != nil {
-		fields = append(fields, ant.FieldCreatedAt)
+		fields = append(fields, agent.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, ant.FieldUpdatedAt)
+		fields = append(fields, agent.FieldUpdatedAt)
 	}
 	if m.deleted_at != nil {
-		fields = append(fields, ant.FieldDeletedAt)
+		fields = append(fields, agent.FieldDeletedAt)
 	}
 	if m.listener != nil {
-		fields = append(fields, ant.FieldListenerID)
+		fields = append(fields, agent.FieldListenerID)
 	}
 	if m.ext_ip != nil {
-		fields = append(fields, ant.FieldExtIP)
+		fields = append(fields, agent.FieldExtIP)
 	}
 	if m.int_ip != nil {
-		fields = append(fields, ant.FieldIntIP)
+		fields = append(fields, agent.FieldIntIP)
 	}
 	if m.os != nil {
-		fields = append(fields, ant.FieldOs)
+		fields = append(fields, agent.FieldOs)
 	}
 	if m.os_meta != nil {
-		fields = append(fields, ant.FieldOsMeta)
+		fields = append(fields, agent.FieldOsMeta)
 	}
 	if m.hostname != nil {
-		fields = append(fields, ant.FieldHostname)
+		fields = append(fields, agent.FieldHostname)
 	}
 	if m.username != nil {
-		fields = append(fields, ant.FieldUsername)
+		fields = append(fields, agent.FieldUsername)
 	}
 	if m.domain != nil {
-		fields = append(fields, ant.FieldDomain)
+		fields = append(fields, agent.FieldDomain)
 	}
 	if m.privileged != nil {
-		fields = append(fields, ant.FieldPrivileged)
+		fields = append(fields, agent.FieldPrivileged)
 	}
 	if m.process_name != nil {
-		fields = append(fields, ant.FieldProcessName)
+		fields = append(fields, agent.FieldProcessName)
 	}
 	if m.pid != nil {
-		fields = append(fields, ant.FieldPid)
+		fields = append(fields, agent.FieldPid)
 	}
 	if m.arch != nil {
-		fields = append(fields, ant.FieldArch)
+		fields = append(fields, agent.FieldArch)
 	}
 	if m.sleep != nil {
-		fields = append(fields, ant.FieldSleep)
+		fields = append(fields, agent.FieldSleep)
 	}
 	if m.jitter != nil {
-		fields = append(fields, ant.FieldJitter)
+		fields = append(fields, agent.FieldJitter)
 	}
 	if m.first != nil {
-		fields = append(fields, ant.FieldFirst)
+		fields = append(fields, agent.FieldFirst)
 	}
 	if m.last != nil {
-		fields = append(fields, ant.FieldLast)
+		fields = append(fields, agent.FieldLast)
 	}
 	if m.caps != nil {
-		fields = append(fields, ant.FieldCaps)
+		fields = append(fields, agent.FieldCaps)
 	}
 	if m.note != nil {
-		fields = append(fields, ant.FieldNote)
+		fields = append(fields, agent.FieldNote)
 	}
 	if m.color != nil {
-		fields = append(fields, ant.FieldColor)
+		fields = append(fields, agent.FieldColor)
 	}
 	return fields
 }
@@ -1475,51 +1475,51 @@ func (m *AntMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *AntMutation) Field(name string) (ent.Value, bool) {
+func (m *AgentMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case ant.FieldCreatedAt:
+	case agent.FieldCreatedAt:
 		return m.CreatedAt()
-	case ant.FieldUpdatedAt:
+	case agent.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case ant.FieldDeletedAt:
+	case agent.FieldDeletedAt:
 		return m.DeletedAt()
-	case ant.FieldListenerID:
+	case agent.FieldListenerID:
 		return m.ListenerID()
-	case ant.FieldExtIP:
+	case agent.FieldExtIP:
 		return m.ExtIP()
-	case ant.FieldIntIP:
+	case agent.FieldIntIP:
 		return m.IntIP()
-	case ant.FieldOs:
+	case agent.FieldOs:
 		return m.Os()
-	case ant.FieldOsMeta:
+	case agent.FieldOsMeta:
 		return m.OsMeta()
-	case ant.FieldHostname:
+	case agent.FieldHostname:
 		return m.Hostname()
-	case ant.FieldUsername:
+	case agent.FieldUsername:
 		return m.Username()
-	case ant.FieldDomain:
+	case agent.FieldDomain:
 		return m.Domain()
-	case ant.FieldPrivileged:
+	case agent.FieldPrivileged:
 		return m.Privileged()
-	case ant.FieldProcessName:
+	case agent.FieldProcessName:
 		return m.ProcessName()
-	case ant.FieldPid:
+	case agent.FieldPid:
 		return m.Pid()
-	case ant.FieldArch:
+	case agent.FieldArch:
 		return m.Arch()
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		return m.Sleep()
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		return m.Jitter()
-	case ant.FieldFirst:
+	case agent.FieldFirst:
 		return m.First()
-	case ant.FieldLast:
+	case agent.FieldLast:
 		return m.Last()
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		return m.Caps()
-	case ant.FieldNote:
+	case agent.FieldNote:
 		return m.Note()
-	case ant.FieldColor:
+	case agent.FieldColor:
 		return m.Color()
 	}
 	return nil, false
@@ -1528,209 +1528,209 @@ func (m *AntMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *AntMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *AgentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case ant.FieldCreatedAt:
+	case agent.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case ant.FieldUpdatedAt:
+	case agent.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case ant.FieldDeletedAt:
+	case agent.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case ant.FieldListenerID:
+	case agent.FieldListenerID:
 		return m.OldListenerID(ctx)
-	case ant.FieldExtIP:
+	case agent.FieldExtIP:
 		return m.OldExtIP(ctx)
-	case ant.FieldIntIP:
+	case agent.FieldIntIP:
 		return m.OldIntIP(ctx)
-	case ant.FieldOs:
+	case agent.FieldOs:
 		return m.OldOs(ctx)
-	case ant.FieldOsMeta:
+	case agent.FieldOsMeta:
 		return m.OldOsMeta(ctx)
-	case ant.FieldHostname:
+	case agent.FieldHostname:
 		return m.OldHostname(ctx)
-	case ant.FieldUsername:
+	case agent.FieldUsername:
 		return m.OldUsername(ctx)
-	case ant.FieldDomain:
+	case agent.FieldDomain:
 		return m.OldDomain(ctx)
-	case ant.FieldPrivileged:
+	case agent.FieldPrivileged:
 		return m.OldPrivileged(ctx)
-	case ant.FieldProcessName:
+	case agent.FieldProcessName:
 		return m.OldProcessName(ctx)
-	case ant.FieldPid:
+	case agent.FieldPid:
 		return m.OldPid(ctx)
-	case ant.FieldArch:
+	case agent.FieldArch:
 		return m.OldArch(ctx)
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		return m.OldSleep(ctx)
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		return m.OldJitter(ctx)
-	case ant.FieldFirst:
+	case agent.FieldFirst:
 		return m.OldFirst(ctx)
-	case ant.FieldLast:
+	case agent.FieldLast:
 		return m.OldLast(ctx)
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		return m.OldCaps(ctx)
-	case ant.FieldNote:
+	case agent.FieldNote:
 		return m.OldNote(ctx)
-	case ant.FieldColor:
+	case agent.FieldColor:
 		return m.OldColor(ctx)
 	}
-	return nil, fmt.Errorf("unknown Ant field %s", name)
+	return nil, fmt.Errorf("unknown Agent field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AntMutation) SetField(name string, value ent.Value) error {
+func (m *AgentMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case ant.FieldCreatedAt:
+	case agent.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case ant.FieldUpdatedAt:
+	case agent.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case ant.FieldDeletedAt:
+	case agent.FieldDeletedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case ant.FieldListenerID:
+	case agent.FieldListenerID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetListenerID(v)
 		return nil
-	case ant.FieldExtIP:
+	case agent.FieldExtIP:
 		v, ok := value.(types.Inet)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetExtIP(v)
 		return nil
-	case ant.FieldIntIP:
+	case agent.FieldIntIP:
 		v, ok := value.(types.Inet)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIntIP(v)
 		return nil
-	case ant.FieldOs:
-		v, ok := value.(shared.AntOs)
+	case agent.FieldOs:
+		v, ok := value.(shared.AgentOs)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOs(v)
 		return nil
-	case ant.FieldOsMeta:
+	case agent.FieldOsMeta:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOsMeta(v)
 		return nil
-	case ant.FieldHostname:
+	case agent.FieldHostname:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHostname(v)
 		return nil
-	case ant.FieldUsername:
+	case agent.FieldUsername:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUsername(v)
 		return nil
-	case ant.FieldDomain:
+	case agent.FieldDomain:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDomain(v)
 		return nil
-	case ant.FieldPrivileged:
+	case agent.FieldPrivileged:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPrivileged(v)
 		return nil
-	case ant.FieldProcessName:
+	case agent.FieldProcessName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProcessName(v)
 		return nil
-	case ant.FieldPid:
+	case agent.FieldPid:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPid(v)
 		return nil
-	case ant.FieldArch:
-		v, ok := value.(shared.AntArch)
+	case agent.FieldArch:
+		v, ok := value.(shared.AgentArch)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetArch(v)
 		return nil
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSleep(v)
 		return nil
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		v, ok := value.(uint8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetJitter(v)
 		return nil
-	case ant.FieldFirst:
+	case agent.FieldFirst:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFirst(v)
 		return nil
-	case ant.FieldLast:
+	case agent.FieldLast:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLast(v)
 		return nil
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCaps(v)
 		return nil
-	case ant.FieldNote:
+	case agent.FieldNote:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNote(v)
 		return nil
-	case ant.FieldColor:
+	case agent.FieldColor:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1738,27 +1738,27 @@ func (m *AntMutation) SetField(name string, value ent.Value) error {
 		m.SetColor(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Ant field %s", name)
+	return fmt.Errorf("unknown Agent field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *AntMutation) AddedFields() []string {
+func (m *AgentMutation) AddedFields() []string {
 	var fields []string
 	if m.addpid != nil {
-		fields = append(fields, ant.FieldPid)
+		fields = append(fields, agent.FieldPid)
 	}
 	if m.addsleep != nil {
-		fields = append(fields, ant.FieldSleep)
+		fields = append(fields, agent.FieldSleep)
 	}
 	if m.addjitter != nil {
-		fields = append(fields, ant.FieldJitter)
+		fields = append(fields, agent.FieldJitter)
 	}
 	if m.addcaps != nil {
-		fields = append(fields, ant.FieldCaps)
+		fields = append(fields, agent.FieldCaps)
 	}
 	if m.addcolor != nil {
-		fields = append(fields, ant.FieldColor)
+		fields = append(fields, agent.FieldColor)
 	}
 	return fields
 }
@@ -1766,17 +1766,17 @@ func (m *AntMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *AntMutation) AddedField(name string) (ent.Value, bool) {
+func (m *AgentMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case ant.FieldPid:
+	case agent.FieldPid:
 		return m.AddedPid()
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		return m.AddedSleep()
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		return m.AddedJitter()
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		return m.AddedCaps()
-	case ant.FieldColor:
+	case agent.FieldColor:
 		return m.AddedColor()
 	}
 	return nil, false
@@ -1785,37 +1785,37 @@ func (m *AntMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AntMutation) AddField(name string, value ent.Value) error {
+func (m *AgentMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case ant.FieldPid:
+	case agent.FieldPid:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPid(v)
 		return nil
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSleep(v)
 		return nil
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		v, ok := value.(int8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddJitter(v)
 		return nil
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCaps(v)
 		return nil
-	case ant.FieldColor:
+	case agent.FieldColor:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1823,201 +1823,201 @@ func (m *AntMutation) AddField(name string, value ent.Value) error {
 		m.AddColor(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Ant numeric field %s", name)
+	return fmt.Errorf("unknown Agent numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *AntMutation) ClearedFields() []string {
+func (m *AgentMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(ant.FieldDeletedAt) {
-		fields = append(fields, ant.FieldDeletedAt)
+	if m.FieldCleared(agent.FieldDeletedAt) {
+		fields = append(fields, agent.FieldDeletedAt)
 	}
-	if m.FieldCleared(ant.FieldExtIP) {
-		fields = append(fields, ant.FieldExtIP)
+	if m.FieldCleared(agent.FieldExtIP) {
+		fields = append(fields, agent.FieldExtIP)
 	}
-	if m.FieldCleared(ant.FieldIntIP) {
-		fields = append(fields, ant.FieldIntIP)
+	if m.FieldCleared(agent.FieldIntIP) {
+		fields = append(fields, agent.FieldIntIP)
 	}
-	if m.FieldCleared(ant.FieldOsMeta) {
-		fields = append(fields, ant.FieldOsMeta)
+	if m.FieldCleared(agent.FieldOsMeta) {
+		fields = append(fields, agent.FieldOsMeta)
 	}
-	if m.FieldCleared(ant.FieldHostname) {
-		fields = append(fields, ant.FieldHostname)
+	if m.FieldCleared(agent.FieldHostname) {
+		fields = append(fields, agent.FieldHostname)
 	}
-	if m.FieldCleared(ant.FieldUsername) {
-		fields = append(fields, ant.FieldUsername)
+	if m.FieldCleared(agent.FieldUsername) {
+		fields = append(fields, agent.FieldUsername)
 	}
-	if m.FieldCleared(ant.FieldDomain) {
-		fields = append(fields, ant.FieldDomain)
+	if m.FieldCleared(agent.FieldDomain) {
+		fields = append(fields, agent.FieldDomain)
 	}
-	if m.FieldCleared(ant.FieldPrivileged) {
-		fields = append(fields, ant.FieldPrivileged)
+	if m.FieldCleared(agent.FieldPrivileged) {
+		fields = append(fields, agent.FieldPrivileged)
 	}
-	if m.FieldCleared(ant.FieldProcessName) {
-		fields = append(fields, ant.FieldProcessName)
+	if m.FieldCleared(agent.FieldProcessName) {
+		fields = append(fields, agent.FieldProcessName)
 	}
-	if m.FieldCleared(ant.FieldPid) {
-		fields = append(fields, ant.FieldPid)
+	if m.FieldCleared(agent.FieldPid) {
+		fields = append(fields, agent.FieldPid)
 	}
-	if m.FieldCleared(ant.FieldNote) {
-		fields = append(fields, ant.FieldNote)
+	if m.FieldCleared(agent.FieldNote) {
+		fields = append(fields, agent.FieldNote)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *AntMutation) FieldCleared(name string) bool {
+func (m *AgentMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *AntMutation) ClearField(name string) error {
+func (m *AgentMutation) ClearField(name string) error {
 	switch name {
-	case ant.FieldDeletedAt:
+	case agent.FieldDeletedAt:
 		m.ClearDeletedAt()
 		return nil
-	case ant.FieldExtIP:
+	case agent.FieldExtIP:
 		m.ClearExtIP()
 		return nil
-	case ant.FieldIntIP:
+	case agent.FieldIntIP:
 		m.ClearIntIP()
 		return nil
-	case ant.FieldOsMeta:
+	case agent.FieldOsMeta:
 		m.ClearOsMeta()
 		return nil
-	case ant.FieldHostname:
+	case agent.FieldHostname:
 		m.ClearHostname()
 		return nil
-	case ant.FieldUsername:
+	case agent.FieldUsername:
 		m.ClearUsername()
 		return nil
-	case ant.FieldDomain:
+	case agent.FieldDomain:
 		m.ClearDomain()
 		return nil
-	case ant.FieldPrivileged:
+	case agent.FieldPrivileged:
 		m.ClearPrivileged()
 		return nil
-	case ant.FieldProcessName:
+	case agent.FieldProcessName:
 		m.ClearProcessName()
 		return nil
-	case ant.FieldPid:
+	case agent.FieldPid:
 		m.ClearPid()
 		return nil
-	case ant.FieldNote:
+	case agent.FieldNote:
 		m.ClearNote()
 		return nil
 	}
-	return fmt.Errorf("unknown Ant nullable field %s", name)
+	return fmt.Errorf("unknown Agent nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *AntMutation) ResetField(name string) error {
+func (m *AgentMutation) ResetField(name string) error {
 	switch name {
-	case ant.FieldCreatedAt:
+	case agent.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case ant.FieldUpdatedAt:
+	case agent.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case ant.FieldDeletedAt:
+	case agent.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case ant.FieldListenerID:
+	case agent.FieldListenerID:
 		m.ResetListenerID()
 		return nil
-	case ant.FieldExtIP:
+	case agent.FieldExtIP:
 		m.ResetExtIP()
 		return nil
-	case ant.FieldIntIP:
+	case agent.FieldIntIP:
 		m.ResetIntIP()
 		return nil
-	case ant.FieldOs:
+	case agent.FieldOs:
 		m.ResetOs()
 		return nil
-	case ant.FieldOsMeta:
+	case agent.FieldOsMeta:
 		m.ResetOsMeta()
 		return nil
-	case ant.FieldHostname:
+	case agent.FieldHostname:
 		m.ResetHostname()
 		return nil
-	case ant.FieldUsername:
+	case agent.FieldUsername:
 		m.ResetUsername()
 		return nil
-	case ant.FieldDomain:
+	case agent.FieldDomain:
 		m.ResetDomain()
 		return nil
-	case ant.FieldPrivileged:
+	case agent.FieldPrivileged:
 		m.ResetPrivileged()
 		return nil
-	case ant.FieldProcessName:
+	case agent.FieldProcessName:
 		m.ResetProcessName()
 		return nil
-	case ant.FieldPid:
+	case agent.FieldPid:
 		m.ResetPid()
 		return nil
-	case ant.FieldArch:
+	case agent.FieldArch:
 		m.ResetArch()
 		return nil
-	case ant.FieldSleep:
+	case agent.FieldSleep:
 		m.ResetSleep()
 		return nil
-	case ant.FieldJitter:
+	case agent.FieldJitter:
 		m.ResetJitter()
 		return nil
-	case ant.FieldFirst:
+	case agent.FieldFirst:
 		m.ResetFirst()
 		return nil
-	case ant.FieldLast:
+	case agent.FieldLast:
 		m.ResetLast()
 		return nil
-	case ant.FieldCaps:
+	case agent.FieldCaps:
 		m.ResetCaps()
 		return nil
-	case ant.FieldNote:
+	case agent.FieldNote:
 		m.ResetNote()
 		return nil
-	case ant.FieldColor:
+	case agent.FieldColor:
 		m.ResetColor()
 		return nil
 	}
-	return fmt.Errorf("unknown Ant field %s", name)
+	return fmt.Errorf("unknown Agent field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AntMutation) AddedEdges() []string {
+func (m *AgentMutation) AddedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.listener != nil {
-		edges = append(edges, ant.EdgeListener)
+		edges = append(edges, agent.EdgeListener)
 	}
 	if m.command != nil {
-		edges = append(edges, ant.EdgeCommand)
+		edges = append(edges, agent.EdgeCommand)
 	}
 	if m.task != nil {
-		edges = append(edges, ant.EdgeTask)
+		edges = append(edges, agent.EdgeTask)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *AntMutation) AddedIDs(name string) []ent.Value {
+func (m *AgentMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case ant.EdgeListener:
+	case agent.EdgeListener:
 		if id := m.listener; id != nil {
 			return []ent.Value{*id}
 		}
-	case ant.EdgeCommand:
+	case agent.EdgeCommand:
 		ids := make([]ent.Value, 0, len(m.command))
 		for id := range m.command {
 			ids = append(ids, id)
 		}
 		return ids
-	case ant.EdgeTask:
+	case agent.EdgeTask:
 		ids := make([]ent.Value, 0, len(m.task))
 		for id := range m.task {
 			ids = append(ids, id)
@@ -2028,28 +2028,28 @@ func (m *AntMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AntMutation) RemovedEdges() []string {
+func (m *AgentMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.removedcommand != nil {
-		edges = append(edges, ant.EdgeCommand)
+		edges = append(edges, agent.EdgeCommand)
 	}
 	if m.removedtask != nil {
-		edges = append(edges, ant.EdgeTask)
+		edges = append(edges, agent.EdgeTask)
 	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *AntMutation) RemovedIDs(name string) []ent.Value {
+func (m *AgentMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case ant.EdgeCommand:
+	case agent.EdgeCommand:
 		ids := make([]ent.Value, 0, len(m.removedcommand))
 		for id := range m.removedcommand {
 			ids = append(ids, id)
 		}
 		return ids
-	case ant.EdgeTask:
+	case agent.EdgeTask:
 		ids := make([]ent.Value, 0, len(m.removedtask))
 		for id := range m.removedtask {
 			ids = append(ids, id)
@@ -2060,29 +2060,29 @@ func (m *AntMutation) RemovedIDs(name string) []ent.Value {
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AntMutation) ClearedEdges() []string {
+func (m *AgentMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.clearedlistener {
-		edges = append(edges, ant.EdgeListener)
+		edges = append(edges, agent.EdgeListener)
 	}
 	if m.clearedcommand {
-		edges = append(edges, ant.EdgeCommand)
+		edges = append(edges, agent.EdgeCommand)
 	}
 	if m.clearedtask {
-		edges = append(edges, ant.EdgeTask)
+		edges = append(edges, agent.EdgeTask)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *AntMutation) EdgeCleared(name string) bool {
+func (m *AgentMutation) EdgeCleared(name string) bool {
 	switch name {
-	case ant.EdgeListener:
+	case agent.EdgeListener:
 		return m.clearedlistener
-	case ant.EdgeCommand:
+	case agent.EdgeCommand:
 		return m.clearedcommand
-	case ant.EdgeTask:
+	case agent.EdgeTask:
 		return m.clearedtask
 	}
 	return false
@@ -2090,30 +2090,30 @@ func (m *AntMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *AntMutation) ClearEdge(name string) error {
+func (m *AgentMutation) ClearEdge(name string) error {
 	switch name {
-	case ant.EdgeListener:
+	case agent.EdgeListener:
 		m.ClearListener()
 		return nil
 	}
-	return fmt.Errorf("unknown Ant unique edge %s", name)
+	return fmt.Errorf("unknown Agent unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *AntMutation) ResetEdge(name string) error {
+func (m *AgentMutation) ResetEdge(name string) error {
 	switch name {
-	case ant.EdgeListener:
+	case agent.EdgeListener:
 		m.ResetListener()
 		return nil
-	case ant.EdgeCommand:
+	case agent.EdgeCommand:
 		m.ResetCommand()
 		return nil
-	case ant.EdgeTask:
+	case agent.EdgeTask:
 		m.ResetTask()
 		return nil
 	}
-	return fmt.Errorf("unknown Ant edge %s", name)
+	return fmt.Errorf("unknown Agent edge %s", name)
 }
 
 // BlobberMutation represents an operation that mutates the Blobber nodes in the graph.
@@ -3537,8 +3537,8 @@ type CommandMutation struct {
 	created_at      *time.Time
 	closed_at       *time.Time
 	clearedFields   map[string]struct{}
-	ant             *uint32
-	clearedant      bool
+	agent           *uint32
+	clearedagent    bool
 	operator        *int64
 	clearedoperator bool
 	message         map[int]struct{}
@@ -3656,40 +3656,40 @@ func (m *CommandMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
-// SetAntID sets the "ant_id" field.
-func (m *CommandMutation) SetAntID(u uint32) {
-	m.ant = &u
+// SetAgentID sets the "agent_id" field.
+func (m *CommandMutation) SetAgentID(u uint32) {
+	m.agent = &u
 }
 
-// AntID returns the value of the "ant_id" field in the mutation.
-func (m *CommandMutation) AntID() (r uint32, exists bool) {
-	v := m.ant
+// AgentID returns the value of the "agent_id" field in the mutation.
+func (m *CommandMutation) AgentID() (r uint32, exists bool) {
+	v := m.agent
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAntID returns the old "ant_id" field's value of the Command entity.
+// OldAgentID returns the old "agent_id" field's value of the Command entity.
 // If the Command object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommandMutation) OldAntID(ctx context.Context) (v uint32, err error) {
+func (m *CommandMutation) OldAgentID(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAntID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAgentID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAntID requires an ID field in the mutation")
+		return v, errors.New("OldAgentID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAntID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAgentID: %w", err)
 	}
-	return oldValue.AntID, nil
+	return oldValue.AgentID, nil
 }
 
-// ResetAntID resets all changes to the "ant_id" field.
-func (m *CommandMutation) ResetAntID() {
-	m.ant = nil
+// ResetAgentID resets all changes to the "agent_id" field.
+func (m *CommandMutation) ResetAgentID() {
+	m.agent = nil
 }
 
 // SetCmd sets the "cmd" field.
@@ -3885,31 +3885,31 @@ func (m *CommandMutation) ResetClosedAt() {
 	delete(m.clearedFields, command.FieldClosedAt)
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (m *CommandMutation) ClearAnt() {
-	m.clearedant = true
-	m.clearedFields[command.FieldAntID] = struct{}{}
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (m *CommandMutation) ClearAgent() {
+	m.clearedagent = true
+	m.clearedFields[command.FieldAgentID] = struct{}{}
 }
 
-// AntCleared reports if the "ant" edge to the Ant entity was cleared.
-func (m *CommandMutation) AntCleared() bool {
-	return m.clearedant
+// AgentCleared reports if the "agent" edge to the Agent entity was cleared.
+func (m *CommandMutation) AgentCleared() bool {
+	return m.clearedagent
 }
 
-// AntIDs returns the "ant" edge IDs in the mutation.
+// AgentIDs returns the "agent" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// AntID instead. It exists only for internal usage by the builders.
-func (m *CommandMutation) AntIDs() (ids []uint32) {
-	if id := m.ant; id != nil {
+// AgentID instead. It exists only for internal usage by the builders.
+func (m *CommandMutation) AgentIDs() (ids []uint32) {
+	if id := m.agent; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetAnt resets all changes to the "ant" edge.
-func (m *CommandMutation) ResetAnt() {
-	m.ant = nil
-	m.clearedant = false
+// ResetAgent resets all changes to the "agent" edge.
+func (m *CommandMutation) ResetAgent() {
+	m.agent = nil
+	m.clearedagent = false
 }
 
 // SetOperatorID sets the "operator" edge to the Operator entity by id.
@@ -4095,8 +4095,8 @@ func (m *CommandMutation) Type() string {
 // AddedFields().
 func (m *CommandMutation) Fields() []string {
 	fields := make([]string, 0, 6)
-	if m.ant != nil {
-		fields = append(fields, command.FieldAntID)
+	if m.agent != nil {
+		fields = append(fields, command.FieldAgentID)
 	}
 	if m.cmd != nil {
 		fields = append(fields, command.FieldCmd)
@@ -4121,8 +4121,8 @@ func (m *CommandMutation) Fields() []string {
 // schema.
 func (m *CommandMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case command.FieldAntID:
-		return m.AntID()
+	case command.FieldAgentID:
+		return m.AgentID()
 	case command.FieldCmd:
 		return m.Cmd()
 	case command.FieldVisible:
@@ -4142,8 +4142,8 @@ func (m *CommandMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CommandMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case command.FieldAntID:
-		return m.OldAntID(ctx)
+	case command.FieldAgentID:
+		return m.OldAgentID(ctx)
 	case command.FieldCmd:
 		return m.OldCmd(ctx)
 	case command.FieldVisible:
@@ -4163,12 +4163,12 @@ func (m *CommandMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *CommandMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case command.FieldAntID:
+	case command.FieldAgentID:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAntID(v)
+		m.SetAgentID(v)
 		return nil
 	case command.FieldCmd:
 		v, ok := value.(string)
@@ -4266,8 +4266,8 @@ func (m *CommandMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CommandMutation) ResetField(name string) error {
 	switch name {
-	case command.FieldAntID:
-		m.ResetAntID()
+	case command.FieldAgentID:
+		m.ResetAgentID()
 		return nil
 	case command.FieldCmd:
 		m.ResetCmd()
@@ -4291,8 +4291,8 @@ func (m *CommandMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CommandMutation) AddedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.ant != nil {
-		edges = append(edges, command.EdgeAnt)
+	if m.agent != nil {
+		edges = append(edges, command.EdgeAgent)
 	}
 	if m.operator != nil {
 		edges = append(edges, command.EdgeOperator)
@@ -4310,8 +4310,8 @@ func (m *CommandMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *CommandMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case command.EdgeAnt:
-		if id := m.ant; id != nil {
+	case command.EdgeAgent:
+		if id := m.agent; id != nil {
 			return []ent.Value{*id}
 		}
 	case command.EdgeOperator:
@@ -4369,8 +4369,8 @@ func (m *CommandMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CommandMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.clearedant {
-		edges = append(edges, command.EdgeAnt)
+	if m.clearedagent {
+		edges = append(edges, command.EdgeAgent)
 	}
 	if m.clearedoperator {
 		edges = append(edges, command.EdgeOperator)
@@ -4388,8 +4388,8 @@ func (m *CommandMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *CommandMutation) EdgeCleared(name string) bool {
 	switch name {
-	case command.EdgeAnt:
-		return m.clearedant
+	case command.EdgeAgent:
+		return m.clearedagent
 	case command.EdgeOperator:
 		return m.clearedoperator
 	case command.EdgeMessage:
@@ -4404,8 +4404,8 @@ func (m *CommandMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *CommandMutation) ClearEdge(name string) error {
 	switch name {
-	case command.EdgeAnt:
-		m.ClearAnt()
+	case command.EdgeAgent:
+		m.ClearAgent()
 		return nil
 	case command.EdgeOperator:
 		m.ClearOperator()
@@ -4418,8 +4418,8 @@ func (m *CommandMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CommandMutation) ResetEdge(name string) error {
 	switch name {
-	case command.EdgeAnt:
-		m.ResetAnt()
+	case command.EdgeAgent:
+		m.ResetAgent()
 		return nil
 	case command.EdgeOperator:
 		m.ResetOperator()
@@ -5370,9 +5370,9 @@ type ListenerMutation struct {
 	note          *string
 	last          *time.Time
 	clearedFields map[string]struct{}
-	ant           map[uint32]struct{}
-	removedant    map[uint32]struct{}
-	clearedant    bool
+	agent         map[uint32]struct{}
+	removedagent  map[uint32]struct{}
+	clearedagent  bool
 	done          bool
 	oldValue      func(context.Context) (*Listener, error)
 	predicates    []predicate.Listener
@@ -5961,58 +5961,58 @@ func (m *ListenerMutation) ResetLast() {
 	m.last = nil
 }
 
-// AddAntIDs adds the "ant" edge to the Ant entity by ids.
-func (m *ListenerMutation) AddAntIDs(ids ...uint32) {
-	if m.ant == nil {
-		m.ant = make(map[uint32]struct{})
+// AddAgentIDs adds the "agent" edge to the Agent entity by ids.
+func (m *ListenerMutation) AddAgentIDs(ids ...uint32) {
+	if m.agent == nil {
+		m.agent = make(map[uint32]struct{})
 	}
 	for i := range ids {
-		m.ant[ids[i]] = struct{}{}
+		m.agent[ids[i]] = struct{}{}
 	}
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (m *ListenerMutation) ClearAnt() {
-	m.clearedant = true
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (m *ListenerMutation) ClearAgent() {
+	m.clearedagent = true
 }
 
-// AntCleared reports if the "ant" edge to the Ant entity was cleared.
-func (m *ListenerMutation) AntCleared() bool {
-	return m.clearedant
+// AgentCleared reports if the "agent" edge to the Agent entity was cleared.
+func (m *ListenerMutation) AgentCleared() bool {
+	return m.clearedagent
 }
 
-// RemoveAntIDs removes the "ant" edge to the Ant entity by IDs.
-func (m *ListenerMutation) RemoveAntIDs(ids ...uint32) {
-	if m.removedant == nil {
-		m.removedant = make(map[uint32]struct{})
+// RemoveAgentIDs removes the "agent" edge to the Agent entity by IDs.
+func (m *ListenerMutation) RemoveAgentIDs(ids ...uint32) {
+	if m.removedagent == nil {
+		m.removedagent = make(map[uint32]struct{})
 	}
 	for i := range ids {
-		delete(m.ant, ids[i])
-		m.removedant[ids[i]] = struct{}{}
+		delete(m.agent, ids[i])
+		m.removedagent[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedAnt returns the removed IDs of the "ant" edge to the Ant entity.
-func (m *ListenerMutation) RemovedAntIDs() (ids []uint32) {
-	for id := range m.removedant {
+// RemovedAgent returns the removed IDs of the "agent" edge to the Agent entity.
+func (m *ListenerMutation) RemovedAgentIDs() (ids []uint32) {
+	for id := range m.removedagent {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// AntIDs returns the "ant" edge IDs in the mutation.
-func (m *ListenerMutation) AntIDs() (ids []uint32) {
-	for id := range m.ant {
+// AgentIDs returns the "agent" edge IDs in the mutation.
+func (m *ListenerMutation) AgentIDs() (ids []uint32) {
+	for id := range m.agent {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetAnt resets all changes to the "ant" edge.
-func (m *ListenerMutation) ResetAnt() {
-	m.ant = nil
-	m.clearedant = false
-	m.removedant = nil
+// ResetAgent resets all changes to the "agent" edge.
+func (m *ListenerMutation) ResetAgent() {
+	m.agent = nil
+	m.clearedagent = false
+	m.removedagent = nil
 }
 
 // Where appends a list predicates to the ListenerMutation builder.
@@ -6368,8 +6368,8 @@ func (m *ListenerMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ListenerMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.ant != nil {
-		edges = append(edges, listener.EdgeAnt)
+	if m.agent != nil {
+		edges = append(edges, listener.EdgeAgent)
 	}
 	return edges
 }
@@ -6378,9 +6378,9 @@ func (m *ListenerMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *ListenerMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case listener.EdgeAnt:
-		ids := make([]ent.Value, 0, len(m.ant))
-		for id := range m.ant {
+	case listener.EdgeAgent:
+		ids := make([]ent.Value, 0, len(m.agent))
+		for id := range m.agent {
 			ids = append(ids, id)
 		}
 		return ids
@@ -6391,8 +6391,8 @@ func (m *ListenerMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ListenerMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedant != nil {
-		edges = append(edges, listener.EdgeAnt)
+	if m.removedagent != nil {
+		edges = append(edges, listener.EdgeAgent)
 	}
 	return edges
 }
@@ -6401,9 +6401,9 @@ func (m *ListenerMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *ListenerMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case listener.EdgeAnt:
-		ids := make([]ent.Value, 0, len(m.removedant))
-		for id := range m.removedant {
+	case listener.EdgeAgent:
+		ids := make([]ent.Value, 0, len(m.removedagent))
+		for id := range m.removedagent {
 			ids = append(ids, id)
 		}
 		return ids
@@ -6414,8 +6414,8 @@ func (m *ListenerMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ListenerMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.clearedant {
-		edges = append(edges, listener.EdgeAnt)
+	if m.clearedagent {
+		edges = append(edges, listener.EdgeAgent)
 	}
 	return edges
 }
@@ -6424,8 +6424,8 @@ func (m *ListenerMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *ListenerMutation) EdgeCleared(name string) bool {
 	switch name {
-	case listener.EdgeAnt:
-		return m.clearedant
+	case listener.EdgeAgent:
+		return m.clearedagent
 	}
 	return false
 }
@@ -6442,8 +6442,8 @@ func (m *ListenerMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ListenerMutation) ResetEdge(name string) error {
 	switch name {
-	case listener.EdgeAnt:
-		m.ResetAnt()
+	case listener.EdgeAgent:
+		m.ResetAgent()
 		return nil
 	}
 	return fmt.Errorf("unknown Listener edge %s", name)
@@ -8536,8 +8536,8 @@ type TaskMutation struct {
 	clearedFields         map[string]struct{}
 	command               *int64
 	clearedcommand        bool
-	ant                   *uint32
-	clearedant            bool
+	agent                 *uint32
+	clearedagent          bool
 	blobber_args          *int
 	clearedblobber_args   bool
 	blobber_output        *int
@@ -8687,40 +8687,40 @@ func (m *TaskMutation) ResetCommandID() {
 	m.command = nil
 }
 
-// SetAntID sets the "ant_id" field.
-func (m *TaskMutation) SetAntID(u uint32) {
-	m.ant = &u
+// SetAgentID sets the "agent_id" field.
+func (m *TaskMutation) SetAgentID(u uint32) {
+	m.agent = &u
 }
 
-// AntID returns the value of the "ant_id" field in the mutation.
-func (m *TaskMutation) AntID() (r uint32, exists bool) {
-	v := m.ant
+// AgentID returns the value of the "agent_id" field in the mutation.
+func (m *TaskMutation) AgentID() (r uint32, exists bool) {
+	v := m.agent
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAntID returns the old "ant_id" field's value of the Task entity.
+// OldAgentID returns the old "agent_id" field's value of the Task entity.
 // If the Task object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TaskMutation) OldAntID(ctx context.Context) (v uint32, err error) {
+func (m *TaskMutation) OldAgentID(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAntID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAgentID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAntID requires an ID field in the mutation")
+		return v, errors.New("OldAgentID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAntID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAgentID: %w", err)
 	}
-	return oldValue.AntID, nil
+	return oldValue.AgentID, nil
 }
 
-// ResetAntID resets all changes to the "ant_id" field.
-func (m *TaskMutation) ResetAntID() {
-	m.ant = nil
+// ResetAgentID resets all changes to the "agent_id" field.
+func (m *TaskMutation) ResetAgentID() {
+	m.agent = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -9090,31 +9090,31 @@ func (m *TaskMutation) ResetCommand() {
 	m.clearedcommand = false
 }
 
-// ClearAnt clears the "ant" edge to the Ant entity.
-func (m *TaskMutation) ClearAnt() {
-	m.clearedant = true
-	m.clearedFields[task.FieldAntID] = struct{}{}
+// ClearAgent clears the "agent" edge to the Agent entity.
+func (m *TaskMutation) ClearAgent() {
+	m.clearedagent = true
+	m.clearedFields[task.FieldAgentID] = struct{}{}
 }
 
-// AntCleared reports if the "ant" edge to the Ant entity was cleared.
-func (m *TaskMutation) AntCleared() bool {
-	return m.clearedant
+// AgentCleared reports if the "agent" edge to the Agent entity was cleared.
+func (m *TaskMutation) AgentCleared() bool {
+	return m.clearedagent
 }
 
-// AntIDs returns the "ant" edge IDs in the mutation.
+// AgentIDs returns the "agent" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// AntID instead. It exists only for internal usage by the builders.
-func (m *TaskMutation) AntIDs() (ids []uint32) {
-	if id := m.ant; id != nil {
+// AgentID instead. It exists only for internal usage by the builders.
+func (m *TaskMutation) AgentIDs() (ids []uint32) {
+	if id := m.agent; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetAnt resets all changes to the "ant" edge.
-func (m *TaskMutation) ResetAnt() {
-	m.ant = nil
-	m.clearedant = false
+// ResetAgent resets all changes to the "agent" edge.
+func (m *TaskMutation) ResetAgent() {
+	m.agent = nil
+	m.clearedagent = false
 }
 
 // SetBlobberArgsID sets the "blobber_args" edge to the Blobber entity by id.
@@ -9235,8 +9235,8 @@ func (m *TaskMutation) Fields() []string {
 	if m.command != nil {
 		fields = append(fields, task.FieldCommandID)
 	}
-	if m.ant != nil {
-		fields = append(fields, task.FieldAntID)
+	if m.agent != nil {
+		fields = append(fields, task.FieldAgentID)
 	}
 	if m.created_at != nil {
 		fields = append(fields, task.FieldCreatedAt)
@@ -9272,8 +9272,8 @@ func (m *TaskMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case task.FieldCommandID:
 		return m.CommandID()
-	case task.FieldAntID:
-		return m.AntID()
+	case task.FieldAgentID:
+		return m.AgentID()
 	case task.FieldCreatedAt:
 		return m.CreatedAt()
 	case task.FieldPushedAt:
@@ -9301,8 +9301,8 @@ func (m *TaskMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	switch name {
 	case task.FieldCommandID:
 		return m.OldCommandID(ctx)
-	case task.FieldAntID:
-		return m.OldAntID(ctx)
+	case task.FieldAgentID:
+		return m.OldAgentID(ctx)
 	case task.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case task.FieldPushedAt:
@@ -9335,12 +9335,12 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCommandID(v)
 		return nil
-	case task.FieldAntID:
+	case task.FieldAgentID:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAntID(v)
+		m.SetAgentID(v)
 		return nil
 	case task.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -9480,8 +9480,8 @@ func (m *TaskMutation) ResetField(name string) error {
 	case task.FieldCommandID:
 		m.ResetCommandID()
 		return nil
-	case task.FieldAntID:
-		m.ResetAntID()
+	case task.FieldAgentID:
+		m.ResetAgentID()
 		return nil
 	case task.FieldCreatedAt:
 		m.ResetCreatedAt()
@@ -9517,8 +9517,8 @@ func (m *TaskMutation) AddedEdges() []string {
 	if m.command != nil {
 		edges = append(edges, task.EdgeCommand)
 	}
-	if m.ant != nil {
-		edges = append(edges, task.EdgeAnt)
+	if m.agent != nil {
+		edges = append(edges, task.EdgeAgent)
 	}
 	if m.blobber_args != nil {
 		edges = append(edges, task.EdgeBlobberArgs)
@@ -9537,8 +9537,8 @@ func (m *TaskMutation) AddedIDs(name string) []ent.Value {
 		if id := m.command; id != nil {
 			return []ent.Value{*id}
 		}
-	case task.EdgeAnt:
-		if id := m.ant; id != nil {
+	case task.EdgeAgent:
+		if id := m.agent; id != nil {
 			return []ent.Value{*id}
 		}
 	case task.EdgeBlobberArgs:
@@ -9571,8 +9571,8 @@ func (m *TaskMutation) ClearedEdges() []string {
 	if m.clearedcommand {
 		edges = append(edges, task.EdgeCommand)
 	}
-	if m.clearedant {
-		edges = append(edges, task.EdgeAnt)
+	if m.clearedagent {
+		edges = append(edges, task.EdgeAgent)
 	}
 	if m.clearedblobber_args {
 		edges = append(edges, task.EdgeBlobberArgs)
@@ -9589,8 +9589,8 @@ func (m *TaskMutation) EdgeCleared(name string) bool {
 	switch name {
 	case task.EdgeCommand:
 		return m.clearedcommand
-	case task.EdgeAnt:
-		return m.clearedant
+	case task.EdgeAgent:
+		return m.clearedagent
 	case task.EdgeBlobberArgs:
 		return m.clearedblobber_args
 	case task.EdgeBlobberOutput:
@@ -9606,8 +9606,8 @@ func (m *TaskMutation) ClearEdge(name string) error {
 	case task.EdgeCommand:
 		m.ClearCommand()
 		return nil
-	case task.EdgeAnt:
-		m.ClearAnt()
+	case task.EdgeAgent:
+		m.ClearAgent()
 		return nil
 	case task.EdgeBlobberArgs:
 		m.ClearBlobberArgs()
@@ -9626,8 +9626,8 @@ func (m *TaskMutation) ResetEdge(name string) error {
 	case task.EdgeCommand:
 		m.ResetCommand()
 		return nil
-	case task.EdgeAnt:
-		m.ResetAnt()
+	case task.EdgeAgent:
+		m.ResetAgent()
 		return nil
 	case task.EdgeBlobberArgs:
 		m.ResetBlobberArgs()

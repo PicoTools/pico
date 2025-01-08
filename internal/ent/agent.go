@@ -10,16 +10,16 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/types"
 )
 
-// Ant is the model entity for the Ant schema.
-type Ant struct {
+// Agent is the model entity for the Agent schema.
+type Agent struct {
 	config `json:"-"`
 	// ID of the ent.
-	// ant ID
+	// agent ID
 	ID uint32 `json:"id,omitempty"`
 	// Time when entity was created
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -29,29 +29,29 @@ type Ant struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// linked listener ID
 	ListenerID int64 `json:"listener_id,omitempty"`
-	// external IP address of ant
+	// external IP address of agent
 	ExtIP types.Inet `json:"ext_ip,omitempty"`
-	// internal IP address of ant
+	// internal IP address of agent
 	IntIP types.Inet `json:"int_ip,omitempty"`
 	// type of operating system
-	Os shared.AntOs `json:"os,omitempty"`
+	Os shared.AgentOs `json:"os,omitempty"`
 	// metadata of operating system
 	OsMeta string `json:"os_meta,omitempty"`
-	// hostname of machine, on which ant deployed
+	// hostname of machine, on which agent deployed
 	Hostname string `json:"hostname,omitempty"`
-	// username of ant's process
+	// username of agent's process
 	Username string `json:"username,omitempty"`
-	// domain of machine, on which ant deployed
+	// domain of machine, on which agent deployed
 	Domain string `json:"domain,omitempty"`
-	// is ant process is privileged
+	// is agent process is privileged
 	Privileged bool `json:"privileged,omitempty"`
-	// name of ant process
+	// name of agent process
 	ProcessName string `json:"process_name,omitempty"`
-	// process ID of ant
+	// process ID of agent
 	Pid int64 `json:"pid,omitempty"`
-	// architecture of ant process
-	Arch shared.AntArch `json:"arch,omitempty"`
-	// sleep value of ant
+	// architecture of agent process
+	Arch shared.AgentArch `json:"arch,omitempty"`
+	// sleep value of agent
 	Sleep uint32 `json:"sleep,omitempty"`
 	// jitter value of sleep
 	Jitter uint8 `json:"jitter,omitempty"`
@@ -59,20 +59,20 @@ type Ant struct {
 	First time.Time `json:"first,omitempty"`
 	// last activity of listener
 	Last time.Time `json:"last,omitempty"`
-	// capabilities of ant
+	// capabilities of agent
 	Caps uint32 `json:"caps,omitempty"`
-	// note of ant
+	// note of agent
 	Note string `json:"note,omitempty"`
 	// color of entity
 	Color uint32 `json:"color,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the AntQuery when eager-loading is set.
-	Edges        AntEdges `json:"edges"`
+	// The values are being populated by the AgentQuery when eager-loading is set.
+	Edges        AgentEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// AntEdges holds the relations/edges for other nodes in the graph.
-type AntEdges struct {
+// AgentEdges holds the relations/edges for other nodes in the graph.
+type AgentEdges struct {
 	// Listener holds the value of the listener edge.
 	Listener *Listener `json:"listener,omitempty"`
 	// Command holds the value of the command edge.
@@ -86,7 +86,7 @@ type AntEdges struct {
 
 // ListenerOrErr returns the Listener value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AntEdges) ListenerOrErr() (*Listener, error) {
+func (e AgentEdges) ListenerOrErr() (*Listener, error) {
 	if e.Listener != nil {
 		return e.Listener, nil
 	} else if e.loadedTypes[0] {
@@ -97,7 +97,7 @@ func (e AntEdges) ListenerOrErr() (*Listener, error) {
 
 // CommandOrErr returns the Command value or an error if the edge
 // was not loaded in eager-loading.
-func (e AntEdges) CommandOrErr() ([]*Command, error) {
+func (e AgentEdges) CommandOrErr() ([]*Command, error) {
 	if e.loadedTypes[1] {
 		return e.Command, nil
 	}
@@ -106,7 +106,7 @@ func (e AntEdges) CommandOrErr() ([]*Command, error) {
 
 // TaskOrErr returns the Task value or an error if the edge
 // was not loaded in eager-loading.
-func (e AntEdges) TaskOrErr() ([]*Task, error) {
+func (e AgentEdges) TaskOrErr() ([]*Task, error) {
 	if e.loadedTypes[2] {
 		return e.Task, nil
 	}
@@ -114,23 +114,23 @@ func (e AntEdges) TaskOrErr() ([]*Task, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Ant) scanValues(columns []string) ([]any, error) {
+func (*Agent) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case ant.FieldArch:
-			values[i] = new(shared.AntArch)
-		case ant.FieldOs:
-			values[i] = new(shared.AntOs)
-		case ant.FieldPrivileged:
+		case agent.FieldArch:
+			values[i] = new(shared.AgentArch)
+		case agent.FieldOs:
+			values[i] = new(shared.AgentOs)
+		case agent.FieldPrivileged:
 			values[i] = new(sql.NullBool)
-		case ant.FieldID, ant.FieldListenerID, ant.FieldPid, ant.FieldSleep, ant.FieldJitter, ant.FieldCaps, ant.FieldColor:
+		case agent.FieldID, agent.FieldListenerID, agent.FieldPid, agent.FieldSleep, agent.FieldJitter, agent.FieldCaps, agent.FieldColor:
 			values[i] = new(sql.NullInt64)
-		case ant.FieldOsMeta, ant.FieldHostname, ant.FieldUsername, ant.FieldDomain, ant.FieldProcessName, ant.FieldNote:
+		case agent.FieldOsMeta, agent.FieldHostname, agent.FieldUsername, agent.FieldDomain, agent.FieldProcessName, agent.FieldNote:
 			values[i] = new(sql.NullString)
-		case ant.FieldCreatedAt, ant.FieldUpdatedAt, ant.FieldDeletedAt, ant.FieldFirst, ant.FieldLast:
+		case agent.FieldCreatedAt, agent.FieldUpdatedAt, agent.FieldDeletedAt, agent.FieldFirst, agent.FieldLast:
 			values[i] = new(sql.NullTime)
-		case ant.FieldExtIP, ant.FieldIntIP:
+		case agent.FieldExtIP, agent.FieldIntIP:
 			values[i] = new(types.Inet)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -140,146 +140,146 @@ func (*Ant) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Ant fields.
-func (a *Ant) assignValues(columns []string, values []any) error {
+// to the Agent fields.
+func (a *Agent) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case ant.FieldID:
+		case agent.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			a.ID = uint32(value.Int64)
-		case ant.FieldCreatedAt:
+		case agent.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				a.CreatedAt = value.Time
 			}
-		case ant.FieldUpdatedAt:
+		case agent.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				a.UpdatedAt = value.Time
 			}
-		case ant.FieldDeletedAt:
+		case agent.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
 				a.DeletedAt = value.Time
 			}
-		case ant.FieldListenerID:
+		case agent.FieldListenerID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field listener_id", values[i])
 			} else if value.Valid {
 				a.ListenerID = value.Int64
 			}
-		case ant.FieldExtIP:
+		case agent.FieldExtIP:
 			if value, ok := values[i].(*types.Inet); !ok {
 				return fmt.Errorf("unexpected type %T for field ext_ip", values[i])
 			} else if value != nil {
 				a.ExtIP = *value
 			}
-		case ant.FieldIntIP:
+		case agent.FieldIntIP:
 			if value, ok := values[i].(*types.Inet); !ok {
 				return fmt.Errorf("unexpected type %T for field int_ip", values[i])
 			} else if value != nil {
 				a.IntIP = *value
 			}
-		case ant.FieldOs:
-			if value, ok := values[i].(*shared.AntOs); !ok {
+		case agent.FieldOs:
+			if value, ok := values[i].(*shared.AgentOs); !ok {
 				return fmt.Errorf("unexpected type %T for field os", values[i])
 			} else if value != nil {
 				a.Os = *value
 			}
-		case ant.FieldOsMeta:
+		case agent.FieldOsMeta:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field os_meta", values[i])
 			} else if value.Valid {
 				a.OsMeta = value.String
 			}
-		case ant.FieldHostname:
+		case agent.FieldHostname:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field hostname", values[i])
 			} else if value.Valid {
 				a.Hostname = value.String
 			}
-		case ant.FieldUsername:
+		case agent.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
 				a.Username = value.String
 			}
-		case ant.FieldDomain:
+		case agent.FieldDomain:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field domain", values[i])
 			} else if value.Valid {
 				a.Domain = value.String
 			}
-		case ant.FieldPrivileged:
+		case agent.FieldPrivileged:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field privileged", values[i])
 			} else if value.Valid {
 				a.Privileged = value.Bool
 			}
-		case ant.FieldProcessName:
+		case agent.FieldProcessName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field process_name", values[i])
 			} else if value.Valid {
 				a.ProcessName = value.String
 			}
-		case ant.FieldPid:
+		case agent.FieldPid:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pid", values[i])
 			} else if value.Valid {
 				a.Pid = value.Int64
 			}
-		case ant.FieldArch:
-			if value, ok := values[i].(*shared.AntArch); !ok {
+		case agent.FieldArch:
+			if value, ok := values[i].(*shared.AgentArch); !ok {
 				return fmt.Errorf("unexpected type %T for field arch", values[i])
 			} else if value != nil {
 				a.Arch = *value
 			}
-		case ant.FieldSleep:
+		case agent.FieldSleep:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sleep", values[i])
 			} else if value.Valid {
 				a.Sleep = uint32(value.Int64)
 			}
-		case ant.FieldJitter:
+		case agent.FieldJitter:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field jitter", values[i])
 			} else if value.Valid {
 				a.Jitter = uint8(value.Int64)
 			}
-		case ant.FieldFirst:
+		case agent.FieldFirst:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field first", values[i])
 			} else if value.Valid {
 				a.First = value.Time
 			}
-		case ant.FieldLast:
+		case agent.FieldLast:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last", values[i])
 			} else if value.Valid {
 				a.Last = value.Time
 			}
-		case ant.FieldCaps:
+		case agent.FieldCaps:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field caps", values[i])
 			} else if value.Valid {
 				a.Caps = uint32(value.Int64)
 			}
-		case ant.FieldNote:
+		case agent.FieldNote:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field note", values[i])
 			} else if value.Valid {
 				a.Note = value.String
 			}
-		case ant.FieldColor:
+		case agent.FieldColor:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field color", values[i])
 			} else if value.Valid {
@@ -292,49 +292,49 @@ func (a *Ant) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Ant.
+// Value returns the ent.Value that was dynamically selected and assigned to the Agent.
 // This includes values selected through modifiers, order, etc.
-func (a *Ant) Value(name string) (ent.Value, error) {
+func (a *Agent) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
 }
 
-// QueryListener queries the "listener" edge of the Ant entity.
-func (a *Ant) QueryListener() *ListenerQuery {
-	return NewAntClient(a.config).QueryListener(a)
+// QueryListener queries the "listener" edge of the Agent entity.
+func (a *Agent) QueryListener() *ListenerQuery {
+	return NewAgentClient(a.config).QueryListener(a)
 }
 
-// QueryCommand queries the "command" edge of the Ant entity.
-func (a *Ant) QueryCommand() *CommandQuery {
-	return NewAntClient(a.config).QueryCommand(a)
+// QueryCommand queries the "command" edge of the Agent entity.
+func (a *Agent) QueryCommand() *CommandQuery {
+	return NewAgentClient(a.config).QueryCommand(a)
 }
 
-// QueryTask queries the "task" edge of the Ant entity.
-func (a *Ant) QueryTask() *TaskQuery {
-	return NewAntClient(a.config).QueryTask(a)
+// QueryTask queries the "task" edge of the Agent entity.
+func (a *Agent) QueryTask() *TaskQuery {
+	return NewAgentClient(a.config).QueryTask(a)
 }
 
-// Update returns a builder for updating this Ant.
-// Note that you need to call Ant.Unwrap() before calling this method if this Ant
+// Update returns a builder for updating this Agent.
+// Note that you need to call Agent.Unwrap() before calling this method if this Agent
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *Ant) Update() *AntUpdateOne {
-	return NewAntClient(a.config).UpdateOne(a)
+func (a *Agent) Update() *AgentUpdateOne {
+	return NewAgentClient(a.config).UpdateOne(a)
 }
 
-// Unwrap unwraps the Ant entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Agent entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *Ant) Unwrap() *Ant {
+func (a *Agent) Unwrap() *Agent {
 	_tx, ok := a.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Ant is not a transactional entity")
+		panic("ent: Agent is not a transactional entity")
 	}
 	a.config.driver = _tx.drv
 	return a
 }
 
 // String implements the fmt.Stringer.
-func (a *Ant) String() string {
+func (a *Agent) String() string {
 	var builder strings.Builder
-	builder.WriteString("Ant(")
+	builder.WriteString("Agent(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
 	builder.WriteString("created_at=")
 	builder.WriteString(a.CreatedAt.Format(time.ANSIC))
@@ -405,5 +405,5 @@ func (a *Ant) String() string {
 	return builder.String()
 }
 
-// Ants is a parsable slice of Ant.
-type Ants []*Ant
+// Agents is a parsable slice of Agent.
+type Agents []*Agent

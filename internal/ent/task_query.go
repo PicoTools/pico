@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/predicate"
@@ -27,7 +27,7 @@ type TaskQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.Task
 	withCommand       *CommandQuery
-	withAnt           *AntQuery
+	withAgent         *AgentQuery
 	withBlobberArgs   *BlobberQuery
 	withBlobberOutput *BlobberQuery
 	modifiers         []func(*sql.Selector)
@@ -89,9 +89,9 @@ func (tq *TaskQuery) QueryCommand() *CommandQuery {
 	return query
 }
 
-// QueryAnt chains the current query on the "ant" edge.
-func (tq *TaskQuery) QueryAnt() *AntQuery {
-	query := (&AntClient{config: tq.config}).Query()
+// QueryAgent chains the current query on the "agent" edge.
+func (tq *TaskQuery) QueryAgent() *AgentQuery {
+	query := (&AgentClient{config: tq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := tq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -102,8 +102,8 @@ func (tq *TaskQuery) QueryAnt() *AntQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(task.Table, task.FieldID, selector),
-			sqlgraph.To(ant.Table, ant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, task.AntTable, task.AntColumn),
+			sqlgraph.To(agent.Table, agent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, task.AgentTable, task.AgentColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -348,7 +348,7 @@ func (tq *TaskQuery) Clone() *TaskQuery {
 		inters:            append([]Interceptor{}, tq.inters...),
 		predicates:        append([]predicate.Task{}, tq.predicates...),
 		withCommand:       tq.withCommand.Clone(),
-		withAnt:           tq.withAnt.Clone(),
+		withAgent:         tq.withAgent.Clone(),
 		withBlobberArgs:   tq.withBlobberArgs.Clone(),
 		withBlobberOutput: tq.withBlobberOutput.Clone(),
 		// clone intermediate query.
@@ -368,14 +368,14 @@ func (tq *TaskQuery) WithCommand(opts ...func(*CommandQuery)) *TaskQuery {
 	return tq
 }
 
-// WithAnt tells the query-builder to eager-load the nodes that are connected to
-// the "ant" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TaskQuery) WithAnt(opts ...func(*AntQuery)) *TaskQuery {
-	query := (&AntClient{config: tq.config}).Query()
+// WithAgent tells the query-builder to eager-load the nodes that are connected to
+// the "agent" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TaskQuery) WithAgent(opts ...func(*AgentQuery)) *TaskQuery {
+	query := (&AgentClient{config: tq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withAnt = query
+	tq.withAgent = query
 	return tq
 }
 
@@ -481,7 +481,7 @@ func (tq *TaskQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Task, e
 		_spec       = tq.querySpec()
 		loadedTypes = [4]bool{
 			tq.withCommand != nil,
-			tq.withAnt != nil,
+			tq.withAgent != nil,
 			tq.withBlobberArgs != nil,
 			tq.withBlobberOutput != nil,
 		}
@@ -513,9 +513,9 @@ func (tq *TaskQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Task, e
 			return nil, err
 		}
 	}
-	if query := tq.withAnt; query != nil {
-		if err := tq.loadAnt(ctx, query, nodes, nil,
-			func(n *Task, e *Ant) { n.Edges.Ant = e }); err != nil {
+	if query := tq.withAgent; query != nil {
+		if err := tq.loadAgent(ctx, query, nodes, nil,
+			func(n *Task, e *Agent) { n.Edges.Agent = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -563,11 +563,11 @@ func (tq *TaskQuery) loadCommand(ctx context.Context, query *CommandQuery, nodes
 	}
 	return nil
 }
-func (tq *TaskQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*Task, init func(*Task), assign func(*Task, *Ant)) error {
+func (tq *TaskQuery) loadAgent(ctx context.Context, query *AgentQuery, nodes []*Task, init func(*Task), assign func(*Task, *Agent)) error {
 	ids := make([]uint32, 0, len(nodes))
 	nodeids := make(map[uint32][]*Task)
 	for i := range nodes {
-		fk := nodes[i].AntID
+		fk := nodes[i].AgentID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -576,7 +576,7 @@ func (tq *TaskQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*Task
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(ant.IDIn(ids...))
+	query.Where(agent.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -584,7 +584,7 @@ func (tq *TaskQuery) loadAnt(ctx context.Context, query *AntQuery, nodes []*Task
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "ant_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "agent_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -682,8 +682,8 @@ func (tq *TaskQuery) querySpec() *sqlgraph.QuerySpec {
 		if tq.withCommand != nil {
 			_spec.Node.AddColumnOnce(task.FieldCommandID)
 		}
-		if tq.withAnt != nil {
-			_spec.Node.AddColumnOnce(task.FieldAntID)
+		if tq.withAgent != nil {
+			_spec.Node.AddColumnOnce(task.FieldAgentID)
 		}
 		if tq.withBlobberArgs != nil {
 			_spec.Node.AddColumnOnce(task.FieldArgsID)
