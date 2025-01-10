@@ -27,7 +27,7 @@ entgo.io/ent/schema/edge
 entgo.io/ent/schema/field
 entgo.io/ent/schema/index
 entgo.io/ent/schema/mixin
-# github.com/PicoTools/pico-shared v0.0.0-20250110194042-a88bd413c139
+# github.com/PicoTools/pico-shared v0.0.0-20250110202747-45f2b17ca2ac
 ## explicit; go 1.23.4
 github.com/PicoTools/pico-shared/proto/gen/common/v1
 github.com/PicoTools/pico-shared/proto/gen/listener/v1
