@@ -77,7 +77,7 @@ func (Listener) Fields() []ent.Field {
 
 func (Listener) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("ant", Ant.Type),
+		edge.To("agent", Agent.Type),
 	}
 }
 

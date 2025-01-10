@@ -9,16 +9,16 @@ import (
 	"github.com/PicoTools/pico/internal/ent"
 )
 
-// The AntFunc type is an adapter to allow the use of ordinary
-// function as Ant mutator.
-type AntFunc func(context.Context, *ent.AntMutation) (ent.Value, error)
+// The AgentFunc type is an adapter to allow the use of ordinary
+// function as Agent mutator.
+type AgentFunc func(context.Context, *ent.AgentMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AntFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AntMutation); ok {
+func (f AgentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AgentMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AntMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentMutation", m)
 }
 
 // The BlobberFunc type is an adapter to allow the use of ordinary

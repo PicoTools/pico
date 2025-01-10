@@ -29,14 +29,14 @@ func (Task) Fields() []ent.Field {
 			Unique(),
 		field.Int64("command_id").
 			Comment("id of command"),
-		field.Uint32("ant_id").
-			Comment("id of ant"),
+		field.Uint32("agent_id").
+			Comment("id of agent"),
 		field.Time("created_at").
 			Default(time.Now).
 			Comment("time when task created"),
 		field.Time("pushed_at").
 			Optional().
-			Comment("time when task pushed to the ant"),
+			Comment("time when task pushed to the agent"),
 		field.Time("done_at").
 			Optional().
 			Comment("time when task results received"),
@@ -64,9 +64,9 @@ func (Task) Edges() []ent.Edge {
 			Field("command_id").
 			Unique().
 			Required(),
-		edge.From("ant", Ant.Type).
+		edge.From("agent", Agent.Type).
 			Ref("task").
-			Field("ant_id").
+			Field("agent_id").
 			Unique().
 			Required(),
 		edge.From("blobber_args", Blobber.Type).

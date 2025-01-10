@@ -16,23 +16,23 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-type Ant struct {
+type Agent struct {
 	ent.Schema
 }
 
-func (Ant) Annotations() []schema.Annotation {
+func (Agent) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{
-			Table: "ant",
+			Table: "agent",
 		},
 	}
 }
 
-func (Ant) Fields() []ent.Field {
+func (Agent) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint32("id").
 			Unique().
-			Comment("ant ID"),
+			Comment("agent ID"),
 		field.Int64("listener_id").
 			Comment("linked listener ID"),
 		field.String("ext_ip").
@@ -47,7 +47,7 @@ func (Ant) Fields() []ent.Field {
 				return nil
 			}).
 			Optional().
-			Comment("external IP address of ant"),
+			Comment("external IP address of agent"),
 		field.String("int_ip").
 			GoType(types.Inet{}).
 			SchemaType(map[string]string{
@@ -60,42 +60,42 @@ func (Ant) Fields() []ent.Field {
 				return nil
 			}).
 			Optional().
-			Comment("internal IP address of ant"),
+			Comment("internal IP address of agent"),
 		field.Enum("os").
-			GoType(shared.AntOs(0)).
+			GoType(shared.AgentOs(0)).
 			Comment("type of operating system"),
 		field.String("os_meta").
-			MaxLen(shared.AntOsMetaMaxLength).
+			MaxLen(shared.AgentOsMetaMaxLength).
 			Optional().
 			Comment("metadata of operating system"),
 		field.String("hostname").
-			MaxLen(shared.AntHostnameMaxLength).
+			MaxLen(shared.AgentHostnameMaxLength).
 			Optional().
-			Comment("hostname of machine, on which ant deployed"),
+			Comment("hostname of machine, on which agent deployed"),
 		field.String("username").
-			MaxLen(shared.AntUsernameMaxLength).
+			MaxLen(shared.AgentUsernameMaxLength).
 			Optional().
-			Comment("username of ant's process"),
+			Comment("username of agent's process"),
 		field.String("domain").
-			MaxLen(shared.AntDomainMaxLength).
+			MaxLen(shared.AgentDomainMaxLength).
 			Optional().
-			Comment("domain of machine, on which ant deployed"),
+			Comment("domain of machine, on which agent deployed"),
 		field.Bool("privileged").
 			Optional().
-			Comment("is ant process is privileged"),
+			Comment("is agent process is privileged"),
 		field.String("process_name").
-			MaxLen(shared.AntProcessNameMaxLength).
+			MaxLen(shared.AgentProcessNameMaxLength).
 			Optional().
-			Comment("name of ant process"),
+			Comment("name of agent process"),
 		// used int64 as sqlite unable handle uint64
 		field.Int64("pid").
 			Optional().
-			Comment("process ID of ant"),
+			Comment("process ID of agent"),
 		field.Enum("arch").
-			GoType(shared.AntArch(0)).
-			Comment("architecture of ant process"),
+			GoType(shared.AgentArch(0)).
+			Comment("architecture of agent process"),
 		field.Uint32("sleep").
-			Comment("sleep value of ant"),
+			Comment("sleep value of agent"),
 		field.Uint8("jitter").
 			Comment("jitter value of sleep"),
 		field.Time("first").
@@ -105,21 +105,21 @@ func (Ant) Fields() []ent.Field {
 			Default(time.Now).
 			Comment("last activity of listener"),
 		field.Uint32("caps").
-			Comment("capabilities of ant"),
+			Comment("capabilities of agent"),
 		field.String("note").
-			MaxLen(shared.AntNoteMaxLength).
+			MaxLen(shared.AgentNoteMaxLength).
 			Optional().
-			Comment("note of ant"),
+			Comment("note of agent"),
 		field.Uint32("color").
 			Default(shared.DefaultObjectColor).
 			Comment("color of entity"),
 	}
 }
 
-func (Ant) Edges() []ent.Edge {
+func (Agent) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("listener", Listener.Type).
-			Ref("ant").
+			Ref("agent").
 			Field("listener_id").
 			Unique().
 			Required(),
@@ -128,7 +128,7 @@ func (Ant) Edges() []ent.Edge {
 	}
 }
 
-func (Ant) Mixin() []ent.Mixin {
+func (Agent) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TimeMixin{},
 	}

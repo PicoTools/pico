@@ -13,20 +13,20 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/predicate"
 	"github.com/PicoTools/pico/internal/ent/task"
 )
 
-// AntQuery is the builder for querying Ant entities.
-type AntQuery struct {
+// AgentQuery is the builder for querying Agent entities.
+type AgentQuery struct {
 	config
 	ctx          *QueryContext
-	order        []ant.OrderOption
+	order        []agent.OrderOption
 	inters       []Interceptor
-	predicates   []predicate.Ant
+	predicates   []predicate.Agent
 	withListener *ListenerQuery
 	withCommand  *CommandQuery
 	withTask     *TaskQuery
@@ -36,39 +36,39 @@ type AntQuery struct {
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the AntQuery builder.
-func (aq *AntQuery) Where(ps ...predicate.Ant) *AntQuery {
+// Where adds a new predicate for the AgentQuery builder.
+func (aq *AgentQuery) Where(ps ...predicate.Agent) *AgentQuery {
 	aq.predicates = append(aq.predicates, ps...)
 	return aq
 }
 
 // Limit the number of records to be returned by this query.
-func (aq *AntQuery) Limit(limit int) *AntQuery {
+func (aq *AgentQuery) Limit(limit int) *AgentQuery {
 	aq.ctx.Limit = &limit
 	return aq
 }
 
 // Offset to start from.
-func (aq *AntQuery) Offset(offset int) *AntQuery {
+func (aq *AgentQuery) Offset(offset int) *AgentQuery {
 	aq.ctx.Offset = &offset
 	return aq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (aq *AntQuery) Unique(unique bool) *AntQuery {
+func (aq *AgentQuery) Unique(unique bool) *AgentQuery {
 	aq.ctx.Unique = &unique
 	return aq
 }
 
 // Order specifies how the records should be ordered.
-func (aq *AntQuery) Order(o ...ant.OrderOption) *AntQuery {
+func (aq *AgentQuery) Order(o ...agent.OrderOption) *AgentQuery {
 	aq.order = append(aq.order, o...)
 	return aq
 }
 
 // QueryListener chains the current query on the "listener" edge.
-func (aq *AntQuery) QueryListener() *ListenerQuery {
+func (aq *AgentQuery) QueryListener() *ListenerQuery {
 	query := (&ListenerClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -79,9 +79,9 @@ func (aq *AntQuery) QueryListener() *ListenerQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, selector),
+			sqlgraph.From(agent.Table, agent.FieldID, selector),
 			sqlgraph.To(listener.Table, listener.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ant.ListenerTable, ant.ListenerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, agent.ListenerTable, agent.ListenerColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -90,7 +90,7 @@ func (aq *AntQuery) QueryListener() *ListenerQuery {
 }
 
 // QueryCommand chains the current query on the "command" edge.
-func (aq *AntQuery) QueryCommand() *CommandQuery {
+func (aq *AgentQuery) QueryCommand() *CommandQuery {
 	query := (&CommandClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -101,9 +101,9 @@ func (aq *AntQuery) QueryCommand() *CommandQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, selector),
+			sqlgraph.From(agent.Table, agent.FieldID, selector),
 			sqlgraph.To(command.Table, command.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ant.CommandTable, ant.CommandColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, agent.CommandTable, agent.CommandColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -112,7 +112,7 @@ func (aq *AntQuery) QueryCommand() *CommandQuery {
 }
 
 // QueryTask chains the current query on the "task" edge.
-func (aq *AntQuery) QueryTask() *TaskQuery {
+func (aq *AgentQuery) QueryTask() *TaskQuery {
 	query := (&TaskClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -123,9 +123,9 @@ func (aq *AntQuery) QueryTask() *TaskQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(ant.Table, ant.FieldID, selector),
+			sqlgraph.From(agent.Table, agent.FieldID, selector),
 			sqlgraph.To(task.Table, task.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ant.TaskTable, ant.TaskColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, agent.TaskTable, agent.TaskColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -133,21 +133,21 @@ func (aq *AntQuery) QueryTask() *TaskQuery {
 	return query
 }
 
-// First returns the first Ant entity from the query.
-// Returns a *NotFoundError when no Ant was found.
-func (aq *AntQuery) First(ctx context.Context) (*Ant, error) {
+// First returns the first Agent entity from the query.
+// Returns a *NotFoundError when no Agent was found.
+func (aq *AgentQuery) First(ctx context.Context) (*Agent, error) {
 	nodes, err := aq.Limit(1).All(setContextOp(ctx, aq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{ant.Label}
+		return nil, &NotFoundError{agent.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (aq *AntQuery) FirstX(ctx context.Context) *Ant {
+func (aq *AgentQuery) FirstX(ctx context.Context) *Agent {
 	node, err := aq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -155,22 +155,22 @@ func (aq *AntQuery) FirstX(ctx context.Context) *Ant {
 	return node
 }
 
-// FirstID returns the first Ant ID from the query.
-// Returns a *NotFoundError when no Ant ID was found.
-func (aq *AntQuery) FirstID(ctx context.Context) (id uint32, err error) {
+// FirstID returns the first Agent ID from the query.
+// Returns a *NotFoundError when no Agent ID was found.
+func (aq *AgentQuery) FirstID(ctx context.Context) (id uint32, err error) {
 	var ids []uint32
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{ant.Label}
+		err = &NotFoundError{agent.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AntQuery) FirstIDX(ctx context.Context) uint32 {
+func (aq *AgentQuery) FirstIDX(ctx context.Context) uint32 {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -178,10 +178,10 @@ func (aq *AntQuery) FirstIDX(ctx context.Context) uint32 {
 	return id
 }
 
-// Only returns a single Ant entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Ant entity is found.
-// Returns a *NotFoundError when no Ant entities are found.
-func (aq *AntQuery) Only(ctx context.Context) (*Ant, error) {
+// Only returns a single Agent entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Agent entity is found.
+// Returns a *NotFoundError when no Agent entities are found.
+func (aq *AgentQuery) Only(ctx context.Context) (*Agent, error) {
 	nodes, err := aq.Limit(2).All(setContextOp(ctx, aq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -190,14 +190,14 @@ func (aq *AntQuery) Only(ctx context.Context) (*Ant, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{ant.Label}
+		return nil, &NotFoundError{agent.Label}
 	default:
-		return nil, &NotSingularError{ant.Label}
+		return nil, &NotSingularError{agent.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (aq *AntQuery) OnlyX(ctx context.Context) *Ant {
+func (aq *AgentQuery) OnlyX(ctx context.Context) *Agent {
 	node, err := aq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -205,10 +205,10 @@ func (aq *AntQuery) OnlyX(ctx context.Context) *Ant {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Ant ID in the query.
-// Returns a *NotSingularError when more than one Ant ID is found.
+// OnlyID is like Only, but returns the only Agent ID in the query.
+// Returns a *NotSingularError when more than one Agent ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AntQuery) OnlyID(ctx context.Context) (id uint32, err error) {
+func (aq *AgentQuery) OnlyID(ctx context.Context) (id uint32, err error) {
 	var ids []uint32
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -217,15 +217,15 @@ func (aq *AntQuery) OnlyID(ctx context.Context) (id uint32, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{ant.Label}
+		err = &NotFoundError{agent.Label}
 	default:
-		err = &NotSingularError{ant.Label}
+		err = &NotSingularError{agent.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AntQuery) OnlyIDX(ctx context.Context) uint32 {
+func (aq *AgentQuery) OnlyIDX(ctx context.Context) uint32 {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -233,18 +233,18 @@ func (aq *AntQuery) OnlyIDX(ctx context.Context) uint32 {
 	return id
 }
 
-// All executes the query and returns a list of Ants.
-func (aq *AntQuery) All(ctx context.Context) ([]*Ant, error) {
+// All executes the query and returns a list of Agents.
+func (aq *AgentQuery) All(ctx context.Context) ([]*Agent, error) {
 	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryAll)
 	if err := aq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*Ant, *AntQuery]()
-	return withInterceptors[[]*Ant](ctx, aq, qr, aq.inters)
+	qr := querierAll[[]*Agent, *AgentQuery]()
+	return withInterceptors[[]*Agent](ctx, aq, qr, aq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (aq *AntQuery) AllX(ctx context.Context) []*Ant {
+func (aq *AgentQuery) AllX(ctx context.Context) []*Agent {
 	nodes, err := aq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -252,20 +252,20 @@ func (aq *AntQuery) AllX(ctx context.Context) []*Ant {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Ant IDs.
-func (aq *AntQuery) IDs(ctx context.Context) (ids []uint32, err error) {
+// IDs executes the query and returns a list of Agent IDs.
+func (aq *AgentQuery) IDs(ctx context.Context) (ids []uint32, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
 	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryIDs)
-	if err = aq.Select(ant.FieldID).Scan(ctx, &ids); err != nil {
+	if err = aq.Select(agent.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AntQuery) IDsX(ctx context.Context) []uint32 {
+func (aq *AgentQuery) IDsX(ctx context.Context) []uint32 {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -274,16 +274,16 @@ func (aq *AntQuery) IDsX(ctx context.Context) []uint32 {
 }
 
 // Count returns the count of the given query.
-func (aq *AntQuery) Count(ctx context.Context) (int, error) {
+func (aq *AgentQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryCount)
 	if err := aq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, aq, querierCount[*AntQuery](), aq.inters)
+	return withInterceptors[int](ctx, aq, querierCount[*AgentQuery](), aq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (aq *AntQuery) CountX(ctx context.Context) int {
+func (aq *AgentQuery) CountX(ctx context.Context) int {
 	count, err := aq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -292,7 +292,7 @@ func (aq *AntQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (aq *AntQuery) Exist(ctx context.Context) (bool, error) {
+func (aq *AgentQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, aq.ctx, ent.OpQueryExist)
 	switch _, err := aq.FirstID(ctx); {
 	case IsNotFound(err):
@@ -305,7 +305,7 @@ func (aq *AntQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (aq *AntQuery) ExistX(ctx context.Context) bool {
+func (aq *AgentQuery) ExistX(ctx context.Context) bool {
 	exist, err := aq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -313,18 +313,18 @@ func (aq *AntQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the AntQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the AgentQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (aq *AntQuery) Clone() *AntQuery {
+func (aq *AgentQuery) Clone() *AgentQuery {
 	if aq == nil {
 		return nil
 	}
-	return &AntQuery{
+	return &AgentQuery{
 		config:       aq.config,
 		ctx:          aq.ctx.Clone(),
-		order:        append([]ant.OrderOption{}, aq.order...),
+		order:        append([]agent.OrderOption{}, aq.order...),
 		inters:       append([]Interceptor{}, aq.inters...),
-		predicates:   append([]predicate.Ant{}, aq.predicates...),
+		predicates:   append([]predicate.Agent{}, aq.predicates...),
 		withListener: aq.withListener.Clone(),
 		withCommand:  aq.withCommand.Clone(),
 		withTask:     aq.withTask.Clone(),
@@ -336,7 +336,7 @@ func (aq *AntQuery) Clone() *AntQuery {
 
 // WithListener tells the query-builder to eager-load the nodes that are connected to
 // the "listener" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AntQuery) WithListener(opts ...func(*ListenerQuery)) *AntQuery {
+func (aq *AgentQuery) WithListener(opts ...func(*ListenerQuery)) *AgentQuery {
 	query := (&ListenerClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -347,7 +347,7 @@ func (aq *AntQuery) WithListener(opts ...func(*ListenerQuery)) *AntQuery {
 
 // WithCommand tells the query-builder to eager-load the nodes that are connected to
 // the "command" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AntQuery) WithCommand(opts ...func(*CommandQuery)) *AntQuery {
+func (aq *AgentQuery) WithCommand(opts ...func(*CommandQuery)) *AgentQuery {
 	query := (&CommandClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -358,7 +358,7 @@ func (aq *AntQuery) WithCommand(opts ...func(*CommandQuery)) *AntQuery {
 
 // WithTask tells the query-builder to eager-load the nodes that are connected to
 // the "task" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AntQuery) WithTask(opts ...func(*TaskQuery)) *AntQuery {
+func (aq *AgentQuery) WithTask(opts ...func(*TaskQuery)) *AgentQuery {
 	query := (&TaskClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -377,15 +377,15 @@ func (aq *AntQuery) WithTask(opts ...func(*TaskQuery)) *AntQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Ant.Query().
-//		GroupBy(ant.FieldCreatedAt).
+//	client.Agent.Query().
+//		GroupBy(agent.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (aq *AntQuery) GroupBy(field string, fields ...string) *AntGroupBy {
+func (aq *AgentQuery) GroupBy(field string, fields ...string) *AgentGroupBy {
 	aq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AntGroupBy{build: aq}
+	grbuild := &AgentGroupBy{build: aq}
 	grbuild.flds = &aq.ctx.Fields
-	grbuild.label = ant.Label
+	grbuild.label = agent.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -399,23 +399,23 @@ func (aq *AntQuery) GroupBy(field string, fields ...string) *AntGroupBy {
 //		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
-//	client.Ant.Query().
-//		Select(ant.FieldCreatedAt).
+//	client.Agent.Query().
+//		Select(agent.FieldCreatedAt).
 //		Scan(ctx, &v)
-func (aq *AntQuery) Select(fields ...string) *AntSelect {
+func (aq *AgentQuery) Select(fields ...string) *AgentSelect {
 	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
-	sbuild := &AntSelect{AntQuery: aq}
-	sbuild.label = ant.Label
+	sbuild := &AgentSelect{AgentQuery: aq}
+	sbuild.label = agent.Label
 	sbuild.flds, sbuild.scan = &aq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a AntSelect configured with the given aggregations.
-func (aq *AntQuery) Aggregate(fns ...AggregateFunc) *AntSelect {
+// Aggregate returns a AgentSelect configured with the given aggregations.
+func (aq *AgentQuery) Aggregate(fns ...AggregateFunc) *AgentSelect {
 	return aq.Select().Aggregate(fns...)
 }
 
-func (aq *AntQuery) prepareQuery(ctx context.Context) error {
+func (aq *AgentQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range aq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -427,7 +427,7 @@ func (aq *AntQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range aq.ctx.Fields {
-		if !ant.ValidColumn(f) {
+		if !agent.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -441,9 +441,9 @@ func (aq *AntQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (aq *AntQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ant, error) {
+func (aq *AgentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Agent, error) {
 	var (
-		nodes       = []*Ant{}
+		nodes       = []*Agent{}
 		_spec       = aq.querySpec()
 		loadedTypes = [3]bool{
 			aq.withListener != nil,
@@ -452,10 +452,10 @@ func (aq *AntQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ant, err
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Ant).scanValues(nil, columns)
+		return (*Agent).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Ant{config: aq.config}
+		node := &Agent{config: aq.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -474,30 +474,30 @@ func (aq *AntQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ant, err
 	}
 	if query := aq.withListener; query != nil {
 		if err := aq.loadListener(ctx, query, nodes, nil,
-			func(n *Ant, e *Listener) { n.Edges.Listener = e }); err != nil {
+			func(n *Agent, e *Listener) { n.Edges.Listener = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := aq.withCommand; query != nil {
 		if err := aq.loadCommand(ctx, query, nodes,
-			func(n *Ant) { n.Edges.Command = []*Command{} },
-			func(n *Ant, e *Command) { n.Edges.Command = append(n.Edges.Command, e) }); err != nil {
+			func(n *Agent) { n.Edges.Command = []*Command{} },
+			func(n *Agent, e *Command) { n.Edges.Command = append(n.Edges.Command, e) }); err != nil {
 			return nil, err
 		}
 	}
 	if query := aq.withTask; query != nil {
 		if err := aq.loadTask(ctx, query, nodes,
-			func(n *Ant) { n.Edges.Task = []*Task{} },
-			func(n *Ant, e *Task) { n.Edges.Task = append(n.Edges.Task, e) }); err != nil {
+			func(n *Agent) { n.Edges.Task = []*Task{} },
+			func(n *Agent, e *Task) { n.Edges.Task = append(n.Edges.Task, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (aq *AntQuery) loadListener(ctx context.Context, query *ListenerQuery, nodes []*Ant, init func(*Ant), assign func(*Ant, *Listener)) error {
+func (aq *AgentQuery) loadListener(ctx context.Context, query *ListenerQuery, nodes []*Agent, init func(*Agent), assign func(*Agent, *Listener)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Ant)
+	nodeids := make(map[int64][]*Agent)
 	for i := range nodes {
 		fk := nodes[i].ListenerID
 		if _, ok := nodeids[fk]; !ok {
@@ -524,9 +524,9 @@ func (aq *AntQuery) loadListener(ctx context.Context, query *ListenerQuery, node
 	}
 	return nil
 }
-func (aq *AntQuery) loadCommand(ctx context.Context, query *CommandQuery, nodes []*Ant, init func(*Ant), assign func(*Ant, *Command)) error {
+func (aq *AgentQuery) loadCommand(ctx context.Context, query *CommandQuery, nodes []*Agent, init func(*Agent), assign func(*Agent, *Command)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uint32]*Ant)
+	nodeids := make(map[uint32]*Agent)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -535,28 +535,28 @@ func (aq *AntQuery) loadCommand(ctx context.Context, query *CommandQuery, nodes 
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(command.FieldAntID)
+		query.ctx.AppendFieldOnce(command.FieldAgentID)
 	}
 	query.Where(predicate.Command(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(ant.CommandColumn), fks...))
+		s.Where(sql.InValues(s.C(agent.CommandColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.AntID
+		fk := n.AgentID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "ant_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "agent_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (aq *AntQuery) loadTask(ctx context.Context, query *TaskQuery, nodes []*Ant, init func(*Ant), assign func(*Ant, *Task)) error {
+func (aq *AgentQuery) loadTask(ctx context.Context, query *TaskQuery, nodes []*Agent, init func(*Agent), assign func(*Agent, *Task)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uint32]*Ant)
+	nodeids := make(map[uint32]*Agent)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -565,27 +565,27 @@ func (aq *AntQuery) loadTask(ctx context.Context, query *TaskQuery, nodes []*Ant
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(task.FieldAntID)
+		query.ctx.AppendFieldOnce(task.FieldAgentID)
 	}
 	query.Where(predicate.Task(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(ant.TaskColumn), fks...))
+		s.Where(sql.InValues(s.C(agent.TaskColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.AntID
+		fk := n.AgentID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "ant_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "agent_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
 
-func (aq *AntQuery) sqlCount(ctx context.Context) (int, error) {
+func (aq *AgentQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := aq.querySpec()
 	if len(aq.modifiers) > 0 {
 		_spec.Modifiers = aq.modifiers
@@ -597,8 +597,8 @@ func (aq *AntQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, aq.driver, _spec)
 }
 
-func (aq *AntQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(ant.Table, ant.Columns, sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32))
+func (aq *AgentQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(agent.Table, agent.Columns, sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32))
 	_spec.From = aq.sql
 	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -607,14 +607,14 @@ func (aq *AntQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := aq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, ant.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, agent.FieldID)
 		for i := range fields {
-			if fields[i] != ant.FieldID {
+			if fields[i] != agent.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
 		if aq.withListener != nil {
-			_spec.Node.AddColumnOnce(ant.FieldListenerID)
+			_spec.Node.AddColumnOnce(agent.FieldListenerID)
 		}
 	}
 	if ps := aq.predicates; len(ps) > 0 {
@@ -640,12 +640,12 @@ func (aq *AntQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (aq *AntQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (aq *AgentQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(aq.driver.Dialect())
-	t1 := builder.Table(ant.Table)
+	t1 := builder.Table(agent.Table)
 	columns := aq.ctx.Fields
 	if len(columns) == 0 {
-		columns = ant.Columns
+		columns = agent.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if aq.sql != nil {
@@ -678,7 +678,7 @@ func (aq *AntQuery) sqlQuery(ctx context.Context) *sql.Selector {
 // ForUpdate locks the selected rows against concurrent updates, and prevent them from being
 // updated, deleted or "selected ... for update" by other sessions, until the transaction is
 // either committed or rolled-back.
-func (aq *AntQuery) ForUpdate(opts ...sql.LockOption) *AntQuery {
+func (aq *AgentQuery) ForUpdate(opts ...sql.LockOption) *AgentQuery {
 	if aq.driver.Dialect() == dialect.Postgres {
 		aq.Unique(false)
 	}
@@ -691,7 +691,7 @@ func (aq *AntQuery) ForUpdate(opts ...sql.LockOption) *AntQuery {
 // ForShare behaves similarly to ForUpdate, except that it acquires a shared mode lock
 // on any rows that are read. Other sessions can read the rows, but cannot modify them
 // until your transaction commits.
-func (aq *AntQuery) ForShare(opts ...sql.LockOption) *AntQuery {
+func (aq *AgentQuery) ForShare(opts ...sql.LockOption) *AgentQuery {
 	if aq.driver.Dialect() == dialect.Postgres {
 		aq.Unique(false)
 	}
@@ -701,28 +701,28 @@ func (aq *AntQuery) ForShare(opts ...sql.LockOption) *AntQuery {
 	return aq
 }
 
-// AntGroupBy is the group-by builder for Ant entities.
-type AntGroupBy struct {
+// AgentGroupBy is the group-by builder for Agent entities.
+type AgentGroupBy struct {
 	selector
-	build *AntQuery
+	build *AgentQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (agb *AntGroupBy) Aggregate(fns ...AggregateFunc) *AntGroupBy {
+func (agb *AgentGroupBy) Aggregate(fns ...AggregateFunc) *AgentGroupBy {
 	agb.fns = append(agb.fns, fns...)
 	return agb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (agb *AntGroupBy) Scan(ctx context.Context, v any) error {
+func (agb *AgentGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, agb.build.ctx, ent.OpQueryGroupBy)
 	if err := agb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AntQuery, *AntGroupBy](ctx, agb.build, agb, agb.build.inters, v)
+	return scanWithInterceptors[*AgentQuery, *AgentGroupBy](ctx, agb.build, agb, agb.build.inters, v)
 }
 
-func (agb *AntGroupBy) sqlScan(ctx context.Context, root *AntQuery, v any) error {
+func (agb *AgentGroupBy) sqlScan(ctx context.Context, root *AgentQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(agb.fns))
 	for _, fn := range agb.fns {
@@ -749,28 +749,28 @@ func (agb *AntGroupBy) sqlScan(ctx context.Context, root *AntQuery, v any) error
 	return sql.ScanSlice(rows, v)
 }
 
-// AntSelect is the builder for selecting fields of Ant entities.
-type AntSelect struct {
-	*AntQuery
+// AgentSelect is the builder for selecting fields of Agent entities.
+type AgentSelect struct {
+	*AgentQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (as *AntSelect) Aggregate(fns ...AggregateFunc) *AntSelect {
+func (as *AgentSelect) Aggregate(fns ...AggregateFunc) *AgentSelect {
 	as.fns = append(as.fns, fns...)
 	return as
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (as *AntSelect) Scan(ctx context.Context, v any) error {
+func (as *AgentSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, as.ctx, ent.OpQuerySelect)
 	if err := as.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AntQuery, *AntSelect](ctx, as.AntQuery, as, as.inters, v)
+	return scanWithInterceptors[*AgentQuery, *AgentSelect](ctx, as.AgentQuery, as, as.inters, v)
 }
 
-func (as *AntSelect) sqlScan(ctx context.Context, root *AntQuery, v any) error {
+func (as *AgentSelect) sqlScan(ctx context.Context, root *AgentQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(as.fns))
 	for _, fn := range as.fns {

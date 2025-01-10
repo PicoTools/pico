@@ -18,8 +18,8 @@ const (
 	FieldID = "id"
 	// FieldCommandID holds the string denoting the command_id field in the database.
 	FieldCommandID = "command_id"
-	// FieldAntID holds the string denoting the ant_id field in the database.
-	FieldAntID = "ant_id"
+	// FieldAgentID holds the string denoting the agent_id field in the database.
+	FieldAgentID = "agent_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldPushedAt holds the string denoting the pushed_at field in the database.
@@ -38,8 +38,8 @@ const (
 	FieldOutputBig = "output_big"
 	// EdgeCommand holds the string denoting the command edge name in mutations.
 	EdgeCommand = "command"
-	// EdgeAnt holds the string denoting the ant edge name in mutations.
-	EdgeAnt = "ant"
+	// EdgeAgent holds the string denoting the agent edge name in mutations.
+	EdgeAgent = "agent"
 	// EdgeBlobberArgs holds the string denoting the blobber_args edge name in mutations.
 	EdgeBlobberArgs = "blobber_args"
 	// EdgeBlobberOutput holds the string denoting the blobber_output edge name in mutations.
@@ -53,13 +53,13 @@ const (
 	CommandInverseTable = "command"
 	// CommandColumn is the table column denoting the command relation/edge.
 	CommandColumn = "command_id"
-	// AntTable is the table that holds the ant relation/edge.
-	AntTable = "task"
-	// AntInverseTable is the table name for the Ant entity.
-	// It exists in this package in order to avoid circular dependency with the "ant" package.
-	AntInverseTable = "ant"
-	// AntColumn is the table column denoting the ant relation/edge.
-	AntColumn = "ant_id"
+	// AgentTable is the table that holds the agent relation/edge.
+	AgentTable = "task"
+	// AgentInverseTable is the table name for the Agent entity.
+	// It exists in this package in order to avoid circular dependency with the "agent" package.
+	AgentInverseTable = "agent"
+	// AgentColumn is the table column denoting the agent relation/edge.
+	AgentColumn = "agent_id"
 	// BlobberArgsTable is the table that holds the blobber_args relation/edge.
 	BlobberArgsTable = "task"
 	// BlobberArgsInverseTable is the table name for the Blobber entity.
@@ -80,7 +80,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldCommandID,
-	FieldAntID,
+	FieldAgentID,
 	FieldCreatedAt,
 	FieldPushedAt,
 	FieldDoneAt,
@@ -119,7 +119,7 @@ func StatusValidator(s shared.TaskStatus) error {
 // CapValidator is a validator for the "cap" field enum values. It is called by the builders before save.
 func CapValidator(c shared.Capability) error {
 	switch c.String() {
-	case "c_sleep", "c_ls", "c_pwd", "c_cd", "c_whoami", "c_ps", "c_cat", "c_exec", "c_cp", "c_jobs", "c_jobkill", "c_kill", "c_mv", "c_mkdir", "c_rm", "c_exec_assembly", "c_shell", "c_ppid", "c_exec_detach", "c_shellcode_injection", "c_download", "c_upload", "c_pause", "c_destruct", "c_exit":
+	case "c_sleep", "c_ls", "c_pwd", "c_cd", "c_whoami", "c_ps", "c_cat", "c_exec", "c_cp", "c_jobs", "c_jobkill", "c_kill", "c_mv", "c_mkdir", "c_rm", "c_exec_assembly", "c_shell", "c_ppid", "c_exec_detach", "c_shellcode_injection", "c_download", "c_upload", "c_pause", "c_destroy", "c_exit":
 		return nil
 	default:
 		return fmt.Errorf("task: invalid enum value for cap field: %q", c)
@@ -139,9 +139,9 @@ func ByCommandID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCommandID, opts...).ToFunc()
 }
 
-// ByAntID orders the results by the ant_id field.
-func ByAntID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAntID, opts...).ToFunc()
+// ByAgentID orders the results by the agent_id field.
+func ByAgentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAgentID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
@@ -191,10 +191,10 @@ func ByCommandField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByAntField orders the results by ant field.
-func ByAntField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByAgentField orders the results by agent field.
+func ByAgentField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAntStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newAgentStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -218,11 +218,11 @@ func newCommandStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, true, CommandTable, CommandColumn),
 	)
 }
-func newAntStep() *sqlgraph.Step {
+func newAgentStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AntInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, AntTable, AntColumn),
+		sqlgraph.To(AgentInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AgentTable, AgentColumn),
 	)
 }
 func newBlobberArgsStep() *sqlgraph.Step {

@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/message"
 	"github.com/PicoTools/pico/internal/ent/operator"
@@ -24,9 +24,9 @@ type CommandCreate struct {
 	hooks    []Hook
 }
 
-// SetAntID sets the "ant_id" field.
-func (cc *CommandCreate) SetAntID(u uint32) *CommandCreate {
-	cc.mutation.SetAntID(u)
+// SetAgentID sets the "agent_id" field.
+func (cc *CommandCreate) SetAgentID(u uint32) *CommandCreate {
+	cc.mutation.SetAgentID(u)
 	return cc
 }
 
@@ -82,9 +82,9 @@ func (cc *CommandCreate) SetID(i int64) *CommandCreate {
 	return cc
 }
 
-// SetAnt sets the "ant" edge to the Ant entity.
-func (cc *CommandCreate) SetAnt(a *Ant) *CommandCreate {
-	return cc.SetAntID(a.ID)
+// SetAgent sets the "agent" edge to the Agent entity.
+func (cc *CommandCreate) SetAgent(a *Agent) *CommandCreate {
+	return cc.SetAgentID(a.ID)
 }
 
 // SetOperatorID sets the "operator" edge to the Operator entity by ID.
@@ -171,8 +171,8 @@ func (cc *CommandCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CommandCreate) check() error {
-	if _, ok := cc.mutation.AntID(); !ok {
-		return &ValidationError{Name: "ant_id", err: errors.New(`ent: missing required field "Command.ant_id"`)}
+	if _, ok := cc.mutation.AgentID(); !ok {
+		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "Command.agent_id"`)}
 	}
 	if _, ok := cc.mutation.Cmd(); !ok {
 		return &ValidationError{Name: "cmd", err: errors.New(`ent: missing required field "Command.cmd"`)}
@@ -191,8 +191,8 @@ func (cc *CommandCreate) check() error {
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Command.created_at"`)}
 	}
-	if len(cc.mutation.AntIDs()) == 0 {
-		return &ValidationError{Name: "ant", err: errors.New(`ent: missing required edge "Command.ant"`)}
+	if len(cc.mutation.AgentIDs()) == 0 {
+		return &ValidationError{Name: "agent", err: errors.New(`ent: missing required edge "Command.agent"`)}
 	}
 	if len(cc.mutation.OperatorIDs()) == 0 {
 		return &ValidationError{Name: "operator", err: errors.New(`ent: missing required edge "Command.operator"`)}
@@ -245,21 +245,21 @@ func (cc *CommandCreate) createSpec() (*Command, *sqlgraph.CreateSpec) {
 		_spec.SetField(command.FieldClosedAt, field.TypeTime, value)
 		_node.ClosedAt = value
 	}
-	if nodes := cc.mutation.AntIDs(); len(nodes) > 0 {
+	if nodes := cc.mutation.AgentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   command.AntTable,
-			Columns: []string{command.AntColumn},
+			Table:   command.AgentTable,
+			Columns: []string{command.AgentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(ant.FieldID, field.TypeUint32),
+				IDSpec: sqlgraph.NewFieldSpec(agent.FieldID, field.TypeUint32),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.AntID = nodes[0]
+		_node.AgentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := cc.mutation.OperatorIDs(); len(nodes) > 0 {

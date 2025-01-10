@@ -209,11 +209,11 @@ func (s *server) SubscribeListeners(req *operatorv1.SubscribeListenersRequest, s
 	}
 }
 
-// SubscribeListeners subscribes operator for gathering events associated with ants
-func (s *server) SubscribeAnts(req *operatorv1.SubscribeAntsRequest, stream operatorv1.OperatorService_SubscribeAntsServer) error {
+// SubscribeAgents subscribes operator for gathering events associated with agents
+func (s *server) SubscribeAgents(req *operatorv1.SubscribeAgentsRequest, stream operatorv1.OperatorService_SubscribeAgentsServer) error {
 	ctx := stream.Context()
 	username := grpcauth.OperatorFromCtx(ctx)
-	lg := s.lg.Named("SubscribeAnts").With(zap.String("username", username))
+	lg := s.lg.Named("SubscribeAgents").With(zap.String("username", username))
 	cookie := req.GetCookie().GetValue()
 
 	// check if username and cookie are valid session identifiers
@@ -223,32 +223,32 @@ func (s *server) SubscribeAnts(req *operatorv1.SubscribeAntsRequest, stream oper
 	}
 
 	// check if operator already exists in subscription topic
-	if pools.Pool.Ants.Exists(username) {
+	if pools.Pool.Agents.Exists(username) {
 		lg.Warn(picoErrors.OperatorAlreadyConnected)
 		return status.Error(codes.AlreadyExists, picoErrors.OperatorAlreadyConnected)
 	}
 
 	// save operator's session for subscription
-	pools.Pool.Ants.Add(cookie, username, stream)
+	pools.Pool.Agents.Add(cookie, username, stream)
 
 	defer func() {
 		// remove operator's session from subscription
-		pools.Pool.Ants.Remove(cookie)
+		pools.Pool.Agents.Remove(cookie)
 	}()
 
 	lg.Info(events.OperatorSubscribed)
 
-	// query all ants from database
-	ants, err := s.db.Ant.Query().WithListener().All(ctx)
+	// query all agents from database
+	agents, err := s.db.Agent.Query().WithListener().All(ctx)
 	if err != nil {
-		lg.Error(picoErrors.QueryAnts, zap.Error(err))
+		lg.Error(picoErrors.QueryAgents, zap.Error(err))
 		return status.Error(codes.Internal, picoErrors.Internal)
 	}
 	// split list by chunks and send to operator
-	for _, chunk := range utils.ChunkBy(ants, constants.MaxObjectChunks) {
-		if err = stream.Send(&operatorv1.SubscribeAntsResponse{
-			Response: &operatorv1.SubscribeAntsResponse_Ants{
-				Ants: pools.ToAntsResponse(chunk),
+	for _, chunk := range utils.ChunkBy(agents, constants.MaxObjectChunks) {
+		if err = stream.Send(&operatorv1.SubscribeAgentsResponse{
+			Response: &operatorv1.SubscribeAgentsResponse_Agents{
+				Agents: pools.ToAgentsResponse(chunk),
 			},
 		}); err != nil {
 			lg.Error(picoErrors.SendListener, zap.Error(err))
@@ -257,7 +257,7 @@ func (s *server) SubscribeAnts(req *operatorv1.SubscribeAntsRequest, stream oper
 	}
 
 	// get subscription's data
-	val := pools.Pool.Ants.Get(cookie)
+	val := pools.Pool.Agents.Get(cookie)
 	if val == nil {
 		lg.Error(picoErrors.GetSubscriptionData)
 		return status.Error(codes.Internal, picoErrors.GetSubscriptionData)
@@ -497,23 +497,23 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 				return errors.New(picoErrors.InvalidSessionCookie)
 			}
 
-			// add ant for operator's polling
+			// add agent for operator's polling
 			if msg.GetStart() != nil {
-				// query ant
-				ant, err := s.db.Ant.Get(ctx, msg.GetStart().GetId())
+				// query agent
+				agent, err := s.db.Agent.Get(ctx, msg.GetStart().GetId())
 				if err != nil {
 					if ent.IsNotFound(err) {
-						lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-						return status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+						lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+						return status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 					}
-					lg.Error(picoErrors.QueryAnt, zap.Error(err))
+					lg.Error(picoErrors.QueryAgent, zap.Error(err))
 					return status.Error(codes.Internal, picoErrors.Internal)
 				}
-				// query all commands for ant
+				// query all commands for agent
 				commands, err := s.db.Command.
 					Query().
 					WithOperator().
-					Where(command.AntIDEQ(ant.ID)).
+					Where(command.AgentIDEQ(agent.ID)).
 					// skip invisible for operator commands
 					Where(command.Not(command.And(
 						command.AuthorIDNEQ(operator.ID),
@@ -535,7 +535,7 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 						Type: &operatorv1.SubscribeTasksResponse_Command{
 							Command: &operatorv1.CommandResponse{
 								Id:      command.ID,
-								Aid:     ant.ID,
+								Aid:     agent.ID,
 								Cmd:     command.Cmd,
 								Author:  commandOperator.Username,
 								Created: timestamppb.New(command.CreatedAt),
@@ -561,7 +561,7 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 								Message: &operatorv1.MessageResponse{
 									Id:      command.ID,
 									Mid:     int64(commandMessage.ID),
-									Aid:     ant.ID,
+									Aid:     agent.ID,
 									Type:    uint32(commandMessage.Type),
 									Message: commandMessage.Message,
 									Created: timestamppb.New(commandMessage.CreatedAt),
@@ -585,7 +585,7 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 						taskRep := &operatorv1.TaskResponse{
 							Id:        command.ID,
 							Tid:       commandTask.ID,
-							Aid:       ant.ID,
+							Aid:       agent.ID,
 							Status:    uint32(commandTask.Status),
 							OutputBig: commandTask.OutputBig,
 							Created:   timestamppb.New(commandTask.CreatedAt),
@@ -614,13 +614,13 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 						}
 					}
 				}
-				// add ant to operator's polling
-				pools.Pool.Tasks.AddAnt(cookie, msg.GetStart().GetId())
+				// add agent to operator's polling
+				pools.Pool.Tasks.AddAgent(cookie, msg.GetStart().GetId())
 			}
 
-			// remove ant from operator's polling
+			// remove agent from operator's polling
 			if msg.GetStop() != nil {
-				pools.Pool.Tasks.DeleteAnt(cookie, msg.GetStop().GetId())
+				pools.Pool.Tasks.DeleteAgent(cookie, msg.GetStop().GetId())
 			}
 		}
 	})
@@ -965,10 +965,10 @@ func (s *server) SetListenersNote(ctx context.Context, req *operatorv1.SetListen
 	return &operatorv1.SetListenersNoteResponse{}, nil
 }
 
-// SetAntColor sets color to ant
-func (s *server) SetAntColor(ctx context.Context, req *operatorv1.SetAntColorRequest) (*operatorv1.SetAntColorResponse, error) {
+// SetAgentColor sets color to agent
+func (s *server) SetAgentColor(ctx context.Context, req *operatorv1.SetAgentColorRequest) (*operatorv1.SetAgentColorResponse, error) {
 	username := grpcauth.OperatorFromCtx(ctx)
-	lg := s.lg.Named("SetAntColor").With(zap.String("username", username))
+	lg := s.lg.Named("SetAgentColor").With(zap.String("username", username))
 	cookie := req.GetCookie().GetValue()
 
 	// check if username and cookie are valid session identifiers
@@ -977,32 +977,32 @@ func (s *server) SetAntColor(ctx context.Context, req *operatorv1.SetAntColorReq
 		return nil, status.Error(codes.PermissionDenied, picoErrors.InvalidSessionCookie)
 	}
 
-	// query ant
-	ant, err := s.db.Ant.Get(ctx, req.GetId())
+	// query agent
+	agent, err := s.db.Agent.Get(ctx, req.GetId())
 	if err != nil {
 		if ent.IsNotFound(err) {
-			lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
-		lg.Error(picoErrors.QueryAnt, zap.Error(err))
+		lg.Error(picoErrors.QueryAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 	// update color
-	if ant, err = ant.Update().SetColor(req.GetColor().GetValue()).Save(ctx); err != nil {
-		lg.Error(picoErrors.UpdateAnt, zap.Error(err))
+	if agent, err = agent.Update().SetColor(req.GetColor().GetValue()).Save(ctx); err != nil {
+		lg.Error(picoErrors.UpdateAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
-	// notify operators about ant's color update
-	go pools.Pool.Ants.Send(pools.ToAntColorResponse(ant))
+	// notify operators about agent's color update
+	go pools.Pool.Agents.Send(pools.ToAgentColorResponse(agent))
 
-	return &operatorv1.SetAntColorResponse{}, nil
+	return &operatorv1.SetAgentColorResponse{}, nil
 }
 
-// SetAntsColor sets color to list of ants
-func (s *server) SetAntsColor(ctx context.Context, req *operatorv1.SetAntsColorRequest) (*operatorv1.SetAntsColorResponse, error) {
+// SetAgentsColor sets color to list of agents
+func (s *server) SetAgentsColor(ctx context.Context, req *operatorv1.SetAgentsColorRequest) (*operatorv1.SetAgentsColorResponse, error) {
 	username := grpcauth.OperatorFromCtx(ctx)
-	lg := s.lg.Named("SetAntsColor").With(zap.String("username", username))
+	lg := s.lg.Named("SetAgentsColor").With(zap.String("username", username))
 	cookie := req.GetCookie().GetValue()
 
 	// check if username and cookie are valid session identifiers
@@ -1012,33 +1012,33 @@ func (s *server) SetAntsColor(ctx context.Context, req *operatorv1.SetAntsColorR
 	}
 
 	for _, id := range req.GetIds() {
-		// query ant
-		ant, err := s.db.Ant.Get(ctx, id)
+		// query agent
+		agent, err := s.db.Agent.Get(ctx, id)
 		if err != nil {
 			if ent.IsNotFound(err) {
-				lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-				return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+				lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+				return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 			}
-			lg.Error(picoErrors.QueryAnt, zap.Error(err))
+			lg.Error(picoErrors.QueryAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		}
 		// update color
-		if ant, err = ant.Update().SetColor(req.GetColor().GetValue()).Save(ctx); err != nil {
-			lg.Error(picoErrors.UpdateAnt, zap.Error(err))
+		if agent, err = agent.Update().SetColor(req.GetColor().GetValue()).Save(ctx); err != nil {
+			lg.Error(picoErrors.UpdateAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		}
 
-		// notify operators about ant's color update
-		go pools.Pool.Ants.Send(pools.ToAntColorResponse(ant))
+		// notify operators about agent's color update
+		go pools.Pool.Agents.Send(pools.ToAgentColorResponse(agent))
 	}
 
-	return &operatorv1.SetAntsColorResponse{}, nil
+	return &operatorv1.SetAgentsColorResponse{}, nil
 }
 
-// SetAntNote set note to ant
-func (s *server) SetAntNote(ctx context.Context, req *operatorv1.SetAntNoteRequest) (*operatorv1.SetAntNoteResponse, error) {
+// SetAgentNote set note to agent
+func (s *server) SetAgentNote(ctx context.Context, req *operatorv1.SetAgentNoteRequest) (*operatorv1.SetAgentNoteResponse, error) {
 	username := grpcauth.OperatorFromCtx(ctx)
-	lg := s.lg.Named("SetAntNote").With(zap.String("username", username))
+	lg := s.lg.Named("SetAgentNote").With(zap.String("username", username))
 	cookie := req.GetCookie().GetValue()
 
 	// check if username and cookie are valid session identifiers
@@ -1047,32 +1047,32 @@ func (s *server) SetAntNote(ctx context.Context, req *operatorv1.SetAntNoteReque
 		return nil, status.Error(codes.PermissionDenied, picoErrors.InvalidSessionCookie)
 	}
 
-	// query ant
-	ant, err := s.db.Ant.Get(ctx, req.GetId())
+	// query agent
+	agent, err := s.db.Agent.Get(ctx, req.GetId())
 	if err != nil {
 		if ent.IsNotFound(err) {
-			lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
-		lg.Error(picoErrors.QueryAnt, zap.Error(err))
+		lg.Error(picoErrors.QueryAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 	// update note
-	if ant, err = ant.Update().SetNote(req.GetNote()).Save(ctx); err != nil {
-		lg.Error(picoErrors.UpdateAnt, zap.Error(err))
+	if agent, err = agent.Update().SetNote(req.GetNote()).Save(ctx); err != nil {
+		lg.Error(picoErrors.UpdateAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
-	// notify operators about ant's note update
-	go pools.Pool.Ants.Send(pools.ToAntNoteResponse(ant))
+	// notify operators about agent's note update
+	go pools.Pool.Agents.Send(pools.ToAgentNoteResponse(agent))
 
-	return &operatorv1.SetAntNoteResponse{}, nil
+	return &operatorv1.SetAgentNoteResponse{}, nil
 }
 
-// SetAntNote set note to list of ants
-func (s *server) SetAntsNote(ctx context.Context, req *operatorv1.SetAntsNoteRequest) (*operatorv1.SetAntsNoteResponse, error) {
+// SetAgentNote set note to list of agents
+func (s *server) SetAgentsNote(ctx context.Context, req *operatorv1.SetAgentsNoteRequest) (*operatorv1.SetAgentsNoteResponse, error) {
 	username := grpcauth.OperatorFromCtx(ctx)
-	lg := s.lg.Named("SetAntsNote").With(zap.String("username", username))
+	lg := s.lg.Named("SetAgentsNote").With(zap.String("username", username))
 	cookie := req.GetCookie().GetValue()
 
 	// check if username and cookie are valid session identifiers
@@ -1082,27 +1082,27 @@ func (s *server) SetAntsNote(ctx context.Context, req *operatorv1.SetAntsNoteReq
 	}
 
 	for _, id := range req.GetIds() {
-		// query ant
-		ant, err := s.db.Ant.Get(ctx, id)
+		// query agent
+		agent, err := s.db.Agent.Get(ctx, id)
 		if err != nil {
 			if ent.IsNotFound(err) {
-				lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-				return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+				lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+				return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 			}
-			lg.Error(picoErrors.QueryAnt, zap.Error(err))
+			lg.Error(picoErrors.QueryAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		}
 		// update note
-		if ant, err = ant.Update().SetNote(req.GetNote()).Save(ctx); err != nil {
-			lg.Error(picoErrors.UpdateAnt, zap.Error(err))
+		if agent, err = agent.Update().SetNote(req.GetNote()).Save(ctx); err != nil {
+			lg.Error(picoErrors.UpdateAgent, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		}
 
-		// notify operators about ant's note update
-		go pools.Pool.Ants.Send(pools.ToAntNoteResponse(ant))
+		// notify operators about agent's note update
+		go pools.Pool.Agents.Send(pools.ToAgentNoteResponse(agent))
 	}
 
-	return &operatorv1.SetAntsNoteResponse{}, nil
+	return &operatorv1.SetAgentsNoteResponse{}, nil
 }
 
 // SetOperatorColor sets color to operator
@@ -1132,7 +1132,7 @@ func (s *server) SetOperatorColor(ctx context.Context, req *operatorv1.SetOperat
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
-	// notify operators about ant's color update
+	// notify operators about agent's color update
 	go pools.Pool.Operators.Send(pools.ToOperatorColorResponse(operator))
 
 	return &operatorv1.SetOperatorColorResponse{}, nil
@@ -1166,7 +1166,7 @@ func (s *server) SetOperatorsColor(ctx context.Context, req *operatorv1.SetOpera
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		}
 
-		// notify operators about ant's color update
+		// notify operators about agent's color update
 		go pools.Pool.Operators.Send(pools.ToOperatorColorResponse(operator))
 	}
 
@@ -1310,20 +1310,20 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 		lg.Error(picoErrors.QueryOperator, zap.Error(err))
 		return status.Error(codes.Internal, picoErrors.Internal)
 	}
-	// query ant
-	ant, err := s.db.Ant.Get(ctx, val.GetCommand().GetId())
+	// query agent
+	agent, err := s.db.Agent.Get(ctx, val.GetCommand().GetId())
 	if err != nil {
 		if ent.IsNotFound(err) {
-			lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-			return status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+			return status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
-		lg.Error(picoErrors.QueryAnt, zap.Error(err))
+		lg.Error(picoErrors.QueryAgent, zap.Error(err))
 		return status.Error(codes.Internal, picoErrors.Internal)
 	}
 	// create new command
 	command, err := s.db.Command.
 		Create().
-		SetAnt(ant).
+		SetAgent(agent).
 		SetOperator(operator).
 		SetCmd(val.GetCommand().GetCmd()).
 		SetVisible(val.GetCommand().GetVisible()).
@@ -1336,7 +1336,7 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 	// notify operators with commands update
 	go pools.Pool.Tasks.Send(&operatorv1.CommandResponse{
 		Id:      command.ID,
-		Aid:     ant.ID,
+		Aid:     agent.ID,
 		Cmd:     command.Cmd,
 		Author:  operator.Username,
 		Created: timestamppb.New(command.CreatedAt),
@@ -1384,7 +1384,7 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 			// notify operators with command's updates
 			go pools.Pool.Tasks.Send(&operatorv1.MessageResponse{
 				Id:      int64(command.ID),
-				Aid:     ant.ID,
+				Aid:     agent.ID,
 				Mid:     int64(m.ID),
 				Type:    uint32(m.Type),
 				Message: m.Message,
@@ -1439,8 +1439,8 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 				raw, err = cap.Marshal(msg.GetTask().GetUpload())
 			case shared.CapPause:
 				raw, err = cap.Marshal(msg.GetTask().GetPause())
-			case shared.CapDestruct:
-				raw, err = cap.Marshal(msg.GetTask().GetDestruct())
+			case shared.CapDestroy:
+				raw, err = cap.Marshal(msg.GetTask().GetDestroy())
 			case shared.CapExecDetach:
 				raw, err = cap.Marshal(msg.GetTask().GetExecDetach())
 			case shared.CapShell:
@@ -1481,7 +1481,7 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 			// create taks
 			task, err := s.db.Task.
 				Create().
-				SetAnt(ant).
+				SetAgent(agent).
 				SetCommand(command).
 				SetBlobberArgs(blob).
 				SetCap(cap).
@@ -1496,7 +1496,7 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 			go pools.Pool.Tasks.Send(&operatorv1.TaskResponse{
 				Id:        int64(command.ID),
 				Tid:       int64(task.ID),
-				Aid:       ant.ID,
+				Aid:       agent.ID,
 				Status:    uint32(task.Status),
 				Created:   timestamppb.New(task.CreatedAt),
 				OutputBig: false,
@@ -1520,14 +1520,14 @@ func (s *server) CancelTasks(ctx context.Context, req *operatorv1.CancelTasksReq
 		return nil, status.Error(codes.PermissionDenied, picoErrors.InvalidSessionCookie)
 	}
 
-	// query ant
-	ant, err := s.db.Ant.Get(ctx, req.GetId())
+	// query agent
+	agent, err := s.db.Agent.Get(ctx, req.GetId())
 	if err != nil {
 		if ent.IsNotFound(err) {
-			lg.Warn(picoErrors.UnknownAnt, zap.Error(err))
-			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAnt)
+			lg.Warn(picoErrors.UnknownAgent, zap.Error(err))
+			return nil, status.Error(codes.InvalidArgument, picoErrors.UnknownAgent)
 		}
-		lg.Error(picoErrors.QueryAnt, zap.Error(err))
+		lg.Error(picoErrors.QueryAgent, zap.Error(err))
 		return nil, status.Error(codes.Internal, picoErrors.Internal)
 	}
 
@@ -1549,7 +1549,7 @@ func (s *server) CancelTasks(ctx context.Context, req *operatorv1.CancelTasksReq
 		}).
 		Order(task.ByCreatedAt()).
 		Where(task.StatusEQ(shared.StatusNew)).
-		Where(task.AntIDEQ(ant.ID)).
+		Where(task.AgentIDEQ(agent.ID)).
 		All(ctx)
 	if err != nil {
 		lg.Error(picoErrors.QueryCommandTasks, zap.Error(err))
@@ -1570,7 +1570,7 @@ func (s *server) CancelTasks(ctx context.Context, req *operatorv1.CancelTasksReq
 		// notify operators with task updates
 		go pools.Pool.Tasks.Send(&operatorv1.TaskStatusResponse{
 			Id:     task.CommandID,
-			Aid:    ant.ID,
+			Aid:    agent.ID,
 			Tid:    task.ID,
 			Status: uint32(task.Status),
 		})
@@ -1613,9 +1613,9 @@ func (s *server) GetTaskOutput(ctx context.Context, req *operatorv1.GetTaskOutpu
 		if !ent.IsNotFound(err) {
 			lg.Error(picoErrors.QueryBlob, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			data = blob.Blob
 		}
+	} else {
+		data = blob.Blob
 	}
 
 	return &operatorv1.GetTaskOutputResponse{

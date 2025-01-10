@@ -55,9 +55,9 @@ func IDLTE(id int64) predicate.Command {
 	return predicate.Command(sql.FieldLTE(FieldID, id))
 }
 
-// AntID applies equality check predicate on the "ant_id" field. It's identical to AntIDEQ.
-func AntID(v uint32) predicate.Command {
-	return predicate.Command(sql.FieldEQ(FieldAntID, v))
+// AgentID applies equality check predicate on the "agent_id" field. It's identical to AgentIDEQ.
+func AgentID(v uint32) predicate.Command {
+	return predicate.Command(sql.FieldEQ(FieldAgentID, v))
 }
 
 // Cmd applies equality check predicate on the "cmd" field. It's identical to CmdEQ.
@@ -85,24 +85,24 @@ func ClosedAt(v time.Time) predicate.Command {
 	return predicate.Command(sql.FieldEQ(FieldClosedAt, v))
 }
 
-// AntIDEQ applies the EQ predicate on the "ant_id" field.
-func AntIDEQ(v uint32) predicate.Command {
-	return predicate.Command(sql.FieldEQ(FieldAntID, v))
+// AgentIDEQ applies the EQ predicate on the "agent_id" field.
+func AgentIDEQ(v uint32) predicate.Command {
+	return predicate.Command(sql.FieldEQ(FieldAgentID, v))
 }
 
-// AntIDNEQ applies the NEQ predicate on the "ant_id" field.
-func AntIDNEQ(v uint32) predicate.Command {
-	return predicate.Command(sql.FieldNEQ(FieldAntID, v))
+// AgentIDNEQ applies the NEQ predicate on the "agent_id" field.
+func AgentIDNEQ(v uint32) predicate.Command {
+	return predicate.Command(sql.FieldNEQ(FieldAgentID, v))
 }
 
-// AntIDIn applies the In predicate on the "ant_id" field.
-func AntIDIn(vs ...uint32) predicate.Command {
-	return predicate.Command(sql.FieldIn(FieldAntID, vs...))
+// AgentIDIn applies the In predicate on the "agent_id" field.
+func AgentIDIn(vs ...uint32) predicate.Command {
+	return predicate.Command(sql.FieldIn(FieldAgentID, vs...))
 }
 
-// AntIDNotIn applies the NotIn predicate on the "ant_id" field.
-func AntIDNotIn(vs ...uint32) predicate.Command {
-	return predicate.Command(sql.FieldNotIn(FieldAntID, vs...))
+// AgentIDNotIn applies the NotIn predicate on the "agent_id" field.
+func AgentIDNotIn(vs ...uint32) predicate.Command {
+	return predicate.Command(sql.FieldNotIn(FieldAgentID, vs...))
 }
 
 // CmdEQ applies the EQ predicate on the "cmd" field.
@@ -290,21 +290,21 @@ func ClosedAtNotNil() predicate.Command {
 	return predicate.Command(sql.FieldNotNull(FieldClosedAt))
 }
 
-// HasAnt applies the HasEdge predicate on the "ant" edge.
-func HasAnt() predicate.Command {
+// HasAgent applies the HasEdge predicate on the "agent" edge.
+func HasAgent() predicate.Command {
 	return predicate.Command(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, AntTable, AntColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, AgentTable, AgentColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasAntWith applies the HasEdge predicate on the "ant" edge with a given conditions (other predicates).
-func HasAntWith(preds ...predicate.Ant) predicate.Command {
+// HasAgentWith applies the HasEdge predicate on the "agent" edge with a given conditions (other predicates).
+func HasAgentWith(preds ...predicate.Agent) predicate.Command {
 	return predicate.Command(func(s *sql.Selector) {
-		step := newAntStep()
+		step := newAgentStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

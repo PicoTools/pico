@@ -47,20 +47,20 @@ type Listener struct {
 
 // ListenerEdges holds the relations/edges for other nodes in the graph.
 type ListenerEdges struct {
-	// Ant holds the value of the ant edge.
-	Ant []*Ant `json:"ant,omitempty"`
+	// Agent holds the value of the agent edge.
+	Agent []*Agent `json:"agent,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// AntOrErr returns the Ant value or an error if the edge
+// AgentOrErr returns the Agent value or an error if the edge
 // was not loaded in eager-loading.
-func (e ListenerEdges) AntOrErr() ([]*Ant, error) {
+func (e ListenerEdges) AgentOrErr() ([]*Agent, error) {
 	if e.loadedTypes[0] {
-		return e.Ant, nil
+		return e.Agent, nil
 	}
-	return nil, &NotLoadedError{edge: "ant"}
+	return nil, &NotLoadedError{edge: "agent"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -170,9 +170,9 @@ func (l *Listener) Value(name string) (ent.Value, error) {
 	return l.selectValues.Get(name)
 }
 
-// QueryAnt queries the "ant" edge of the Listener entity.
-func (l *Listener) QueryAnt() *AntQuery {
-	return NewListenerClient(l.config).QueryAnt(l)
+// QueryAgent queries the "agent" edge of the Listener entity.
+func (l *Listener) QueryAgent() *AgentQuery {
+	return NewListenerClient(l.config).QueryAgent(l)
 }
 
 // Update returns a builder for updating this Listener.

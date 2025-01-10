@@ -1,4 +1,4 @@
-# ariga.io/atlas v0.29.1
+# ariga.io/atlas v0.30.0
 ## explicit; go 1.22.7
 ariga.io/atlas/schemahcl
 ariga.io/atlas/sql/internal/specutil
@@ -27,7 +27,7 @@ entgo.io/ent/schema/edge
 entgo.io/ent/schema/field
 entgo.io/ent/schema/index
 entgo.io/ent/schema/mixin
-# github.com/PicoTools/pico-shared v0.0.0-20241225170905-6d74ff429c94
+# github.com/PicoTools/pico-shared v0.0.0-20250110194042-a88bd413c139
 ## explicit; go 1.23.4
 github.com/PicoTools/pico-shared/proto/gen/common/v1
 github.com/PicoTools/pico-shared/proto/gen/listener/v1
@@ -55,7 +55,7 @@ github.com/dustin/go-humanize
 # github.com/fatih/color v1.18.0
 ## explicit; go 1.17
 github.com/fatih/color
-# github.com/gabriel-vasile/mimetype v1.4.7
+# github.com/gabriel-vasile/mimetype v1.4.8
 ## explicit; go 1.20
 github.com/gabriel-vasile/mimetype
 github.com/gabriel-vasile/mimetype/internal/charset
@@ -64,7 +64,7 @@ github.com/gabriel-vasile/mimetype/internal/magic
 # github.com/go-faster/errors v0.7.1
 ## explicit; go 1.20
 github.com/go-faster/errors
-# github.com/go-faster/sdk v0.15.2
+# github.com/go-faster/sdk v0.18.0
 ## explicit; go 1.22.7
 github.com/go-faster/sdk/zctx
 # github.com/go-openapi/inflect v0.21.0
@@ -146,7 +146,7 @@ github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
-# github.com/zclconf/go-cty v1.15.1
+# github.com/zclconf/go-cty v1.16.0
 ## explicit; go 1.18
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
@@ -180,16 +180,16 @@ go.uber.org/zap/internal/exit
 go.uber.org/zap/internal/pool
 go.uber.org/zap/internal/stacktrace
 go.uber.org/zap/zapcore
-# golang.org/x/crypto v0.31.0
+# golang.org/x/crypto v0.32.0
 ## explicit; go 1.20
 golang.org/x/crypto/sha3
-# golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67
+# golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 ## explicit; go 1.22.0
 golang.org/x/exp/constraints
 # golang.org/x/mod v0.22.0
 ## explicit; go 1.22.0
 golang.org/x/mod/semver
-# golang.org/x/net v0.33.0
+# golang.org/x/net v0.34.0
 ## explicit; go 1.18
 golang.org/x/net/html
 golang.org/x/net/html/atom
@@ -202,13 +202,13 @@ golang.org/x/net/trace
 # golang.org/x/sync v0.10.0
 ## explicit; go 1.18
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.28.0
+# golang.org/x/sys v0.29.0
 ## explicit; go 1.18
 golang.org/x/sys/cpu
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.27.0
+# golang.org/x/term v0.28.0
 ## explicit; go 1.18
 golang.org/x/term
 # golang.org/x/text v0.21.0
@@ -221,7 +221,7 @@ golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
-# golang.org/x/tools v0.28.0
+# golang.org/x/tools v0.29.0
 ## explicit; go 1.22.0
 golang.org/x/tools/cmd/stringer
 golang.org/x/tools/go/gcexportdata
@@ -241,8 +241,8 @@ golang.org/x/tools/internal/stdlib
 golang.org/x/tools/internal/typeparams
 golang.org/x/tools/internal/typesinternal
 golang.org/x/tools/internal/versions
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20241216192217-9240e9c98484
-## explicit; go 1.21
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20250106144421-5f5ef82da422
+## explicit; go 1.22
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.69.2
 ## explicit; go 1.22
@@ -303,7 +303,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.36.1
+# google.golang.org/protobuf v1.36.2
 ## explicit; go 1.21
 google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
@@ -342,10 +342,10 @@ google.golang.org/protobuf/types/known/timestamppb
 google.golang.org/protobuf/types/known/wrapperspb
 # gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
 ## explicit; go 1.11
-# modernc.org/gc/v3 v3.0.0-20241213165251-3bc300f6d0c9
-## explicit; go 1.20
+# modernc.org/gc/v3 v3.0.0-20250105121824-520be1a3aee6
+## explicit; go 1.22.0
 modernc.org/gc/v3
-# modernc.org/libc v1.61.4
+# modernc.org/libc v1.61.7
 ## explicit; go 1.21
 modernc.org/libc
 modernc.org/libc/errno
@@ -373,18 +373,18 @@ modernc.org/libc/utime
 modernc.org/libc/uuid
 modernc.org/libc/uuid/uuid
 modernc.org/libc/wctype
-# modernc.org/mathutil v1.6.0
-## explicit; go 1.18
+# modernc.org/mathutil v1.7.1
+## explicit; go 1.21
 modernc.org/mathutil
-# modernc.org/memory v1.8.0
-## explicit; go 1.18
+# modernc.org/memory v1.8.1
+## explicit; go 1.21
 modernc.org/memory
-# modernc.org/sqlite v1.34.3
+# modernc.org/sqlite v1.34.4
 ## explicit; go 1.21
 modernc.org/sqlite
 modernc.org/sqlite/lib
-# modernc.org/strutil v1.2.0
-## explicit; go 1.18
+# modernc.org/strutil v1.2.1
+## explicit; go 1.21
 modernc.org/strutil
 # modernc.org/token v1.1.0
 ## explicit

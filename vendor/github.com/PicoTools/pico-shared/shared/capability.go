@@ -3,6 +3,7 @@ package shared
 import (
 	"database/sql/driver"
 	"fmt"
+	"sort"
 
 	commonv1 "github.com/PicoTools/pico-shared/proto/gen/common/v1"
 	"google.golang.org/protobuf/proto"
@@ -12,8 +13,8 @@ import (
 type Capability uint32
 
 const (
-	CapSleep              Capability = 0
-	CapKill               Capability = 1
+	CapExit               Capability = 0
+	CapSleep              Capability = 1
 	CapCp                 Capability = 2 << 0
 	CapCd                 Capability = 2 << 1
 	CapWhoami             Capability = 2 << 2
@@ -30,16 +31,16 @@ const (
 	CapShell              Capability = 2 << 13
 	CapShellcodeInjection Capability = 2 << 14
 	CapUpload             Capability = 2 << 15
-	CapExit               Capability = 2 << 16
+	CapKill               Capability = 2 << 16
 	CapMv                 Capability = 2 << 17
-	CapDestruct           Capability = 2 << 18
+	CapDestroy            Capability = 2 << 18
 	CapExecDetach         Capability = 2 << 19
 	CapExecAssembly       Capability = 2 << 20
 	CapPpid               Capability = 2 << 21
 	CapDownload           Capability = 2 << 22
 )
 
-// Values returns list of strings represented names of capability types
+// Values returns list of strings represented names of capabilities types
 func (Capability) Values() []string {
 	return []string{
 		CapSleep.String(),
@@ -65,7 +66,7 @@ func (Capability) Values() []string {
 		CapDownload.String(),
 		CapUpload.String(),
 		CapPause.String(),
-		CapDestruct.String(),
+		CapDestroy.String(),
 		CapExit.String(),
 	}
 }
@@ -79,55 +80,55 @@ func (c Capability) Value() (driver.Value, error) {
 func (c Capability) String() string {
 	switch c {
 	case CapSleep:
-		return "c_sleep"
+		return "cap_sleep"
 	case CapLs:
-		return "c_ls"
+		return "cap_ls"
 	case CapPwd:
-		return "c_pwd"
+		return "cap_pwd"
 	case CapCd:
-		return "c_cd"
+		return "cap_cd"
 	case CapWhoami:
-		return "c_whoami"
+		return "cap_whoami"
 	case CapPs:
-		return "c_ps"
+		return "cap_ps"
 	case CapCat:
-		return "c_cat"
+		return "cap_cat"
 	case CapExec:
-		return "c_exec"
+		return "cap_exec"
 	case CapCp:
-		return "c_cp"
+		return "cap_cp"
 	case CapJobs:
-		return "c_jobs"
+		return "cap_jobs"
 	case CapJobkill:
-		return "c_jobkill"
+		return "cap_jobkill"
 	case CapKill:
-		return "c_kill"
+		return "cap_kill"
 	case CapMv:
-		return "c_mv"
+		return "cap_mv"
 	case CapMkdir:
-		return "c_mkdir"
+		return "cap_mkdir"
 	case CapRm:
-		return "c_rm"
+		return "cap_rm"
 	case CapExecAssembly:
-		return "c_exec_assembly"
+		return "cap_exec_assembly"
 	case CapShell:
-		return "c_shell"
+		return "cap_shell"
 	case CapPpid:
-		return "c_ppid"
+		return "cap_ppid"
 	case CapExecDetach:
-		return "c_exec_detach"
+		return "cap_exec_detach"
 	case CapShellcodeInjection:
-		return "c_shellcode_injection"
+		return "cap_shellcode_injection"
 	case CapDownload:
-		return "c_download"
+		return "cap_download"
 	case CapUpload:
-		return "c_upload"
+		return "cap_upload"
 	case CapPause:
-		return "c_pause"
-	case CapDestruct:
-		return "c_destruct"
+		return "cap_pause"
+	case CapDestroy:
+		return "cap_destroy"
 	case CapExit:
-		return "c_exit"
+		return "cap_exit"
 	default:
 		return "unknown"
 	}
@@ -193,8 +194,8 @@ func (c *Capability) Scan(val any) error {
 		*c = CapUpload
 	case CapPause.String():
 		*c = CapPause
-	case CapDestruct.String():
-		*c = CapDestruct
+	case CapDestroy.String():
+		*c = CapDestroy
 	case CapExit.String():
 		*c = CapExit
 	}
@@ -342,8 +343,8 @@ func (c Capability) Marshal(data any) ([]byte, error) {
 			return nil, fmt.Errorf("%s: invalid argument to marshal", c.String())
 		}
 		return proto.Marshal(v)
-	case CapDestruct:
-		v, ok := data.(*commonv1.CapDestruct)
+	case CapDestroy:
+		v, ok := data.(*commonv1.CapDestroy)
 		if !ok {
 			return nil, fmt.Errorf("%s: invalid argument to marshal", c.String())
 		}
@@ -431,8 +432,8 @@ func (c Capability) Unmarshal(data []byte) (any, error) {
 	case CapPause:
 		v := new(commonv1.CapPause)
 		return v, proto.Unmarshal(data, v)
-	case CapDestruct:
-		v := new(commonv1.CapDestruct)
+	case CapDestroy:
+		v := new(commonv1.CapDestroy)
 		return v, proto.Unmarshal(data, v)
 	case CapExit:
 		v := new(commonv1.CapExit)
@@ -510,8 +511,8 @@ func SupportedCaps(mask uint32) []Capability {
 	if mask&uint32(CapPause) == uint32(CapPause) {
 		t = append(t, CapPause)
 	}
-	if mask&uint32(CapDestruct) == uint32(CapDestruct) {
-		t = append(t, CapDestruct)
+	if mask&uint32(CapDestroy) == uint32(CapDestroy) {
+		t = append(t, CapDestroy)
 	}
 	if mask&uint32(CapExecDetach) == uint32(CapExecDetach) {
 		t = append(t, CapExecDetach)
@@ -525,5 +526,10 @@ func SupportedCaps(mask uint32) []Capability {
 	if mask&uint32(CapExit) == uint32(CapExit) {
 		t = append(t, CapExit)
 	}
+
+	// sort capabilities by theirs values
+	sort.Slice(t, func(i, j int) bool {
+		return t[i] < t[j]
+	})
 	return t
 }

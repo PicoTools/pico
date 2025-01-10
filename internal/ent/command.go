@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/operator"
 )
@@ -19,8 +19,8 @@ type Command struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// ant ID
-	AntID uint32 `json:"ant_id,omitempty"`
+	// agent ID
+	AgentID uint32 `json:"agent_id,omitempty"`
 	// command with arguments
 	Cmd string `json:"cmd,omitempty"`
 	// is group visible for other operators
@@ -39,8 +39,8 @@ type Command struct {
 
 // CommandEdges holds the relations/edges for other nodes in the graph.
 type CommandEdges struct {
-	// Ant holds the value of the ant edge.
-	Ant *Ant `json:"ant,omitempty"`
+	// Agent holds the value of the agent edge.
+	Agent *Agent `json:"agent,omitempty"`
 	// Operator holds the value of the operator edge.
 	Operator *Operator `json:"operator,omitempty"`
 	// Message holds the value of the message edge.
@@ -52,15 +52,15 @@ type CommandEdges struct {
 	loadedTypes [4]bool
 }
 
-// AntOrErr returns the Ant value or an error if the edge
+// AgentOrErr returns the Agent value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e CommandEdges) AntOrErr() (*Ant, error) {
-	if e.Ant != nil {
-		return e.Ant, nil
+func (e CommandEdges) AgentOrErr() (*Agent, error) {
+	if e.Agent != nil {
+		return e.Agent, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: ant.Label}
+		return nil, &NotFoundError{label: agent.Label}
 	}
-	return nil, &NotLoadedError{edge: "ant"}
+	return nil, &NotLoadedError{edge: "agent"}
 }
 
 // OperatorOrErr returns the Operator value or an error if the edge
@@ -99,7 +99,7 @@ func (*Command) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case command.FieldVisible:
 			values[i] = new(sql.NullBool)
-		case command.FieldID, command.FieldAntID, command.FieldAuthorID:
+		case command.FieldID, command.FieldAgentID, command.FieldAuthorID:
 			values[i] = new(sql.NullInt64)
 		case command.FieldCmd:
 			values[i] = new(sql.NullString)
@@ -126,11 +126,11 @@ func (c *Command) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			c.ID = int64(value.Int64)
-		case command.FieldAntID:
+		case command.FieldAgentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field ant_id", values[i])
+				return fmt.Errorf("unexpected type %T for field agent_id", values[i])
 			} else if value.Valid {
-				c.AntID = uint32(value.Int64)
+				c.AgentID = uint32(value.Int64)
 			}
 		case command.FieldCmd:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -175,9 +175,9 @@ func (c *Command) Value(name string) (ent.Value, error) {
 	return c.selectValues.Get(name)
 }
 
-// QueryAnt queries the "ant" edge of the Command entity.
-func (c *Command) QueryAnt() *AntQuery {
-	return NewCommandClient(c.config).QueryAnt(c)
+// QueryAgent queries the "agent" edge of the Command entity.
+func (c *Command) QueryAgent() *AgentQuery {
+	return NewCommandClient(c.config).QueryAgent(c)
 }
 
 // QueryOperator queries the "operator" edge of the Command entity.
@@ -218,8 +218,8 @@ func (c *Command) String() string {
 	var builder strings.Builder
 	builder.WriteString("Command(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
-	builder.WriteString("ant_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.AntID))
+	builder.WriteString("agent_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.AgentID))
 	builder.WriteString(", ")
 	builder.WriteString("cmd=")
 	builder.WriteString(c.Cmd)

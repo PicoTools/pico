@@ -5,7 +5,7 @@ package runtime
 import (
 	"time"
 
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/chat"
 	"github.com/PicoTools/pico/internal/ent/command"
@@ -22,69 +22,69 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	antMixin := schema.Ant{}.Mixin()
-	antMixinHooks0 := antMixin[0].Hooks()
-	ant.Hooks[0] = antMixinHooks0[0]
-	antMixinInters0 := antMixin[0].Interceptors()
-	ant.Interceptors[0] = antMixinInters0[0]
-	antMixinFields0 := antMixin[0].Fields()
-	_ = antMixinFields0
-	antFields := schema.Ant{}.Fields()
-	_ = antFields
-	// antDescCreatedAt is the schema descriptor for created_at field.
-	antDescCreatedAt := antMixinFields0[0].Descriptor()
-	// ant.DefaultCreatedAt holds the default value on creation for the created_at field.
-	ant.DefaultCreatedAt = antDescCreatedAt.Default.(func() time.Time)
-	// antDescUpdatedAt is the schema descriptor for updated_at field.
-	antDescUpdatedAt := antMixinFields0[1].Descriptor()
-	// ant.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	ant.DefaultUpdatedAt = antDescUpdatedAt.Default.(func() time.Time)
-	// ant.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	ant.UpdateDefaultUpdatedAt = antDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// antDescExtIP is the schema descriptor for ext_ip field.
-	antDescExtIP := antFields[2].Descriptor()
-	// ant.ExtIPValidator is a validator for the "ext_ip" field. It is called by the builders before save.
-	ant.ExtIPValidator = antDescExtIP.Validators[0].(func(string) error)
-	// antDescIntIP is the schema descriptor for int_ip field.
-	antDescIntIP := antFields[3].Descriptor()
-	// ant.IntIPValidator is a validator for the "int_ip" field. It is called by the builders before save.
-	ant.IntIPValidator = antDescIntIP.Validators[0].(func(string) error)
-	// antDescOsMeta is the schema descriptor for os_meta field.
-	antDescOsMeta := antFields[5].Descriptor()
-	// ant.OsMetaValidator is a validator for the "os_meta" field. It is called by the builders before save.
-	ant.OsMetaValidator = antDescOsMeta.Validators[0].(func(string) error)
-	// antDescHostname is the schema descriptor for hostname field.
-	antDescHostname := antFields[6].Descriptor()
-	// ant.HostnameValidator is a validator for the "hostname" field. It is called by the builders before save.
-	ant.HostnameValidator = antDescHostname.Validators[0].(func(string) error)
-	// antDescUsername is the schema descriptor for username field.
-	antDescUsername := antFields[7].Descriptor()
-	// ant.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
-	ant.UsernameValidator = antDescUsername.Validators[0].(func(string) error)
-	// antDescDomain is the schema descriptor for domain field.
-	antDescDomain := antFields[8].Descriptor()
-	// ant.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
-	ant.DomainValidator = antDescDomain.Validators[0].(func(string) error)
-	// antDescProcessName is the schema descriptor for process_name field.
-	antDescProcessName := antFields[10].Descriptor()
-	// ant.ProcessNameValidator is a validator for the "process_name" field. It is called by the builders before save.
-	ant.ProcessNameValidator = antDescProcessName.Validators[0].(func(string) error)
-	// antDescFirst is the schema descriptor for first field.
-	antDescFirst := antFields[15].Descriptor()
-	// ant.DefaultFirst holds the default value on creation for the first field.
-	ant.DefaultFirst = antDescFirst.Default.(func() time.Time)
-	// antDescLast is the schema descriptor for last field.
-	antDescLast := antFields[16].Descriptor()
-	// ant.DefaultLast holds the default value on creation for the last field.
-	ant.DefaultLast = antDescLast.Default.(func() time.Time)
-	// antDescNote is the schema descriptor for note field.
-	antDescNote := antFields[18].Descriptor()
-	// ant.NoteValidator is a validator for the "note" field. It is called by the builders before save.
-	ant.NoteValidator = antDescNote.Validators[0].(func(string) error)
-	// antDescColor is the schema descriptor for color field.
-	antDescColor := antFields[19].Descriptor()
-	// ant.DefaultColor holds the default value on creation for the color field.
-	ant.DefaultColor = antDescColor.Default.(uint32)
+	agentMixin := schema.Agent{}.Mixin()
+	agentMixinHooks0 := agentMixin[0].Hooks()
+	agent.Hooks[0] = agentMixinHooks0[0]
+	agentMixinInters0 := agentMixin[0].Interceptors()
+	agent.Interceptors[0] = agentMixinInters0[0]
+	agentMixinFields0 := agentMixin[0].Fields()
+	_ = agentMixinFields0
+	agentFields := schema.Agent{}.Fields()
+	_ = agentFields
+	// agentDescCreatedAt is the schema descriptor for created_at field.
+	agentDescCreatedAt := agentMixinFields0[0].Descriptor()
+	// agent.DefaultCreatedAt holds the default value on creation for the created_at field.
+	agent.DefaultCreatedAt = agentDescCreatedAt.Default.(func() time.Time)
+	// agentDescUpdatedAt is the schema descriptor for updated_at field.
+	agentDescUpdatedAt := agentMixinFields0[1].Descriptor()
+	// agent.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	agent.DefaultUpdatedAt = agentDescUpdatedAt.Default.(func() time.Time)
+	// agent.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	agent.UpdateDefaultUpdatedAt = agentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentDescExtIP is the schema descriptor for ext_ip field.
+	agentDescExtIP := agentFields[2].Descriptor()
+	// agent.ExtIPValidator is a validator for the "ext_ip" field. It is called by the builders before save.
+	agent.ExtIPValidator = agentDescExtIP.Validators[0].(func(string) error)
+	// agentDescIntIP is the schema descriptor for int_ip field.
+	agentDescIntIP := agentFields[3].Descriptor()
+	// agent.IntIPValidator is a validator for the "int_ip" field. It is called by the builders before save.
+	agent.IntIPValidator = agentDescIntIP.Validators[0].(func(string) error)
+	// agentDescOsMeta is the schema descriptor for os_meta field.
+	agentDescOsMeta := agentFields[5].Descriptor()
+	// agent.OsMetaValidator is a validator for the "os_meta" field. It is called by the builders before save.
+	agent.OsMetaValidator = agentDescOsMeta.Validators[0].(func(string) error)
+	// agentDescHostname is the schema descriptor for hostname field.
+	agentDescHostname := agentFields[6].Descriptor()
+	// agent.HostnameValidator is a validator for the "hostname" field. It is called by the builders before save.
+	agent.HostnameValidator = agentDescHostname.Validators[0].(func(string) error)
+	// agentDescUsername is the schema descriptor for username field.
+	agentDescUsername := agentFields[7].Descriptor()
+	// agent.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	agent.UsernameValidator = agentDescUsername.Validators[0].(func(string) error)
+	// agentDescDomain is the schema descriptor for domain field.
+	agentDescDomain := agentFields[8].Descriptor()
+	// agent.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
+	agent.DomainValidator = agentDescDomain.Validators[0].(func(string) error)
+	// agentDescProcessName is the schema descriptor for process_name field.
+	agentDescProcessName := agentFields[10].Descriptor()
+	// agent.ProcessNameValidator is a validator for the "process_name" field. It is called by the builders before save.
+	agent.ProcessNameValidator = agentDescProcessName.Validators[0].(func(string) error)
+	// agentDescFirst is the schema descriptor for first field.
+	agentDescFirst := agentFields[15].Descriptor()
+	// agent.DefaultFirst holds the default value on creation for the first field.
+	agent.DefaultFirst = agentDescFirst.Default.(func() time.Time)
+	// agentDescLast is the schema descriptor for last field.
+	agentDescLast := agentFields[16].Descriptor()
+	// agent.DefaultLast holds the default value on creation for the last field.
+	agent.DefaultLast = agentDescLast.Default.(func() time.Time)
+	// agentDescNote is the schema descriptor for note field.
+	agentDescNote := agentFields[18].Descriptor()
+	// agent.NoteValidator is a validator for the "note" field. It is called by the builders before save.
+	agent.NoteValidator = agentDescNote.Validators[0].(func(string) error)
+	// agentDescColor is the schema descriptor for color field.
+	agentDescColor := agentFields[19].Descriptor()
+	// agent.DefaultColor holds the default value on creation for the color field.
+	agent.DefaultColor = agentDescColor.Default.(uint32)
 	blobberMixin := schema.Blobber{}.Mixin()
 	blobberMixinHooks0 := blobberMixin[0].Hooks()
 	blobber.Hooks[0] = blobberMixinHooks0[0]

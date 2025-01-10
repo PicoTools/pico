@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	OperatorService_Hello_FullMethodName                = "/operator.v1.OperatorService/Hello"
 	OperatorService_SubscribeListeners_FullMethodName   = "/operator.v1.OperatorService/SubscribeListeners"
-	OperatorService_SubscribeAnts_FullMethodName        = "/operator.v1.OperatorService/SubscribeAnts"
+	OperatorService_SubscribeAgents_FullMethodName      = "/operator.v1.OperatorService/SubscribeAgents"
 	OperatorService_SubscribeOperators_FullMethodName   = "/operator.v1.OperatorService/SubscribeOperators"
 	OperatorService_SubscribeChat_FullMethodName        = "/operator.v1.OperatorService/SubscribeChat"
 	OperatorService_SubscribeCredentials_FullMethodName = "/operator.v1.OperatorService/SubscribeCredentials"
@@ -30,10 +30,10 @@ const (
 	OperatorService_SetListenersColor_FullMethodName    = "/operator.v1.OperatorService/SetListenersColor"
 	OperatorService_SetListenerNote_FullMethodName      = "/operator.v1.OperatorService/SetListenerNote"
 	OperatorService_SetListenersNote_FullMethodName     = "/operator.v1.OperatorService/SetListenersNote"
-	OperatorService_SetAntColor_FullMethodName          = "/operator.v1.OperatorService/SetAntColor"
-	OperatorService_SetAntsColor_FullMethodName         = "/operator.v1.OperatorService/SetAntsColor"
-	OperatorService_SetAntNote_FullMethodName           = "/operator.v1.OperatorService/SetAntNote"
-	OperatorService_SetAntsNote_FullMethodName          = "/operator.v1.OperatorService/SetAntsNote"
+	OperatorService_SetAgentColor_FullMethodName        = "/operator.v1.OperatorService/SetAgentColor"
+	OperatorService_SetAgentsColor_FullMethodName       = "/operator.v1.OperatorService/SetAgentsColor"
+	OperatorService_SetAgentNote_FullMethodName         = "/operator.v1.OperatorService/SetAgentNote"
+	OperatorService_SetAgentsNote_FullMethodName        = "/operator.v1.OperatorService/SetAgentsNote"
 	OperatorService_SetOperatorColor_FullMethodName     = "/operator.v1.OperatorService/SetOperatorColor"
 	OperatorService_SetOperatorsColor_FullMethodName    = "/operator.v1.OperatorService/SetOperatorsColor"
 	OperatorService_NewChatMessage_FullMethodName       = "/operator.v1.OperatorService/NewChatMessage"
@@ -58,15 +58,15 @@ type OperatorServiceClient interface {
 	Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HelloResponse], error)
 	// Subscription for gathering listeners information with runtime updates
 	SubscribeListeners(ctx context.Context, in *SubscribeListenersRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeListenersResponse], error)
-	// Subscription for gathering ants information with runtime updates
-	SubscribeAnts(ctx context.Context, in *SubscribeAntsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeAntsResponse], error)
+	// Subscription for gathering agents information with runtime updates
+	SubscribeAgents(ctx context.Context, in *SubscribeAgentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeAgentsResponse], error)
 	// Subscription for gathering operators information with runtime updates
 	SubscribeOperators(ctx context.Context, in *SubscribeOperatorsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeOperatorsResponse], error)
 	// Subscription for gathering chat's messages information with runtime updates
 	SubscribeChat(ctx context.Context, in *SubscribeChatRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeChatResponse], error)
 	// Subscription for gathering credentials information with runtime updates
 	SubscribeCredentials(ctx context.Context, in *SubscribeCredentialsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeCredentialsResponse], error)
-	// Subscription for gathering ans supplying tasks information with runtime updates
+	// Subscription for gathering agent's supplying tasks information with runtime updates
 	SubscribeTasks(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[SubscribeTasksRequest, SubscribeTasksResponse], error)
 	// Update color on listener
 	SetListenerColor(ctx context.Context, in *SetListenerColorRequest, opts ...grpc.CallOption) (*SetListenerColorResponse, error)
@@ -76,14 +76,14 @@ type OperatorServiceClient interface {
 	SetListenerNote(ctx context.Context, in *SetListenerNoteRequest, opts ...grpc.CallOption) (*SetListenerNoteResponse, error)
 	// Update note on list of listeners
 	SetListenersNote(ctx context.Context, in *SetListenersNoteRequest, opts ...grpc.CallOption) (*SetListenersNoteResponse, error)
-	// Update color on ant
-	SetAntColor(ctx context.Context, in *SetAntColorRequest, opts ...grpc.CallOption) (*SetAntColorResponse, error)
-	// Update color on list of ants
-	SetAntsColor(ctx context.Context, in *SetAntsColorRequest, opts ...grpc.CallOption) (*SetAntsColorResponse, error)
-	// Update note on ant
-	SetAntNote(ctx context.Context, in *SetAntNoteRequest, opts ...grpc.CallOption) (*SetAntNoteResponse, error)
-	// Update note on list of ants
-	SetAntsNote(ctx context.Context, in *SetAntsNoteRequest, opts ...grpc.CallOption) (*SetAntsNoteResponse, error)
+	// Update color on agent
+	SetAgentColor(ctx context.Context, in *SetAgentColorRequest, opts ...grpc.CallOption) (*SetAgentColorResponse, error)
+	// Update color on list of agents
+	SetAgentsColor(ctx context.Context, in *SetAgentsColorRequest, opts ...grpc.CallOption) (*SetAgentsColorResponse, error)
+	// Update note on agent
+	SetAgentNote(ctx context.Context, in *SetAgentNoteRequest, opts ...grpc.CallOption) (*SetAgentNoteResponse, error)
+	// Update note on list of agents
+	SetAgentsNote(ctx context.Context, in *SetAgentsNoteRequest, opts ...grpc.CallOption) (*SetAgentsNoteResponse, error)
 	// Update color on operator
 	SetOperatorColor(ctx context.Context, in *SetOperatorColorRequest, opts ...grpc.CallOption) (*SetOperatorColorResponse, error)
 	// Update color on list of operators
@@ -154,13 +154,13 @@ func (c *operatorServiceClient) SubscribeListeners(ctx context.Context, in *Subs
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OperatorService_SubscribeListenersClient = grpc.ServerStreamingClient[SubscribeListenersResponse]
 
-func (c *operatorServiceClient) SubscribeAnts(ctx context.Context, in *SubscribeAntsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeAntsResponse], error) {
+func (c *operatorServiceClient) SubscribeAgents(ctx context.Context, in *SubscribeAgentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeAgentsResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &OperatorService_ServiceDesc.Streams[2], OperatorService_SubscribeAnts_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &OperatorService_ServiceDesc.Streams[2], OperatorService_SubscribeAgents_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[SubscribeAntsRequest, SubscribeAntsResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[SubscribeAgentsRequest, SubscribeAgentsResponse]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -171,7 +171,7 @@ func (c *operatorServiceClient) SubscribeAnts(ctx context.Context, in *Subscribe
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OperatorService_SubscribeAntsClient = grpc.ServerStreamingClient[SubscribeAntsResponse]
+type OperatorService_SubscribeAgentsClient = grpc.ServerStreamingClient[SubscribeAgentsResponse]
 
 func (c *operatorServiceClient) SubscribeOperators(ctx context.Context, in *SubscribeOperatorsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeOperatorsResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -283,40 +283,40 @@ func (c *operatorServiceClient) SetListenersNote(ctx context.Context, in *SetLis
 	return out, nil
 }
 
-func (c *operatorServiceClient) SetAntColor(ctx context.Context, in *SetAntColorRequest, opts ...grpc.CallOption) (*SetAntColorResponse, error) {
+func (c *operatorServiceClient) SetAgentColor(ctx context.Context, in *SetAgentColorRequest, opts ...grpc.CallOption) (*SetAgentColorResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetAntColorResponse)
-	err := c.cc.Invoke(ctx, OperatorService_SetAntColor_FullMethodName, in, out, cOpts...)
+	out := new(SetAgentColorResponse)
+	err := c.cc.Invoke(ctx, OperatorService_SetAgentColor_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *operatorServiceClient) SetAntsColor(ctx context.Context, in *SetAntsColorRequest, opts ...grpc.CallOption) (*SetAntsColorResponse, error) {
+func (c *operatorServiceClient) SetAgentsColor(ctx context.Context, in *SetAgentsColorRequest, opts ...grpc.CallOption) (*SetAgentsColorResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetAntsColorResponse)
-	err := c.cc.Invoke(ctx, OperatorService_SetAntsColor_FullMethodName, in, out, cOpts...)
+	out := new(SetAgentsColorResponse)
+	err := c.cc.Invoke(ctx, OperatorService_SetAgentsColor_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *operatorServiceClient) SetAntNote(ctx context.Context, in *SetAntNoteRequest, opts ...grpc.CallOption) (*SetAntNoteResponse, error) {
+func (c *operatorServiceClient) SetAgentNote(ctx context.Context, in *SetAgentNoteRequest, opts ...grpc.CallOption) (*SetAgentNoteResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetAntNoteResponse)
-	err := c.cc.Invoke(ctx, OperatorService_SetAntNote_FullMethodName, in, out, cOpts...)
+	out := new(SetAgentNoteResponse)
+	err := c.cc.Invoke(ctx, OperatorService_SetAgentNote_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *operatorServiceClient) SetAntsNote(ctx context.Context, in *SetAntsNoteRequest, opts ...grpc.CallOption) (*SetAntsNoteResponse, error) {
+func (c *operatorServiceClient) SetAgentsNote(ctx context.Context, in *SetAgentsNoteRequest, opts ...grpc.CallOption) (*SetAgentsNoteResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetAntsNoteResponse)
-	err := c.cc.Invoke(ctx, OperatorService_SetAntsNote_FullMethodName, in, out, cOpts...)
+	out := new(SetAgentsNoteResponse)
+	err := c.cc.Invoke(ctx, OperatorService_SetAgentsNote_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -447,15 +447,15 @@ type OperatorServiceServer interface {
 	Hello(*HelloRequest, grpc.ServerStreamingServer[HelloResponse]) error
 	// Subscription for gathering listeners information with runtime updates
 	SubscribeListeners(*SubscribeListenersRequest, grpc.ServerStreamingServer[SubscribeListenersResponse]) error
-	// Subscription for gathering ants information with runtime updates
-	SubscribeAnts(*SubscribeAntsRequest, grpc.ServerStreamingServer[SubscribeAntsResponse]) error
+	// Subscription for gathering agents information with runtime updates
+	SubscribeAgents(*SubscribeAgentsRequest, grpc.ServerStreamingServer[SubscribeAgentsResponse]) error
 	// Subscription for gathering operators information with runtime updates
 	SubscribeOperators(*SubscribeOperatorsRequest, grpc.ServerStreamingServer[SubscribeOperatorsResponse]) error
 	// Subscription for gathering chat's messages information with runtime updates
 	SubscribeChat(*SubscribeChatRequest, grpc.ServerStreamingServer[SubscribeChatResponse]) error
 	// Subscription for gathering credentials information with runtime updates
 	SubscribeCredentials(*SubscribeCredentialsRequest, grpc.ServerStreamingServer[SubscribeCredentialsResponse]) error
-	// Subscription for gathering ans supplying tasks information with runtime updates
+	// Subscription for gathering agent's supplying tasks information with runtime updates
 	SubscribeTasks(grpc.BidiStreamingServer[SubscribeTasksRequest, SubscribeTasksResponse]) error
 	// Update color on listener
 	SetListenerColor(context.Context, *SetListenerColorRequest) (*SetListenerColorResponse, error)
@@ -465,14 +465,14 @@ type OperatorServiceServer interface {
 	SetListenerNote(context.Context, *SetListenerNoteRequest) (*SetListenerNoteResponse, error)
 	// Update note on list of listeners
 	SetListenersNote(context.Context, *SetListenersNoteRequest) (*SetListenersNoteResponse, error)
-	// Update color on ant
-	SetAntColor(context.Context, *SetAntColorRequest) (*SetAntColorResponse, error)
-	// Update color on list of ants
-	SetAntsColor(context.Context, *SetAntsColorRequest) (*SetAntsColorResponse, error)
-	// Update note on ant
-	SetAntNote(context.Context, *SetAntNoteRequest) (*SetAntNoteResponse, error)
-	// Update note on list of ants
-	SetAntsNote(context.Context, *SetAntsNoteRequest) (*SetAntsNoteResponse, error)
+	// Update color on agent
+	SetAgentColor(context.Context, *SetAgentColorRequest) (*SetAgentColorResponse, error)
+	// Update color on list of agents
+	SetAgentsColor(context.Context, *SetAgentsColorRequest) (*SetAgentsColorResponse, error)
+	// Update note on agent
+	SetAgentNote(context.Context, *SetAgentNoteRequest) (*SetAgentNoteResponse, error)
+	// Update note on list of agents
+	SetAgentsNote(context.Context, *SetAgentsNoteRequest) (*SetAgentsNoteResponse, error)
 	// Update color on operator
 	SetOperatorColor(context.Context, *SetOperatorColorRequest) (*SetOperatorColorResponse, error)
 	// Update color on list of operators
@@ -511,8 +511,8 @@ func (UnimplementedOperatorServiceServer) Hello(*HelloRequest, grpc.ServerStream
 func (UnimplementedOperatorServiceServer) SubscribeListeners(*SubscribeListenersRequest, grpc.ServerStreamingServer[SubscribeListenersResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method SubscribeListeners not implemented")
 }
-func (UnimplementedOperatorServiceServer) SubscribeAnts(*SubscribeAntsRequest, grpc.ServerStreamingServer[SubscribeAntsResponse]) error {
-	return status.Errorf(codes.Unimplemented, "method SubscribeAnts not implemented")
+func (UnimplementedOperatorServiceServer) SubscribeAgents(*SubscribeAgentsRequest, grpc.ServerStreamingServer[SubscribeAgentsResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method SubscribeAgents not implemented")
 }
 func (UnimplementedOperatorServiceServer) SubscribeOperators(*SubscribeOperatorsRequest, grpc.ServerStreamingServer[SubscribeOperatorsResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method SubscribeOperators not implemented")
@@ -538,17 +538,17 @@ func (UnimplementedOperatorServiceServer) SetListenerNote(context.Context, *SetL
 func (UnimplementedOperatorServiceServer) SetListenersNote(context.Context, *SetListenersNoteRequest) (*SetListenersNoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetListenersNote not implemented")
 }
-func (UnimplementedOperatorServiceServer) SetAntColor(context.Context, *SetAntColorRequest) (*SetAntColorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetAntColor not implemented")
+func (UnimplementedOperatorServiceServer) SetAgentColor(context.Context, *SetAgentColorRequest) (*SetAgentColorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAgentColor not implemented")
 }
-func (UnimplementedOperatorServiceServer) SetAntsColor(context.Context, *SetAntsColorRequest) (*SetAntsColorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetAntsColor not implemented")
+func (UnimplementedOperatorServiceServer) SetAgentsColor(context.Context, *SetAgentsColorRequest) (*SetAgentsColorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAgentsColor not implemented")
 }
-func (UnimplementedOperatorServiceServer) SetAntNote(context.Context, *SetAntNoteRequest) (*SetAntNoteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetAntNote not implemented")
+func (UnimplementedOperatorServiceServer) SetAgentNote(context.Context, *SetAgentNoteRequest) (*SetAgentNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAgentNote not implemented")
 }
-func (UnimplementedOperatorServiceServer) SetAntsNote(context.Context, *SetAntsNoteRequest) (*SetAntsNoteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetAntsNote not implemented")
+func (UnimplementedOperatorServiceServer) SetAgentsNote(context.Context, *SetAgentsNoteRequest) (*SetAgentsNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAgentsNote not implemented")
 }
 func (UnimplementedOperatorServiceServer) SetOperatorColor(context.Context, *SetOperatorColorRequest) (*SetOperatorColorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetOperatorColor not implemented")
@@ -626,16 +626,16 @@ func _OperatorService_SubscribeListeners_Handler(srv interface{}, stream grpc.Se
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OperatorService_SubscribeListenersServer = grpc.ServerStreamingServer[SubscribeListenersResponse]
 
-func _OperatorService_SubscribeAnts_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(SubscribeAntsRequest)
+func _OperatorService_SubscribeAgents_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SubscribeAgentsRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(OperatorServiceServer).SubscribeAnts(m, &grpc.GenericServerStream[SubscribeAntsRequest, SubscribeAntsResponse]{ServerStream: stream})
+	return srv.(OperatorServiceServer).SubscribeAgents(m, &grpc.GenericServerStream[SubscribeAgentsRequest, SubscribeAgentsResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OperatorService_SubscribeAntsServer = grpc.ServerStreamingServer[SubscribeAntsResponse]
+type OperatorService_SubscribeAgentsServer = grpc.ServerStreamingServer[SubscribeAgentsResponse]
 
 func _OperatorService_SubscribeOperators_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(SubscribeOperatorsRequest)
@@ -749,74 +749,74 @@ func _OperatorService_SetListenersNote_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OperatorService_SetAntColor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetAntColorRequest)
+func _OperatorService_SetAgentColor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAgentColorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperatorServiceServer).SetAntColor(ctx, in)
+		return srv.(OperatorServiceServer).SetAgentColor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OperatorService_SetAntColor_FullMethodName,
+		FullMethod: OperatorService_SetAgentColor_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperatorServiceServer).SetAntColor(ctx, req.(*SetAntColorRequest))
+		return srv.(OperatorServiceServer).SetAgentColor(ctx, req.(*SetAgentColorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OperatorService_SetAntsColor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetAntsColorRequest)
+func _OperatorService_SetAgentsColor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAgentsColorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperatorServiceServer).SetAntsColor(ctx, in)
+		return srv.(OperatorServiceServer).SetAgentsColor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OperatorService_SetAntsColor_FullMethodName,
+		FullMethod: OperatorService_SetAgentsColor_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperatorServiceServer).SetAntsColor(ctx, req.(*SetAntsColorRequest))
+		return srv.(OperatorServiceServer).SetAgentsColor(ctx, req.(*SetAgentsColorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OperatorService_SetAntNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetAntNoteRequest)
+func _OperatorService_SetAgentNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAgentNoteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperatorServiceServer).SetAntNote(ctx, in)
+		return srv.(OperatorServiceServer).SetAgentNote(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OperatorService_SetAntNote_FullMethodName,
+		FullMethod: OperatorService_SetAgentNote_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperatorServiceServer).SetAntNote(ctx, req.(*SetAntNoteRequest))
+		return srv.(OperatorServiceServer).SetAgentNote(ctx, req.(*SetAgentNoteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OperatorService_SetAntsNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetAntsNoteRequest)
+func _OperatorService_SetAgentsNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAgentsNoteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperatorServiceServer).SetAntsNote(ctx, in)
+		return srv.(OperatorServiceServer).SetAgentsNote(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OperatorService_SetAntsNote_FullMethodName,
+		FullMethod: OperatorService_SetAgentsNote_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperatorServiceServer).SetAntsNote(ctx, req.(*SetAntsNoteRequest))
+		return srv.(OperatorServiceServer).SetAgentsNote(ctx, req.(*SetAgentsNoteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1032,20 +1032,20 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OperatorService_SetListenersNote_Handler,
 		},
 		{
-			MethodName: "SetAntColor",
-			Handler:    _OperatorService_SetAntColor_Handler,
+			MethodName: "SetAgentColor",
+			Handler:    _OperatorService_SetAgentColor_Handler,
 		},
 		{
-			MethodName: "SetAntsColor",
-			Handler:    _OperatorService_SetAntsColor_Handler,
+			MethodName: "SetAgentsColor",
+			Handler:    _OperatorService_SetAgentsColor_Handler,
 		},
 		{
-			MethodName: "SetAntNote",
-			Handler:    _OperatorService_SetAntNote_Handler,
+			MethodName: "SetAgentNote",
+			Handler:    _OperatorService_SetAgentNote_Handler,
 		},
 		{
-			MethodName: "SetAntsNote",
-			Handler:    _OperatorService_SetAntsNote_Handler,
+			MethodName: "SetAgentsNote",
+			Handler:    _OperatorService_SetAgentsNote_Handler,
 		},
 		{
 			MethodName: "SetOperatorColor",
@@ -1100,8 +1100,8 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "SubscribeAnts",
-			Handler:       _OperatorService_SubscribeAnts_Handler,
+			StreamName:    "SubscribeAgents",
+			Handler:       _OperatorService_SubscribeAgents_Handler,
 			ServerStreams: true,
 		},
 		{

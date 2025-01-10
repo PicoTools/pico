@@ -92,7 +92,7 @@ func SkipSoftDelete(c context.Context) context.Context {
 	return context.WithValue(c, softDeleteKey{}, true)
 }
 
-// WithSoftDeleted returns contetx with soft-deleted 
+// WithSoftDeleted returns contetx with soft-deleted
 func WithSoftDeleted(c context.Context) context.Context {
 	return context.WithValue(c, softDeleteKey{}, true)
 }

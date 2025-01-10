@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/PicoTools/pico-shared/shared"
-	"github.com/PicoTools/pico/internal/ent/ant"
+	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/task"
@@ -23,11 +23,11 @@ type Task struct {
 	ID int64 `json:"id,omitempty"`
 	// id of command
 	CommandID int64 `json:"command_id,omitempty"`
-	// id of ant
-	AntID uint32 `json:"ant_id,omitempty"`
+	// id of agent
+	AgentID uint32 `json:"agent_id,omitempty"`
 	// time when task created
 	CreatedAt time.Time `json:"created_at,omitempty"`
-	// time when task pushed to the ant
+	// time when task pushed to the agent
 	PushedAt time.Time `json:"pushed_at,omitempty"`
 	// time when task results received
 	DoneAt time.Time `json:"done_at,omitempty"`
@@ -51,8 +51,8 @@ type Task struct {
 type TaskEdges struct {
 	// Command holds the value of the command edge.
 	Command *Command `json:"command,omitempty"`
-	// Ant holds the value of the ant edge.
-	Ant *Ant `json:"ant,omitempty"`
+	// Agent holds the value of the agent edge.
+	Agent *Agent `json:"agent,omitempty"`
 	// BlobberArgs holds the value of the blobber_args edge.
 	BlobberArgs *Blobber `json:"blobber_args,omitempty"`
 	// BlobberOutput holds the value of the blobber_output edge.
@@ -73,15 +73,15 @@ func (e TaskEdges) CommandOrErr() (*Command, error) {
 	return nil, &NotLoadedError{edge: "command"}
 }
 
-// AntOrErr returns the Ant value or an error if the edge
+// AgentOrErr returns the Agent value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e TaskEdges) AntOrErr() (*Ant, error) {
-	if e.Ant != nil {
-		return e.Ant, nil
+func (e TaskEdges) AgentOrErr() (*Agent, error) {
+	if e.Agent != nil {
+		return e.Agent, nil
 	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: ant.Label}
+		return nil, &NotFoundError{label: agent.Label}
 	}
-	return nil, &NotLoadedError{edge: "ant"}
+	return nil, &NotLoadedError{edge: "agent"}
 }
 
 // BlobberArgsOrErr returns the BlobberArgs value or an error if the edge
@@ -117,7 +117,7 @@ func (*Task) scanValues(columns []string) ([]any, error) {
 			values[i] = new(shared.TaskStatus)
 		case task.FieldOutputBig:
 			values[i] = new(sql.NullBool)
-		case task.FieldID, task.FieldCommandID, task.FieldAntID, task.FieldArgsID, task.FieldOutputID:
+		case task.FieldID, task.FieldCommandID, task.FieldAgentID, task.FieldArgsID, task.FieldOutputID:
 			values[i] = new(sql.NullInt64)
 		case task.FieldCreatedAt, task.FieldPushedAt, task.FieldDoneAt:
 			values[i] = new(sql.NullTime)
@@ -148,11 +148,11 @@ func (t *Task) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.CommandID = value.Int64
 			}
-		case task.FieldAntID:
+		case task.FieldAgentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field ant_id", values[i])
+				return fmt.Errorf("unexpected type %T for field agent_id", values[i])
 			} else if value.Valid {
-				t.AntID = uint32(value.Int64)
+				t.AgentID = uint32(value.Int64)
 			}
 		case task.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -220,9 +220,9 @@ func (t *Task) QueryCommand() *CommandQuery {
 	return NewTaskClient(t.config).QueryCommand(t)
 }
 
-// QueryAnt queries the "ant" edge of the Task entity.
-func (t *Task) QueryAnt() *AntQuery {
-	return NewTaskClient(t.config).QueryAnt(t)
+// QueryAgent queries the "agent" edge of the Task entity.
+func (t *Task) QueryAgent() *AgentQuery {
+	return NewTaskClient(t.config).QueryAgent(t)
 }
 
 // QueryBlobberArgs queries the "blobber_args" edge of the Task entity.
@@ -261,8 +261,8 @@ func (t *Task) String() string {
 	builder.WriteString("command_id=")
 	builder.WriteString(fmt.Sprintf("%v", t.CommandID))
 	builder.WriteString(", ")
-	builder.WriteString("ant_id=")
-	builder.WriteString(fmt.Sprintf("%v", t.AntID))
+	builder.WriteString("agent_id=")
+	builder.WriteString(fmt.Sprintf("%v", t.AgentID))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(t.CreatedAt.Format(time.ANSIC))
