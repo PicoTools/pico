@@ -3,6 +3,7 @@ package shared
 import (
 	"database/sql/driver"
 	"fmt"
+	"sort"
 
 	commonv1 "github.com/PicoTools/pico-shared/proto/gen/common/v1"
 	"google.golang.org/protobuf/proto"
@@ -39,7 +40,7 @@ const (
 	CapDownload           Capability = 2 << 22
 )
 
-// Values returns list of strings represented names of capability types
+// Values returns list of strings represented names of capabilities types
 func (Capability) Values() []string {
 	return []string{
 		CapSleep.String(),
@@ -79,55 +80,55 @@ func (c Capability) Value() (driver.Value, error) {
 func (c Capability) String() string {
 	switch c {
 	case CapSleep:
-		return "c_sleep"
+		return "cap_sleep"
 	case CapLs:
-		return "c_ls"
+		return "cap_ls"
 	case CapPwd:
-		return "c_pwd"
+		return "cap_pwd"
 	case CapCd:
-		return "c_cd"
+		return "cap_cd"
 	case CapWhoami:
-		return "c_whoami"
+		return "cap_whoami"
 	case CapPs:
-		return "c_ps"
+		return "cap_ps"
 	case CapCat:
-		return "c_cat"
+		return "cap_cat"
 	case CapExec:
-		return "c_exec"
+		return "cap_exec"
 	case CapCp:
-		return "c_cp"
+		return "cap_cp"
 	case CapJobs:
-		return "c_jobs"
+		return "cap_jobs"
 	case CapJobkill:
-		return "c_jobkill"
+		return "cap_jobkill"
 	case CapKill:
-		return "c_kill"
+		return "cap_kill"
 	case CapMv:
-		return "c_mv"
+		return "cap_mv"
 	case CapMkdir:
-		return "c_mkdir"
+		return "cap_mkdir"
 	case CapRm:
-		return "c_rm"
+		return "cap_rm"
 	case CapExecAssembly:
-		return "c_exec_assembly"
+		return "cap_exec_assembly"
 	case CapShell:
-		return "c_shell"
+		return "cap_shell"
 	case CapPpid:
-		return "c_ppid"
+		return "cap_ppid"
 	case CapExecDetach:
-		return "c_exec_detach"
+		return "cap_exec_detach"
 	case CapShellcodeInjection:
-		return "c_shellcode_injection"
+		return "cap_shellcode_injection"
 	case CapDownload:
-		return "c_download"
+		return "cap_download"
 	case CapUpload:
-		return "c_upload"
+		return "cap_upload"
 	case CapPause:
-		return "c_pause"
+		return "cap_pause"
 	case CapDestroy:
-		return "c_destroy"
+		return "cap_destroy"
 	case CapExit:
-		return "c_exit"
+		return "cap_exit"
 	default:
 		return "unknown"
 	}
@@ -525,5 +526,10 @@ func SupportedCaps(mask uint32) []Capability {
 	if mask&uint32(CapExit) == uint32(CapExit) {
 		t = append(t, CapExit)
 	}
+
+	// sort capabilities by theirs values
+	sort.Slice(t, func(i, j int) bool {
+		return t[i] < t[j]
+	})
 	return t
 }
