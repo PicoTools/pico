@@ -218,7 +218,7 @@ var (
 		{Name: "pushed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "done_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"new", "in-progress", "cancelled", "success", "error"}},
-		{Name: "cap", Type: field.TypeEnum, Enums: []string{"c_sleep", "c_ls", "c_pwd", "c_cd", "c_whoami", "c_ps", "c_cat", "c_exec", "c_cp", "c_jobs", "c_jobkill", "c_kill", "c_mv", "c_mkdir", "c_rm", "c_exec_assembly", "c_shell", "c_ppid", "c_exec_detach", "c_shellcode_injection", "c_download", "c_upload", "c_pause", "c_destroy", "c_exit"}},
+		{Name: "cap", Type: field.TypeEnum, Enums: []string{"cap_sleep", "cap_ls", "cap_pwd", "cap_cd", "cap_whoami", "cap_ps", "cap_cat", "cap_exec", "cap_cp", "cap_jobs", "cap_jobkill", "cap_kill", "cap_mv", "cap_mkdir", "cap_rm", "cap_exec_assembly", "cap_shell", "cap_ppid", "cap_exec_detach", "cap_shellcode_injection", "cap_download", "cap_upload", "cap_pause", "cap_destroy", "cap_exit"}},
 		{Name: "output_big", Type: field.TypeBool, Nullable: true},
 		{Name: "agent_id", Type: field.TypeUint32},
 		{Name: "args_id", Type: field.TypeInt},
