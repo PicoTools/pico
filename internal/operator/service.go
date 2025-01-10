@@ -1613,9 +1613,9 @@ func (s *server) GetTaskOutput(ctx context.Context, req *operatorv1.GetTaskOutpu
 		if !ent.IsNotFound(err) {
 			lg.Error(picoErrors.QueryBlob, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			data = blob.Blob
 		}
+	} else {
+		data = blob.Blob
 	}
 
 	return &operatorv1.GetTaskOutputResponse{
