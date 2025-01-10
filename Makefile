@@ -36,6 +36,9 @@ ent-gen:
 	@echo "Generating ent models..."
 	@go generate ./internal/ent
 
+go-sync:
+	@go mod tidy && go mod vendor
+
 atlas-sqlite:
 	@atlas schema inspect -u "ent://internal/ent/schema" --format '{{ sql . "  " }}' --dev-url "sqlite://file?mode=memory&_fk=1"
 
