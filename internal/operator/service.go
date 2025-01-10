@@ -1500,6 +1500,7 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 				Status:    uint32(task.Status),
 				Created:   timestamppb.New(task.CreatedAt),
 				OutputBig: false,
+				Cap:       uint32(task.Cap),
 			})
 
 			continue
