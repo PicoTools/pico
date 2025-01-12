@@ -6,20 +6,21 @@ import (
 )
 
 const (
-	// send keepalive message every 30 seconds
-	GrpcKeepaliveTime = time.Second * 30
-	// keepalive timeout is 5 seconds
-	GrpcKeepaliveTimeout = time.Second * 5
-	// timeout after which connection will be gracefull closed
-	GrpcMaxConnAgeGrace = time.Second * 10
-	// minimum TLS version for GRPC servers
+	// GrpcKeepalivePeriod is interval of QUIC keepalive messages
+	GrpcKeepalivePeriod = 5 * time.Second
+	// GrpcKeepaliveCount is count of QUIC keepalive mesages before connection marked as dead
+	GrpcKeepaliveCount = 3
+	// GrpcMaxConcurrentStreams is maximum number of concurrent streams. On limit reach new RPC calls
+	// will be queue until capacity is available
+	GrpcMaxConcurrentStreams = 500
+	// GrpcTlsMinVersion is minimum TLS version for GRPC servers
 	GrpcTlsMinVersion = tls.VersionTLS12
-	// timeout to send health checks for operator
-	GrpcOperatorHealthCheckTimeout = time.Second * 10
+	// GrpcOperatorHealthCheckTimeout timeout to send health checks for operator
+	GrpcOperatorHealthCheckTimeout = 10 * time.Second
 )
 
 var (
-	// supported TLS ciphers
+	// GrpcTlsCiphers is list of supported TLS ciphers
 	GrpcTlsCiphers = []uint16{
 		tls.TLS_AES_256_GCM_SHA384,
 		tls.TLS_CHACHA20_POLY1305_SHA256,
@@ -35,6 +36,7 @@ var (
 )
 
 const (
-	// maximum number of objects in chunk. Used for partiion data from DB on sub-arrays
+	// MaxObjectChunks is maximum number of objects in chunk.
+	// Used for partiion data from DB on sub-arrays
 	MaxObjectChunks int = 10000
 )

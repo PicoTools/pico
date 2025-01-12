@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	listenerv1 "github.com/PicoTools/pico-shared/proto/gen/listener/v1"
 	"github.com/PicoTools/pico-shared/shared"
@@ -34,11 +35,18 @@ func Serve(ctx context.Context, cfg Config, db *ent.Client) error {
 	// create server
 	srv := grpc.NewServer(
 		grpc.Creds(credentials.NewTLS(tlsOpts)),
-		grpc.KeepaliveParams(keepalive.ServerParameters{
-			Time:                  constants.GrpcKeepaliveTime,
-			Timeout:               constants.GrpcKeepaliveTimeout,
-			MaxConnectionAgeGrace: constants.GrpcMaxConnAgeGrace,
-		}),
+		grpc.KeepaliveParams(
+			keepalive.ServerParameters{
+				Time:    constants.GrpcKeepalivePeriod,
+				Timeout: constants.GrpcKeepalivePeriod * time.Duration(constants.GrpcKeepaliveCount),
+			},
+		),
+		grpc.KeepaliveEnforcementPolicy(
+			keepalive.EnforcementPolicy{
+				MinTime:             constants.GrpcKeepalivePeriod,
+				PermitWithoutStream: true,
+			},
+		),
 		grpc.ChainUnaryInterceptor(
 			grpcrecover.UnaryServerInterceptor(),
 			grpclog.UnaryServerInterceptor(lg),
@@ -51,6 +59,7 @@ func Serve(ctx context.Context, cfg Config, db *ent.Client) error {
 		),
 		grpc.MaxRecvMsgSize(shared.MaxProtobufMessageSize),
 		grpc.MaxSendMsgSize(shared.MaxProtobufMessageSize),
+		grpc.MaxConcurrentStreams(constants.GrpcMaxConcurrentStreams),
 	)
 	// add service
 	listenerv1.RegisterListenerServiceServer(srv, &server{

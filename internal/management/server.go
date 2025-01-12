@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	managementv1 "github.com/PicoTools/pico-shared/proto/gen/management/v1"
 	"github.com/PicoTools/pico/internal/constants"
@@ -34,10 +35,18 @@ func Serve(ctx context.Context, cfg Config, db *ent.Client) error {
 	// create server
 	srv := grpc.NewServer(
 		grpc.Creds(credentials.NewTLS(tlsOpts)),
-		grpc.KeepaliveParams(keepalive.ServerParameters{
-			Time:    constants.GrpcKeepaliveTime,
-			Timeout: constants.GrpcKeepaliveTimeout,
-		}),
+		grpc.KeepaliveParams(
+			keepalive.ServerParameters{
+				Time:    constants.GrpcKeepalivePeriod,
+				Timeout: constants.GrpcKeepalivePeriod * time.Duration(constants.GrpcKeepaliveCount),
+			},
+		),
+		grpc.KeepaliveEnforcementPolicy(
+			keepalive.EnforcementPolicy{
+				MinTime:             constants.GrpcKeepalivePeriod,
+				PermitWithoutStream: true,
+			},
+		),
 		grpc.ChainUnaryInterceptor(
 			grpcrecover.UnaryServerInterceptor(),
 			grpclog.UnaryServerInterceptor(lg),
@@ -48,6 +57,7 @@ func Serve(ctx context.Context, cfg Config, db *ent.Client) error {
 			grpclog.StreamServerInterceptor(lg),
 			grpcauth.StreamServerInterceptorManagement(token),
 		),
+		grpc.MaxConcurrentStreams(constants.GrpcMaxConcurrentStreams),
 	)
 	// add service
 	managementv1.RegisterManagementServiceServer(srv, &server{
