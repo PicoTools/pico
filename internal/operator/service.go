@@ -120,19 +120,8 @@ func (s *server) Hello(req *operatorv1.HelloRequest, stream operatorv1.OperatorS
 		})
 	}
 
-	// ticker to send empty message every N secods
-	ticker := time.NewTicker(constants.GrpcOperatorHealthCheckTimeout)
-	defer ticker.Stop()
-
 	for {
 		select {
-		case <-ticker.C:
-			if err := stream.Send(&operatorv1.HelloResponse{
-				Response: &operatorv1.HelloResponse_Empty{},
-			}); err != nil {
-				lg.Warn(events.OperatorLoggedOutWithError, zap.Error(err))
-				return status.Error(codes.Canceled, picoErrors.Send)
-			}
 		case <-ctx.Done():
 			lg.Info(events.OperatorLoggedOut)
 			return nil

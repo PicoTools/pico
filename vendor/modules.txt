@@ -27,7 +27,7 @@ entgo.io/ent/schema/edge
 entgo.io/ent/schema/field
 entgo.io/ent/schema/index
 entgo.io/ent/schema/mixin
-# github.com/PicoTools/pico-shared v0.0.0-20250110202747-45f2b17ca2ac
+# github.com/PicoTools/pico-shared v0.0.0-20250112140806-f35177da4cab
 ## explicit; go 1.23.4
 github.com/PicoTools/pico-shared/proto/gen/common/v1
 github.com/PicoTools/pico-shared/proto/gen/listener/v1
@@ -337,7 +337,6 @@ google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
-google.golang.org/protobuf/types/known/emptypb
 google.golang.org/protobuf/types/known/timestamppb
 google.golang.org/protobuf/types/known/wrapperspb
 # gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
