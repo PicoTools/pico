@@ -1,8 +1,8 @@
 package constants
 
 const (
-	// eleptic curve length
+	// ECLength is eleptic curve length for private key generation
 	ECLength = 384
-	// certificate's TTL
+	// CertValidTime is certificate's TTL (in years)
 	CertValidTime = 10
 )

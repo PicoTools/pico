@@ -4,7 +4,7 @@ go 1.23.4
 
 require (
 	entgo.io/ent v0.14.1
-	github.com/PicoTools/pico-shared v0.0.0-20250110202747-45f2b17ca2ac
+	github.com/PicoTools/pico-shared v0.0.0-20250112140806-f35177da4cab
 	github.com/creasty/defaults v1.8.0
 	github.com/docker/go-units v0.5.0
 	github.com/fatih/color v1.18.0
