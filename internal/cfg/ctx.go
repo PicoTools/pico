@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// key in context to store config
+// configCtxKey is the context's key to store config object in
 type configCtxKey struct{}
 
 // SetConfigCtx saves config object to context

@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	// GrpcTlsCiphers is list of supported TLS ciphers
+	// GrpcTlsCiphers is list of supported TLS ciphers for GRPC servers
 	GrpcTlsCiphers = []uint16{
 		tls.TLS_AES_256_GCM_SHA384,
 		tls.TLS_CHACHA20_POLY1305_SHA256,
@@ -37,6 +37,6 @@ var (
 
 const (
 	// MaxObjectChunks is maximum number of objects in chunk.
-	// Used for partiion data from DB on sub-arrays
+	// Used for partition data from DB on sub-arrays
 	MaxObjectChunks int = 10000
 )

@@ -16,7 +16,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// main config structure
+// Config holds all config file entries
 type Config struct {
 	Listener   listener.Config   `json:"listener" validate:"required"`
 	Operator   operator.Config   `json:"operator" validate:"required"`
@@ -25,7 +25,7 @@ type Config struct {
 	Pki        pki.Config        `json:"pki"`
 }
 
-// Read get content of file by path and maps it on config structure
+// Read gets content of file by path and maps it on config structure
 func Read(path string) (Config, error) {
 	f, err := os.ReadFile(path)
 	if err != nil {
