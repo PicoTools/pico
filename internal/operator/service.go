@@ -65,17 +65,22 @@ func (s *server) Hello(req *operatorv1.HelloRequest, stream operatorv1.OperatorS
 	pools.Pool.Hello.Add(cookie, username, stream)
 
 	defer func() {
+		// At this moment s.ctx will be DONE, so we need to create new one
+		// with timeout to save message in DB
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
 		// remove operator's session
 		pools.Pool.Hello.Remove(cookie)
 		// disconnect operator from topics
-		pools.Pool.DisconnectAll(s.ctx, cookie)
+		pools.Pool.DisconnectAll(ctx, cookie)
 
 		// create message with logout event
 		if c, err := s.db.Chat.
 			Create().
 			SetIsServer(true).
 			SetMessage(username + " logged out").
-			Save(s.ctx); err != nil {
+			Save(ctx); err != nil {
 			lg.Warn(picoErrors.SaveChatMessage, zap.Error(err))
 		} else {
 			// notify operators with chat update

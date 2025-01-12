@@ -1,6 +1,8 @@
 package run
 
 import (
+	"time"
+
 	"github.com/PicoTools/pico/internal/cfg"
 	"github.com/PicoTools/pico/internal/ent"
 	"github.com/PicoTools/pico/internal/listener"
@@ -34,20 +36,20 @@ func Command() *cobra.Command {
 
 			ctx := cmd.Context()
 			c.lg = zctx.From(ctx).Named("run")
-			ctxCfg := cfg.GetConfigCtx(ctx)
+			cfg := cfg.GetConfigCtx(ctx)
 
 			// initialize DB
-			if c.db, err = ctxCfg.Db.Init(ctx); err != nil {
+			if c.db, err = cfg.Db.Init(ctx); err != nil {
 				return err
 			}
 			// initialize PKI for GRPC servers
-			if err = ctxCfg.Pki.Init(ctx, c.db, ctxCfg.Listener.IP, ctxCfg.Operator.IP, ctxCfg.Management.IP); err != nil {
+			if err = cfg.Pki.Init(ctx, c.db, cfg.Listener.IP, cfg.Operator.IP, cfg.Management.IP); err != nil {
 				return err
 			}
 			// save configs
-			c.operator = ctxCfg.Operator
-			c.listener = ctxCfg.Listener
-			c.management = ctxCfg.Management
+			c.operator = cfg.Operator
+			c.listener = cfg.Listener
+			c.management = cfg.Management
 
 			return nil
 		},
@@ -73,6 +75,9 @@ func Command() *cobra.Command {
 			return g.Wait()
 		},
 		PostRun: func(cmd *cobra.Command, _ []string) {
+			// TODO: waiting for completion of all operations with DB
+			// right now dirty hack for waiting of uncompleted operations
+			time.Sleep(1 * time.Second)
 			if err := c.db.Close(); err != nil {
 				c.lg.Error("closing storage", zap.Error(err))
 			}
