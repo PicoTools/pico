@@ -1,0 +1,70 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    name: "Build artifacts"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Go 1.23.4
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.23.4"
+
+      - name: Packages
+        run: |
+          sudo apt update && sudo apt install build-essential git
+
+      - name: Checkout to tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - name: Build artifacts
+        run: |
+          make build-all
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: bin/*
+
+  release:
+    name: "Create release draft with artifacts"
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Create artifacts directory
+        run: mkdir -p files/ && mkdir -p artifacts/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: files/
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          files: |
+            files/artifacts/pico.darwin.arm64
+            files/artifacts/pico.darwin.amd64
+            files/artifacts/pico.linux.arm64
+            files/artifacts/pico.linux.amd64
+          draft: true
+          prerelease: false
+          fail_on_unmatched_files: true
+          preserve_order: true
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
