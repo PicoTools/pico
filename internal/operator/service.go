@@ -582,6 +582,7 @@ func (s *server) SubscribeTasks(ss operatorv1.OperatorService_SubscribeTasksServ
 							Aid:       agent.ID,
 							Status:    uint32(commandTask.Status),
 							OutputBig: commandTask.OutputBig,
+							Cap:       uint32(commandTask.Cap),
 							Created:   timestamppb.New(commandTask.CreatedAt),
 						}
 						// if output length > maximum -> add to protobuf message
