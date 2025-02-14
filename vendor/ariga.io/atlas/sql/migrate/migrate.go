@@ -837,8 +837,7 @@ func (e *Executor) Execute(ctx context.Context, m File) (err error) {
 		e.log.Log(LogError{Error: err})
 		return err
 	}
-	// Make sure to store the Revision information,
-	// if the executor was not failed to store it.
+	// Make sure to store the Revision information, if it did not fail before.
 	defer func(ctx context.Context, e *Executor, r *Revision) {
 		if !errors.As(err, new(*WriteRevisionError)) {
 			if err2 := e.writeRevision(ctx, r); err2 != nil {
@@ -875,11 +874,19 @@ func (e *Executor) Execute(ctx context.Context, m File) (err error) {
 		}
 		r.PartialHashes = append(r.PartialHashes, "h1:"+sums[r.Applied])
 		r.Applied++
+		// In case retry attempts succeeded,
+		// clean up the error from the table.
+		if r.Error != "" {
+			r.Error = ""
+			r.ErrorStmt = ""
+		}
 		if err = e.writeRevision(ctx, r); err != nil {
 			e.log.Log(LogError{Error: err})
 			return err
 		}
 	}
+	// In case the file was applied successfully, clean out the partial revisions.
+	r.PartialHashes = nil
 	r.done()
 	return
 }

@@ -7,7 +7,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"hash/fnv"
 	"math/rand"
@@ -36,6 +35,8 @@ type (
 		schema.ExecQuerier
 		// The schema in the `search_path` parameter (if given).
 		schema string
+		// Maps to the connection default_table_access_method parameter.
+		accessMethod string
 		// System variables that are set on `Open`.
 		version int
 		crdb    bool
@@ -97,21 +98,18 @@ func Open(db schema.ExecQuerier) (migrate.Driver, error) {
 	if err != nil {
 		return nil, fmt.Errorf("postgres: scanning system variables: %w", err)
 	}
-	params, err := sqlx.ScanStrings(rows)
-	if err != nil {
-		return nil, fmt.Errorf("postgres: failed scanning rows: %w", err)
+	var ver, am, crdb sql.NullString
+	if err := sqlx.ScanOne(rows, &ver, &am, &crdb); err != nil {
+		return nil, fmt.Errorf("postgres: scanning system variables: %w", err)
 	}
-	if len(params) != 1 && len(params) != 2 {
-		return nil, fmt.Errorf("postgres: unexpected number of rows: %d", len(params))
-	}
-	if c.version, err = strconv.Atoi(params[0]); err != nil {
-		return nil, fmt.Errorf("postgres: malformed version: %s: %w", params[0], err)
+	if c.version, err = strconv.Atoi(ver.String); err != nil {
+		return nil, fmt.Errorf("postgres: malformed version: %s: %w", ver.String, err)
 	}
 	if c.version < 10_00_00 {
 		return nil, fmt.Errorf("postgres: unsupported postgres version: %d", c.version)
 	}
-	// Means we are connected to CockroachDB because we have a result for name='crdb_version'. see `paramsQuery`.
-	if c.crdb = len(params) == 2; c.crdb {
+	c.accessMethod = am.String
+	if c.crdb = sqlx.ValidString(crdb); c.crdb {
 		return noLockDriver{
 			&Driver{
 				conn:        c,
@@ -238,20 +236,40 @@ func (d *Driver) SchemaRestoreFunc(desired *schema.Schema) migrate.RestoreFunc {
 
 // RealmRestoreFunc returns a function that restores the given realm to its desired state.
 func (d *Driver) RealmRestoreFunc(desired *schema.Realm) migrate.RestoreFunc {
-	return func(ctx context.Context) (err error) {
-		// Default behavior for Postgres is to have a single "public" schema.
-		// In that case, all other schemas are dropped, but this one is cleared
-		// object by object. To keep process faster, we drop the schema and recreate it.
-		if !d.crdb && len(desired.Schemas) == 1 && desired.Schemas[0].Name == "public" {
-			if pb := desired.Schemas[0]; len(pb.Tables)+len(pb.Views)+len(pb.Funcs)+len(pb.Procs)+len(pb.Objects) == 0 {
-				desired = &schema.Realm{Attrs: desired.Attrs, Objects: desired.Objects}
-				defer func() {
-					err = errors.Join(err, d.ApplyChanges(ctx, []schema.Change{
-						&schema.AddSchema{S: pb, Extra: []schema.Clause{&schema.IfExists{}}},
-					}))
-				}()
+	// Default behavior for Postgres is to have a single "public" schema.
+	// In that case, all other schemas are dropped, but this one is cleared
+	// object by object. To keep process faster, we drop the schema and recreate it.
+	if !d.crdb && len(desired.Schemas) == 1 && desired.Schemas[0].Name == "public" {
+		if pb := desired.Schemas[0]; len(pb.Tables)+len(pb.Views)+len(pb.Funcs)+len(pb.Procs)+len(pb.Objects) == 0 {
+			return func(ctx context.Context) error {
+				current, err := d.InspectRealm(ctx, nil)
+				if err != nil {
+					return err
+				}
+				changes, err := d.RealmDiff(current, desired)
+				if err != nil {
+					return err
+				}
+				// If there is no diff, do nothing.
+				if len(changes) == 0 {
+					return nil
+				}
+				// Else, prefer to drop the public schema and apply
+				// database changes instead of executing changes one by one.
+				if changes, err = d.RealmDiff(current, &schema.Realm{Attrs: desired.Attrs, Objects: desired.Objects}); err != nil {
+					return err
+				}
+				if err := d.ApplyChanges(ctx, withCascade(changes)); err != nil {
+					return err
+				}
+				// Recreate the public schema.
+				return d.ApplyChanges(ctx, []schema.Change{
+					&schema.AddSchema{S: pb, Extra: []schema.Clause{&schema.IfExists{}}},
+				})
 			}
 		}
+	}
+	return func(ctx context.Context) (err error) {
 		current, err := d.InspectRealm(ctx, nil)
 		if err != nil {
 			return err
@@ -534,13 +552,33 @@ const (
 
 // List of supported index types.
 const (
-	IndexTypeBTree      = "BTREE"
-	IndexTypeBRIN       = "BRIN"
-	IndexTypeHash       = "HASH"
-	IndexTypeGIN        = "GIN"
-	IndexTypeGiST       = "GIST"
-	IndexTypeSPGiST     = "SPGIST"
-	defaultPagePerRange = 128
+	IndexTypeBTree       = "BTREE"
+	IndexTypeBRIN        = "BRIN"
+	IndexTypeHash        = "HASH"
+	IndexTypeGIN         = "GIN"
+	IndexTypeGiST        = "GIST"
+	IndexTypeSPGiST      = "SPGIST"
+	defaultPagesPerRange = 128
+	defaultListLimit     = 4 * 1024
+	defaultBtreeFill     = 90
+)
+
+const (
+	storageParamFillFactor = "fillfactor"
+	storageParamDedup      = "deduplicate_items"
+	storageParamBuffering  = "buffering"
+	storageParamFastUpdate = "fastupdate"
+	storageParamListLimit  = "gin_pending_list_limit"
+	storageParamPagesRange = "pages_per_range"
+	storageParamAutoSum    = "autosummarize"
+)
+
+const (
+	bufferingOff    = "OFF"
+	bufferingOn     = "ON"
+	bufferingAuto   = "AUTO"
+	storageParamOn  = "ON"
+	storageParamOff = "OFF"
 )
 
 // List of "GENERATED" types.

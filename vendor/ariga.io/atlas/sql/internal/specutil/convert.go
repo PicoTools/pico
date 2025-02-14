@@ -98,6 +98,7 @@ const (
 	typeView         = "view"
 	typeTable        = "table"
 	typeColumn       = "column"
+	typeIndex        = "index"
 	typeSchema       = "schema"
 	typeMaterialized = "materialized"
 	typeFunction     = "function"
@@ -521,6 +522,7 @@ func PrimaryKey(spec *sqlspec.PrimaryKey, parent *schema.Table) (*schema.Index, 
 		})
 	}
 	pk := &schema.Index{
+		Name:  spec.Name,
 		Table: parent,
 		Parts: parts,
 	}
@@ -1089,7 +1091,9 @@ func SchemaName(ref *schemahcl.Ref) (string, error) {
 }
 
 // ColumnByRef returns a column from the table by its reference.
-func ColumnByRef[T *schema.View | *schema.Table](tv T, ref *schemahcl.Ref) (*schema.Column, error) {
+func ColumnByRef(tv interface {
+	Column(string) (*schema.Column, bool)
+}, ref *schemahcl.Ref) (*schema.Column, error) {
 	vs, err := ref.ByType(typeColumn)
 	if err != nil {
 		return nil, err
@@ -1097,21 +1101,40 @@ func ColumnByRef[T *schema.View | *schema.Table](tv T, ref *schemahcl.Ref) (*sch
 	if len(vs) != 1 {
 		return nil, fmt.Errorf("expected 1 column ref, got %d", len(vs))
 	}
-	switch tv := any(tv).(type) {
+	if c, ok := tv.Column(vs[0]); ok {
+		return c, nil
+	}
+	switch tv := tv.(type) {
 	case *schema.Table:
-		c, ok := tv.Column(vs[0])
-		if !ok {
-			return nil, fmt.Errorf("column %q was not found in table %s", vs[0], tv.Name)
-		}
-		return c, nil
+		return nil, fmt.Errorf("column %q was not found in table %s", vs[0], tv.Name)
 	case *schema.View:
-		c, ok := tv.Column(vs[0])
-		if !ok {
-			return nil, fmt.Errorf("column %q was not found in view %s", vs[0], tv.Name)
-		}
-		return c, nil
+		return nil, fmt.Errorf("column %q was not found in view %s", vs[0], tv.Name)
 	default:
-		return nil, fmt.Errorf("unreachable %T", tv)
+		return nil, fmt.Errorf("column %q was not found in %T", vs[0], tv)
+	}
+}
+
+// IndexByRef returns a index from the table/view by its reference.
+func IndexByRef(tv interface {
+	Index(string) (*schema.Index, bool)
+}, ref *schemahcl.Ref) (*schema.Index, error) {
+	vs, err := ref.ByType(typeIndex)
+	if err != nil {
+		return nil, err
+	}
+	if len(vs) != 1 {
+		return nil, fmt.Errorf("expected 1 index ref, got %d", len(vs))
+	}
+	if c, ok := tv.Index(vs[0]); ok {
+		return c, nil
+	}
+	switch tv := tv.(type) {
+	case *schema.Table:
+		return nil, fmt.Errorf("index %q was not found in table %s", vs[0], tv.Name)
+	case *schema.View:
+		return nil, fmt.Errorf("index %q was not found in view %s", vs[0], tv.Name)
+	default:
+		return nil, fmt.Errorf("index %q was not found in %T", vs[0], tv)
 	}
 }
 
@@ -1202,8 +1225,15 @@ func ColumnRef(cName string) *schemahcl.Ref {
 	})
 }
 
+// IndexRef returns the reference of a index by its name.
+func IndexRef(name string) *schemahcl.Ref {
+	return schemahcl.BuildRef([]schemahcl.PathIndex{
+		{T: typeIndex, V: []string{name}},
+	})
+}
+
 // ExternalColumnRef returns the reference of a column by its name and table name.
-func ExternalColumnRef(cName string, tName string) *schemahcl.Ref {
+func ExternalColumnRef(cName, tName string) *schemahcl.Ref {
 	return schemahcl.BuildRef([]schemahcl.PathIndex{
 		{T: typeTable, V: []string{tName}},
 		{T: typeColumn, V: []string{cName}},
