@@ -6,8 +6,6 @@ import (
 	"net"
 	"time"
 
-	operatorv1 "github.com/PicoTools/pico-shared/proto/gen/operator/v1"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/constants"
 	"github.com/PicoTools/pico/internal/ent"
 	p "github.com/PicoTools/pico/internal/ent/pki"
@@ -15,6 +13,8 @@ import (
 	"github.com/PicoTools/pico/internal/middleware/grpclog"
 	"github.com/PicoTools/pico/internal/middleware/grpcrecover"
 	"github.com/PicoTools/pico/internal/tls"
+	operatorv1 "github.com/PicoTools/pico/pkg/proto/operator/v1"
+	"github.com/PicoTools/pico/pkg/shared"
 
 	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"

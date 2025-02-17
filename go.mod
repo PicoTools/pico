@@ -3,19 +3,18 @@ module github.com/PicoTools/pico
 go 1.24.0
 
 require (
-	entgo.io/ent v0.14.1
-	github.com/PicoTools/pico-shared v0.0.0-20250112140806-f35177da4cab
+	entgo.io/ent v0.14.2
 	github.com/creasty/defaults v1.8.0
 	github.com/docker/go-units v0.5.0
 	github.com/fatih/color v1.18.0
 	github.com/go-faster/errors v0.7.1
-	github.com/go-faster/sdk v0.26.1
+	github.com/go-faster/sdk v0.27.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
-	github.com/go-playground/validator/v10 v10.24.0
+	github.com/go-playground/validator/v10 v10.25.0
 	github.com/lrita/cmap v0.0.0-20231108122212-cb084a67f554
 	github.com/orisano/wyhash v1.1.0
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.11.0
@@ -29,12 +28,12 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
+	golang.org/x/exp v0.0.0-20250215185904-eff6e970281f // indirect
 	golang.org/x/tools v0.30.0 // indirect
 )
 
 require (
-	ariga.io/atlas v0.31.0 // indirect
+	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect

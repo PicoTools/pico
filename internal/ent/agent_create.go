@@ -10,12 +10,12 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/task"
 	"github.com/PicoTools/pico/internal/types"
+	"github.com/PicoTools/pico/pkg/shared"
 )
 
 // AgentCreate is the builder for creating a Agent entity.

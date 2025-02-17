@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: management/v1/management.proto
 
-package managementv1
+package v1
 
 import (
 	context "context"
@@ -54,9 +54,9 @@ type ManagementServiceClient interface {
 	RegenerateListener(ctx context.Context, in *RegenerateListenerRequest, opts ...grpc.CallOption) (*RegenerateListenerResponse, error)
 	// Get CA certificate from generated PKI
 	GetCertCA(ctx context.Context, in *GetCertCARequest, opts ...grpc.CallOption) (*GetCertCAResponse, error)
-	// Get operator's server GRPC certificate from PKI
+	// Get operator's server gRPC certificate from PKI
 	GetCertOperator(ctx context.Context, in *GetCertOperatorRequest, opts ...grpc.CallOption) (*GetCertOperatorResponse, error)
-	// Get listener's server GRPC certificate from PKI
+	// Get listener's server gRPC certificate from PKI
 	GetCertListener(ctx context.Context, in *GetCertListenerRequest, opts ...grpc.CallOption) (*GetCertListenerResponse, error)
 }
 
@@ -200,9 +200,9 @@ type ManagementServiceServer interface {
 	RegenerateListener(context.Context, *RegenerateListenerRequest) (*RegenerateListenerResponse, error)
 	// Get CA certificate from generated PKI
 	GetCertCA(context.Context, *GetCertCARequest) (*GetCertCAResponse, error)
-	// Get operator's server GRPC certificate from PKI
+	// Get operator's server gRPC certificate from PKI
 	GetCertOperator(context.Context, *GetCertOperatorRequest) (*GetCertOperatorResponse, error)
-	// Get listener's server GRPC certificate from PKI
+	// Get listener's server gRPC certificate from PKI
 	GetCertListener(context.Context, *GetCertListenerRequest) (*GetCertListenerResponse, error)
 	mustEmbedUnimplementedManagementServiceServer()
 }

@@ -1,5 +1,5 @@
-# ariga.io/atlas v0.31.0
-## explicit; go 1.22.11
+# ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83
+## explicit; go 1.22.12
 ariga.io/atlas/schemahcl
 ariga.io/atlas/sql/internal/specutil
 ariga.io/atlas/sql/internal/sqlx
@@ -13,8 +13,8 @@ ariga.io/atlas/sql/sqlclient
 ariga.io/atlas/sql/sqlite
 ariga.io/atlas/sql/sqlspec
 ariga.io/atlas/sql/sqltool
-# entgo.io/ent v0.14.1
-## explicit; go 1.23.0
+# entgo.io/ent v0.14.2
+## explicit; go 1.23
 entgo.io/ent
 entgo.io/ent/dialect
 entgo.io/ent/dialect/entsql
@@ -27,13 +27,6 @@ entgo.io/ent/schema/edge
 entgo.io/ent/schema/field
 entgo.io/ent/schema/index
 entgo.io/ent/schema/mixin
-# github.com/PicoTools/pico-shared v0.0.0-20250112140806-f35177da4cab
-## explicit; go 1.23.4
-github.com/PicoTools/pico-shared/proto/gen/common/v1
-github.com/PicoTools/pico-shared/proto/gen/listener/v1
-github.com/PicoTools/pico-shared/proto/gen/management/v1
-github.com/PicoTools/pico-shared/proto/gen/operator/v1
-github.com/PicoTools/pico-shared/shared
 # github.com/agext/levenshtein v1.2.3
 ## explicit
 github.com/agext/levenshtein
@@ -64,7 +57,7 @@ github.com/gabriel-vasile/mimetype/internal/magic
 # github.com/go-faster/errors v0.7.1
 ## explicit; go 1.20
 github.com/go-faster/errors
-# github.com/go-faster/sdk v0.26.1
+# github.com/go-faster/sdk v0.27.0
 ## explicit; go 1.22.7
 github.com/go-faster/sdk/zctx
 # github.com/go-openapi/inflect v0.21.0
@@ -78,7 +71,7 @@ github.com/go-playground/locales/en
 # github.com/go-playground/universal-translator v0.18.1
 ## explicit; go 1.18
 github.com/go-playground/universal-translator
-# github.com/go-playground/validator/v10 v10.24.0
+# github.com/go-playground/validator/v10 v10.25.0
 ## explicit; go 1.20
 github.com/go-playground/validator/v10
 # github.com/google/go-cmp v0.6.0
@@ -135,7 +128,7 @@ github.com/orisano/wyhash
 github.com/remyoudompheng/bigfft
 # github.com/rogpeppe/go-internal v1.13.1
 ## explicit; go 1.22
-# github.com/spf13/cobra v1.8.1
+# github.com/spf13/cobra v1.9.1
 ## explicit; go 1.15
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.6
@@ -181,8 +174,8 @@ go.uber.org/zap/zapcore
 # golang.org/x/crypto v0.33.0
 ## explicit; go 1.20
 golang.org/x/crypto/sha3
-# golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac
-## explicit; go 1.22.0
+# golang.org/x/exp v0.0.0-20250215185904-eff6e970281f
+## explicit; go 1.23.0
 golang.org/x/exp/constraints
 # golang.org/x/mod v0.23.0
 ## explicit; go 1.22.0

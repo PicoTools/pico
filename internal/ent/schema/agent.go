@@ -5,8 +5,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/types"
+	"github.com/PicoTools/pico/pkg/shared"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

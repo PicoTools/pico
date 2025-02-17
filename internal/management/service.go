@@ -3,8 +3,6 @@ package management
 import (
 	"context"
 
-	managementv1 "github.com/PicoTools/pico-shared/proto/gen/management/v1"
-	operatorv1 "github.com/PicoTools/pico-shared/proto/gen/operator/v1"
 	"github.com/PicoTools/pico/internal/ent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/operator"
@@ -12,6 +10,8 @@ import (
 	"github.com/PicoTools/pico/internal/errors"
 	"github.com/PicoTools/pico/internal/pools"
 	"github.com/PicoTools/pico/internal/utils"
+	managementv1 "github.com/PicoTools/pico/pkg/proto/management/v1"
+	operatorv1 "github.com/PicoTools/pico/pkg/proto/operator/v1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
