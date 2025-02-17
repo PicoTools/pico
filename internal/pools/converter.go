@@ -3,8 +3,8 @@ package pools
 import (
 	"context"
 
-	operatorv1 "github.com/PicoTools/pico-shared/proto/gen/operator/v1"
 	"github.com/PicoTools/pico/internal/ent"
+	operatorv1 "github.com/PicoTools/pico/pkg/proto/operator/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"

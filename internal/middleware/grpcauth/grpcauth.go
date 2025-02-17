@@ -5,14 +5,14 @@ import (
 	"strings"
 	"time"
 
-	operatorv1 "github.com/PicoTools/pico-shared/proto/gen/operator/v1"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/ent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/ent/operator"
 	picoErrors "github.com/PicoTools/pico/internal/errors"
 	"github.com/PicoTools/pico/internal/middleware"
 	"github.com/PicoTools/pico/internal/pools"
+	operatorv1 "github.com/PicoTools/pico/pkg/proto/operator/v1"
+	"github.com/PicoTools/pico/pkg/shared"
 	"github.com/go-faster/errors"
 	"google.golang.org/protobuf/types/known/timestamppb"
 

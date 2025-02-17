@@ -7,9 +7,9 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/ent/predicate"
 	"github.com/PicoTools/pico/internal/types"
+	"github.com/PicoTools/pico/pkg/shared"
 )
 
 // ID filters vertices based on their ID field.
