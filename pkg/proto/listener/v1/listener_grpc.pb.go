@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: listener/v1/listener.proto
 
-package listenerv1
+package v1
 
 import (
 	context "context"

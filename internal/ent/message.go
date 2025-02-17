@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/ent/command"
 	"github.com/PicoTools/pico/internal/ent/message"
+	"github.com/PicoTools/pico/pkg/shared"
 )
 
 // Message is the model entity for the Message schema.

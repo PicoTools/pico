@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	managementv1 "github.com/PicoTools/pico-shared/proto/gen/management/v1"
 	"github.com/PicoTools/pico/internal/constants"
 	"github.com/PicoTools/pico/internal/ent"
 	"github.com/PicoTools/pico/internal/ent/pki"
@@ -15,6 +14,7 @@ import (
 	"github.com/PicoTools/pico/internal/middleware/grpcrecover"
 	"github.com/PicoTools/pico/internal/tls"
 	"github.com/PicoTools/pico/internal/utils"
+	managementv1 "github.com/PicoTools/pico/pkg/proto/management/v1"
 	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"

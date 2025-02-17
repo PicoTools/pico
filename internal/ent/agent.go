@@ -9,10 +9,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/ent/agent"
 	"github.com/PicoTools/pico/internal/ent/listener"
 	"github.com/PicoTools/pico/internal/types"
+	"github.com/PicoTools/pico/pkg/shared"
 )
 
 // Agent is the model entity for the Agent schema.

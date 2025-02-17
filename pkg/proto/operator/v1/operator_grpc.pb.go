@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: operator/v1/operator.proto
 
-package operatorv1
+package v1
 
 import (
 	context "context"

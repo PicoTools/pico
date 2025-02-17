@@ -8,8 +8,6 @@ import (
 	"strings"
 	"time"
 
-	operatorv1 "github.com/PicoTools/pico-shared/proto/gen/operator/v1"
-	"github.com/PicoTools/pico-shared/shared"
 	"github.com/PicoTools/pico/internal/constants"
 	"github.com/PicoTools/pico/internal/ent"
 	"github.com/PicoTools/pico/internal/ent/blobber"
@@ -23,6 +21,8 @@ import (
 	"github.com/PicoTools/pico/internal/pools"
 	"github.com/PicoTools/pico/internal/utils"
 	"github.com/PicoTools/pico/internal/version"
+	operatorv1 "github.com/PicoTools/pico/pkg/proto/operator/v1"
+	"github.com/PicoTools/pico/pkg/shared"
 	errs "github.com/go-faster/errors"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/wrapperspb"
