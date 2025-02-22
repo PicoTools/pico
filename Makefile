@@ -1,5 +1,6 @@
 BIN_DIR=$(PWD)/bin
 PICO_DIR=$(PWD)/cmd/pico
+PICOCTL_DIR=$(PWD)/cmd/pico-ctl
 CC=gcc
 CXX=g++
 GOFILES=`go list ./...`
@@ -19,7 +20,12 @@ build: proto-gen ent-gen go-lint
 	@echo "Building server ${GOOS}/${GOARCH} ${VERSION}"
 	@GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.${GOOS}.${GOARCH} ${PICO_DIR}
 
-build-all: darwin-arm64 darwin-amd64 linux-arm64 linux-amd64
+build-ctl: go-lint
+	@mkdir -p ${BIN_DIR}
+	@echo "Building operator management cli for ${GOOS}/${GOARCH} ${VERSION}"
+	@GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -o ${BIN_DIR}/pico-ctl.${GOOS}.${GOARCH} ${PICOCTL_DIR}
+
+build-all: darwin-arm64 darwin-amd64 linux-arm64 linux-amd64 ctl-darwin-arm64 ctl-darwin-amd64 ctl-linux-arm64 ctl-linux-amd64
 
 darwin-arm64: proto-gen ent-gen go-lint
 	@mkdir -p ${BIN_DIR}
@@ -44,6 +50,30 @@ linux-amd64: proto-gen ent-gen go-lint
 	@echo "Building server linux/amd64 ${VERSION}"
 	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.linux.amd64 ${PICO_DIR}
 	@strip ${BIN_DIR}/pico.linux.amd64 2>/dev/null || true
+
+ctl-darwin-arm64: go-lint
+	@mkdir -p ${BIN_DIR}
+	@echo "Building management cli darwin/arm64 ${VERSION}"
+	@GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -o ${BIN_DIR}/pico-ctl.darwin.arm64 ${PICOCTL_DIR}
+	@strip ${BIN_DIR}/pico-ctl.darwin.arm64 2>/dev/null || true
+
+ctl-darwin-amd64: go-lint
+	@mkdir -p ${BIN_DIR}
+	@echo "Building management cli darwin/amd64 ${VERSION}"
+	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -o ${BIN_DIR}/pico-ctl.darwin.amd64 ${PICOCTL_DIR}
+	@strip ${BIN_DIR}/pico-ctl.darwin.amd64 2>/dev/null || true
+
+ctl-linux-arm64: go-lint
+	@mkdir -p ${BIN_DIR}
+	@echo "Building management cli linux/arm64 ${VERSION}"
+	@GOOS=linux GOARCH=arm64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -o ${BIN_DIR}/pico-ctl.linux.arm64 ${PICOCTL_DIR}
+	@strip ${BIN_DIR}/pico-ctl.linux.arm64 2>/dev/null || true
+
+ctl-linux-amd64: go-lint
+	@mkdir -p ${BIN_DIR}
+	@echo "Building management cli linux/amd64 ${VERSION}"
+	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -o ${BIN_DIR}/pico-ctl.linux.amd64 ${PICOCTL_DIR}
+	@strip ${BIN_DIR}/pico-ctl.linux.amd64 2>/dev/null || true
 
 go-lint:
 	@echo "Linting Golang code"

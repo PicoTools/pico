@@ -62,6 +62,10 @@ jobs:
             files/artifacts/pico.darwin.amd64
             files/artifacts/pico.linux.arm64
             files/artifacts/pico.linux.amd64
+            files/artifacts/pico-ctl.darwin.arm64
+            files/artifacts/pico-ctl.darwin.amd64
+            files/artifacts/pico-ctl.linux.arm64
+            files/artifacts/pico-ctl.linux.amd64
           draft: true
           prerelease: false
           fail_on_unmatched_files: true
