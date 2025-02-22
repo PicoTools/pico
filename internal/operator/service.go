@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
 	"time"
 
 	"github.com/PicoTools/pico/internal/constants"
@@ -45,12 +44,6 @@ func (s *server) Hello(req *operatorv1.HelloRequest, stream operatorv1.OperatorS
 	ctx := stream.Context()
 	username := grpcauth.OperatorFromCtx(ctx)
 	lg := s.lg.Named("Hello").With(zap.String("username", username))
-
-	// validate operator's client verrsion
-	if strings.Compare(req.GetVersion(), version.Version()) != 0 {
-		lg.Warn(picoErrors.VersionMismatched, zap.String("version", req.GetVersion()))
-		return status.Error(codes.InvalidArgument, picoErrors.VersionMismatched)
-	}
 
 	// check if operator's session already exists
 	if pools.Pool.Hello.Exists(username) {
@@ -101,6 +94,7 @@ func (s *server) Hello(req *operatorv1.HelloRequest, stream operatorv1.OperatorS
 				Cookie: &operatorv1.SessionCookie{
 					Value: cookie,
 				},
+				Version: version.Version(),
 			},
 		},
 	}); err != nil {
