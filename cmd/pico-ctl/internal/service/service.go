@@ -78,8 +78,8 @@ func ListOperators() ([]*managementv1.Operator, error) {
 	return rep.GetOperators(), nil
 }
 
-// RegenOperator regenerates access token for operator specified by username
-func RegenOperator(username string) (*managementv1.Operator, error) {
+// RegenerateTokenOperator regenerates access token for operator specified by username
+func RegenerateTokenOperator(username string) (*managementv1.Operator, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	rep, err := getSvc().RegenerateOperator(ctx, &managementv1.RegenerateOperatorRequest{Username: username})
@@ -89,8 +89,8 @@ func RegenOperator(username string) (*managementv1.Operator, error) {
 	return rep.GetOperator(), nil
 }
 
-// RevokeOperator revokes access token for operator specified by username
-func RevokeOperator(username string) error {
+// RevokeTokenOperator revokes access token for operator specified by username
+func RevokeTokenOperator(username string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	_, err := getSvc().RevokeOperator(ctx, &managementv1.RevokeOperatorRequest{Username: username})
@@ -119,8 +119,8 @@ func ListListeners() ([]*managementv1.Listener, error) {
 	return rep.GetListeners(), nil
 }
 
-// RegenListener regenerates access token for listener specified by ID
-func RegenListener(id int64) (*managementv1.Listener, error) {
+// RegenerateTokenListener regenerates access token for listener specified by ID
+func RegenerateTokenListener(id int64) (*managementv1.Listener, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	rep, err := getSvc().RegenerateListener(ctx, &managementv1.RegenerateListenerRequest{Id: id})
@@ -130,8 +130,8 @@ func RegenListener(id int64) (*managementv1.Listener, error) {
 	return rep.GetListener(), nil
 }
 
-// RevokeListener revokes access token for listener specified by ID
-func RevokeListener(id int64) error {
+// RevokeTokenListener revokes access token for listener specified by ID
+func RevokeTokenListener(id int64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	_, err := getSvc().RevokeListener(ctx, &managementv1.RevokeListenerRequest{Id: id})

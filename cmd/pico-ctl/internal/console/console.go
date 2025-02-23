@@ -17,7 +17,9 @@ func Run(ctx context.Context) error {
 	app := console.New("pico-ctl")
 	main := app.ActiveMenu()
 	main.Short = "management commands"
-	main.Prompt().Primary = func() string { return fmt.Sprintf("[%s] > ", color.CyanString("pico-ctl")) }
+	main.Prompt().Primary = func() string {
+		return fmt.Sprintf("%s > ", color.New(color.FgHiCyan).Add(color.Underline).Sprint("pico-ctl"))
+	}
 	main.SetCommands(commands.Commands(app))
 	main.AddInterrupt(io.EOF, func(c *console.Console) {
 		if utils.ExitConsole(c) {

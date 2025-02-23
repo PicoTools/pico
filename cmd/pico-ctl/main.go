@@ -22,6 +22,7 @@ func main() {
 	}
 
 	flush := func() {
+		// ignore: /dev/stderr: invalid argument
 		_ = lg.Sync()
 	}
 	defer flush()
