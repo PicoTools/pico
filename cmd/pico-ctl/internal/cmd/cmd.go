@@ -5,7 +5,8 @@ import (
 
 	"github.com/PicoTools/pico/cmd/pico-ctl/internal/console"
 	"github.com/PicoTools/pico/cmd/pico-ctl/internal/constants"
-	"github.com/PicoTools/pico/cmd/pico-ctl/internal/utils"
+	"github.com/PicoTools/pico/internal/utils"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )

@@ -12,6 +12,7 @@ require (
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.25.0
+	github.com/jedib0t/go-pretty/v6 v6.6.6
 	github.com/lrita/cmap v0.0.0-20231108122212-cb084a67f554
 	github.com/orisano/wyhash v1.1.0
 	github.com/reeflective/console v0.1.22
@@ -29,6 +30,7 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/reeflective/readline v1.1.2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rsteube/carapace v0.46.3-0.20231214181515-27e49f3c3b69 // indirect
