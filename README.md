@@ -1,8 +1,8 @@
-<div align="center">
-  <h1>Pico</h1>
-  <img src=".github/assets/pico.png"/>
-  <p>Pico C2 is a C2 framework that allows you to connect your agents and listeners written in any programming language.<p><br/>
-</div>
+# Pico C2
+
+![Pico CLI](.github/assets/pico.png)
+
+Pico is a C2 framework that allows you to connect your agents and listeners written in any programming language.
 
 > :warning: Pico C2 is in the early stages of development. The API and functionality may change over time!
 
