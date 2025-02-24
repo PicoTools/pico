@@ -9,6 +9,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -20,6 +21,44 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+// Exit capability:
+// Stop agent's process
+type CapExit struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapExit) Reset() {
+	*x = CapExit{}
+	mi := &file_common_v1_common_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapExit) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapExit) ProtoMessage() {}
+
+func (x *CapExit) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapExit.ProtoReflect.Descriptor instead.
+func (*CapExit) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{0}
+}
 
 // Sleep capability:
 // Change sleep and jitter values on agent prorcess
@@ -35,7 +74,7 @@ type CapSleep struct {
 
 func (x *CapSleep) Reset() {
 	*x = CapSleep{}
-	mi := &file_common_v1_common_proto_msgTypes[0]
+	mi := &file_common_v1_common_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +86,7 @@ func (x *CapSleep) String() string {
 func (*CapSleep) ProtoMessage() {}
 
 func (x *CapSleep) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_common_proto_msgTypes[0]
+	mi := &file_common_v1_common_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +99,7 @@ func (x *CapSleep) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CapSleep.ProtoReflect.Descriptor instead.
 func (*CapSleep) Descriptor() ([]byte, []int) {
-	return file_common_v1_common_proto_rawDescGZIP(), []int{0}
+	return file_common_v1_common_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CapSleep) GetSleep() uint32 {
@@ -77,31 +116,33 @@ func (x *CapSleep) GetJitter() uint32 {
 	return 0
 }
 
-// Listing capability:
-// Get list of files and directories specified by path
-type CapLs struct {
+// Copy capability:
+// Copy files or directories specified with source and destination pathes
+type CapCp struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Path to file or directory
-	Path          string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	// Source path to file or directory
+	Src string `protobuf:"bytes,1,opt,name=src,proto3" json:"src,omitempty"`
+	// Destination path to file or directory
+	Dst           string `protobuf:"bytes,2,opt,name=dst,proto3" json:"dst,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapLs) Reset() {
-	*x = CapLs{}
-	mi := &file_common_v1_common_proto_msgTypes[1]
+func (x *CapCp) Reset() {
+	*x = CapCp{}
+	mi := &file_common_v1_common_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapLs) String() string {
+func (x *CapCp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapLs) ProtoMessage() {}
+func (*CapCp) ProtoMessage() {}
 
-func (x *CapLs) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_common_proto_msgTypes[1]
+func (x *CapCp) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -112,54 +153,23 @@ func (x *CapLs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapLs.ProtoReflect.Descriptor instead.
-func (*CapLs) Descriptor() ([]byte, []int) {
-	return file_common_v1_common_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use CapCp.ProtoReflect.Descriptor instead.
+func (*CapCp) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CapLs) GetPath() string {
+func (x *CapCp) GetSrc() string {
 	if x != nil {
-		return x.Path
+		return x.Src
 	}
 	return ""
 }
 
-// Process working directory capability:
-// Get current agent's process working directory
-type CapPwd struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CapPwd) Reset() {
-	*x = CapPwd{}
-	mi := &file_common_v1_common_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CapPwd) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CapPwd) ProtoMessage() {}
-
-func (x *CapPwd) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_common_proto_msgTypes[2]
+func (x *CapCp) GetDst() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.Dst
 	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CapPwd.ProtoReflect.Descriptor instead.
-func (*CapPwd) Descriptor() ([]byte, []int) {
-	return file_common_v1_common_proto_rawDescGZIP(), []int{2}
+	return ""
 }
 
 // Change process working directory capability:
@@ -247,28 +257,30 @@ func (*CapWhoami) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{4}
 }
 
-// Process list capability:
-// Get list of process on target OS
-type CapPs struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+// Kill job capability:
+// Kill active job on agent specified by its ID
+type CapJobkill struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Job ID to kill
+	Id            uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapPs) Reset() {
-	*x = CapPs{}
+func (x *CapJobkill) Reset() {
+	*x = CapJobkill{}
 	mi := &file_common_v1_common_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapPs) String() string {
+func (x *CapJobkill) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapPs) ProtoMessage() {}
+func (*CapJobkill) ProtoMessage() {}
 
-func (x *CapPs) ProtoReflect() protoreflect.Message {
+func (x *CapJobkill) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -280,9 +292,16 @@ func (x *CapPs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapPs.ProtoReflect.Descriptor instead.
-func (*CapPs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapJobkill.ProtoReflect.Descriptor instead.
+func (*CapJobkill) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CapJobkill) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 // Print file's content capability:
@@ -388,32 +407,28 @@ func (x *CapExec) GetArgs() string {
 	return ""
 }
 
-// Copy capability:
-// Copy files or directories specified with source and destination pathes
-type CapCp struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Source path to file or directory
-	Src string `protobuf:"bytes,1,opt,name=src,proto3" json:"src,omitempty"`
-	// Destination path to file or directory
-	Dst           string `protobuf:"bytes,2,opt,name=dst,proto3" json:"dst,omitempty"`
+// Process working directory capability:
+// Get current agent's process working directory
+type CapPwd struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapCp) Reset() {
-	*x = CapCp{}
+func (x *CapPwd) Reset() {
+	*x = CapPwd{}
 	mi := &file_common_v1_common_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapCp) String() string {
+func (x *CapPwd) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapCp) ProtoMessage() {}
+func (*CapPwd) ProtoMessage() {}
 
-func (x *CapCp) ProtoReflect() protoreflect.Message {
+func (x *CapPwd) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -425,23 +440,9 @@ func (x *CapCp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapCp.ProtoReflect.Descriptor instead.
-func (*CapCp) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapPwd.ProtoReflect.Descriptor instead.
+func (*CapPwd) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *CapCp) GetSrc() string {
-	if x != nil {
-		return x.Src
-	}
-	return ""
-}
-
-func (x *CapCp) GetDst() string {
-	if x != nil {
-		return x.Dst
-	}
-	return ""
 }
 
 // Jobs capability:
@@ -482,30 +483,28 @@ func (*CapJobs) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{9}
 }
 
-// Kill job capability:
-// Kill active job on agent specified by its ID
-type CapJobkill struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Job ID to kill
-	Id            uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+// Process list capability:
+// Get list of process on target OS
+type CapPs struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapJobkill) Reset() {
-	*x = CapJobkill{}
+func (x *CapPs) Reset() {
+	*x = CapPs{}
 	mi := &file_common_v1_common_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapJobkill) String() string {
+func (x *CapPs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapJobkill) ProtoMessage() {}
+func (*CapPs) ProtoMessage() {}
 
-func (x *CapJobkill) ProtoReflect() protoreflect.Message {
+func (x *CapPs) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -517,42 +516,35 @@ func (x *CapJobkill) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapJobkill.ProtoReflect.Descriptor instead.
-func (*CapJobkill) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapPs.ProtoReflect.Descriptor instead.
+func (*CapPs) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *CapJobkill) GetId() uint64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-// Stop process capability:
-// Kill process specified by process ID (PID)
-type CapKill struct {
+// Listing capability:
+// Get list of files and directories specified by path
+type CapLs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Process ID to kill
-	Pid           uint64 `protobuf:"varint,1,opt,name=pid,proto3" json:"pid,omitempty"`
+	// Path to file or directory
+	Path          string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapKill) Reset() {
-	*x = CapKill{}
+func (x *CapLs) Reset() {
+	*x = CapLs{}
 	mi := &file_common_v1_common_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapKill) String() string {
+func (x *CapLs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapKill) ProtoMessage() {}
+func (*CapLs) ProtoMessage() {}
 
-func (x *CapKill) ProtoReflect() protoreflect.Message {
+func (x *CapLs) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -564,44 +556,42 @@ func (x *CapKill) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapKill.ProtoReflect.Descriptor instead.
-func (*CapKill) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapLs.ProtoReflect.Descriptor instead.
+func (*CapLs) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *CapKill) GetPid() uint64 {
+func (x *CapLs) GetPath() string {
 	if x != nil {
-		return x.Pid
+		return x.Path
 	}
-	return 0
+	return ""
 }
 
-// Copy capability:
-// Move files or directories specified with source and destination pathes
-type CapMv struct {
+// Pause capability:
+// Pause agent's process execution on specified value (in seconds)
+type CapPause struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Source path to file or directory
-	Src string `protobuf:"bytes,1,opt,name=src,proto3" json:"src,omitempty"`
-	// Destination path to file or directory
-	Dst           string `protobuf:"bytes,2,opt,name=dst,proto3" json:"dst,omitempty"`
+	// Number of seconds to pause agent's execution
+	Pause         uint32 `protobuf:"varint,1,opt,name=pause,proto3" json:"pause,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapMv) Reset() {
-	*x = CapMv{}
+func (x *CapPause) Reset() {
+	*x = CapPause{}
 	mi := &file_common_v1_common_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapMv) String() string {
+func (x *CapPause) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapMv) ProtoMessage() {}
+func (*CapPause) ProtoMessage() {}
 
-func (x *CapMv) ProtoReflect() protoreflect.Message {
+func (x *CapPause) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -613,23 +603,16 @@ func (x *CapMv) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapMv.ProtoReflect.Descriptor instead.
-func (*CapMv) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapPause.ProtoReflect.Descriptor instead.
+func (*CapPause) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *CapMv) GetSrc() string {
+func (x *CapPause) GetPause() uint32 {
 	if x != nil {
-		return x.Src
+		return x.Pause
 	}
-	return ""
-}
-
-func (x *CapMv) GetDst() string {
-	if x != nil {
-		return x.Dst
-	}
-	return ""
+	return 0
 }
 
 // Create directory capability:
@@ -726,32 +709,30 @@ func (x *CapRm) GetPath() string {
 	return ""
 }
 
-// .NET in-memory execution capability:
-// Execute .NET binary with arguments in CLR runtime in agent's process memory
-type CapExecAssembly struct {
+// Execute shell command capability:
+// Execute shell command on target OS (/bin/sh, powershell.exe, etc)
+type CapShell struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Arguments to execute .NET binary with
-	Args string `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
-	// Blob with .NET binary program
-	Blob          []byte `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	// Command string to execute in shell
+	Cmd           string `protobuf:"bytes,1,opt,name=cmd,proto3" json:"cmd,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapExecAssembly) Reset() {
-	*x = CapExecAssembly{}
+func (x *CapShell) Reset() {
+	*x = CapShell{}
 	mi := &file_common_v1_common_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapExecAssembly) String() string {
+func (x *CapShell) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapExecAssembly) ProtoMessage() {}
+func (*CapShell) ProtoMessage() {}
 
-func (x *CapExecAssembly) ProtoReflect() protoreflect.Message {
+func (x *CapShell) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -763,23 +744,16 @@ func (x *CapExecAssembly) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapExecAssembly.ProtoReflect.Descriptor instead.
-func (*CapExecAssembly) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapShell.ProtoReflect.Descriptor instead.
+func (*CapShell) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *CapExecAssembly) GetArgs() string {
+func (x *CapShell) GetCmd() string {
 	if x != nil {
-		return x.Args
+		return x.Cmd
 	}
 	return ""
-}
-
-func (x *CapExecAssembly) GetBlob() []byte {
-	if x != nil {
-		return x.Blob
-	}
-	return nil
 }
 
 // Shellcode injection capability:
@@ -838,53 +812,6 @@ func (x *CapShellcodeInjection) GetBlob() []byte {
 	return nil
 }
 
-// File download capability:
-// Download file from target FS specified by path
-type CapDownload struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Path to file or directory
-	Path          string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CapDownload) Reset() {
-	*x = CapDownload{}
-	mi := &file_common_v1_common_proto_msgTypes[17]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CapDownload) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CapDownload) ProtoMessage() {}
-
-func (x *CapDownload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_common_proto_msgTypes[17]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CapDownload.ProtoReflect.Descriptor instead.
-func (*CapDownload) Descriptor() ([]byte, []int) {
-	return file_common_v1_common_proto_rawDescGZIP(), []int{17}
-}
-
-func (x *CapDownload) GetPath() string {
-	if x != nil {
-		return x.Path
-	}
-	return ""
-}
-
 // File upload capability:
 // Upload file on target FS specified by path
 type CapUpload struct {
@@ -899,7 +826,7 @@ type CapUpload struct {
 
 func (x *CapUpload) Reset() {
 	*x = CapUpload{}
-	mi := &file_common_v1_common_proto_msgTypes[18]
+	mi := &file_common_v1_common_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -911,7 +838,7 @@ func (x *CapUpload) String() string {
 func (*CapUpload) ProtoMessage() {}
 
 func (x *CapUpload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_common_proto_msgTypes[18]
+	mi := &file_common_v1_common_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -924,7 +851,7 @@ func (x *CapUpload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CapUpload.ProtoReflect.Descriptor instead.
 func (*CapUpload) Descriptor() ([]byte, []int) {
-	return file_common_v1_common_proto_rawDescGZIP(), []int{18}
+	return file_common_v1_common_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *CapUpload) GetPath() string {
@@ -941,30 +868,79 @@ func (x *CapUpload) GetBlob() []byte {
 	return nil
 }
 
-// Pause capability:
-// Pause agent's process execution on specified value (in seconds)
-type CapPause struct {
+// Stop process capability:
+// Kill process specified by process ID (PID)
+type CapKill struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Number of seconds to pause agent's execution
-	Pause         uint32 `protobuf:"varint,1,opt,name=pause,proto3" json:"pause,omitempty"`
+	// Process ID to kill
+	Pid           uint64 `protobuf:"varint,1,opt,name=pid,proto3" json:"pid,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapPause) Reset() {
-	*x = CapPause{}
+func (x *CapKill) Reset() {
+	*x = CapKill{}
+	mi := &file_common_v1_common_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapKill) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapKill) ProtoMessage() {}
+
+func (x *CapKill) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapKill.ProtoReflect.Descriptor instead.
+func (*CapKill) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *CapKill) GetPid() uint64 {
+	if x != nil {
+		return x.Pid
+	}
+	return 0
+}
+
+// Copy capability:
+// Move files or directories specified with source and destination pathes
+type CapMv struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Source path to file or directory
+	Src string `protobuf:"bytes,1,opt,name=src,proto3" json:"src,omitempty"`
+	// Destination path to file or directory
+	Dst           string `protobuf:"bytes,2,opt,name=dst,proto3" json:"dst,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapMv) Reset() {
+	*x = CapMv{}
 	mi := &file_common_v1_common_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapPause) String() string {
+func (x *CapMv) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapPause) ProtoMessage() {}
+func (*CapMv) ProtoMessage() {}
 
-func (x *CapPause) ProtoReflect() protoreflect.Message {
+func (x *CapMv) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -976,16 +952,23 @@ func (x *CapPause) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapPause.ProtoReflect.Descriptor instead.
-func (*CapPause) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapMv.ProtoReflect.Descriptor instead.
+func (*CapMv) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{19}
 }
 
-func (x *CapPause) GetPause() uint32 {
+func (x *CapMv) GetSrc() string {
 	if x != nil {
-		return x.Pause
+		return x.Src
 	}
-	return 0
+	return ""
+}
+
+func (x *CapMv) GetDst() string {
+	if x != nil {
+		return x.Dst
+	}
+	return ""
 }
 
 // Desctruction capability:
@@ -1082,30 +1065,32 @@ func (x *CapExecDetach) GetArgs() string {
 	return ""
 }
 
-// Execute shell command capability:
-// Execute shell command on target OS (/bin/sh, powershell.exe, etc)
-type CapShell struct {
+// .NET in-memory execution capability:
+// Execute .NET binary with arguments in CLR runtime in agent's process memory
+type CapExecAssembly struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Command string to execute in shell
-	Cmd           string `protobuf:"bytes,1,opt,name=cmd,proto3" json:"cmd,omitempty"`
+	// Arguments to execute .NET binary with
+	Args string `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// Blob with .NET binary program
+	Blob          []byte `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapShell) Reset() {
-	*x = CapShell{}
+func (x *CapExecAssembly) Reset() {
+	*x = CapExecAssembly{}
 	mi := &file_common_v1_common_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapShell) String() string {
+func (x *CapExecAssembly) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapShell) ProtoMessage() {}
+func (*CapExecAssembly) ProtoMessage() {}
 
-func (x *CapShell) ProtoReflect() protoreflect.Message {
+func (x *CapExecAssembly) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1117,16 +1102,23 @@ func (x *CapShell) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapShell.ProtoReflect.Descriptor instead.
-func (*CapShell) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapExecAssembly.ProtoReflect.Descriptor instead.
+func (*CapExecAssembly) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{22}
 }
 
-func (x *CapShell) GetCmd() string {
+func (x *CapExecAssembly) GetArgs() string {
 	if x != nil {
-		return x.Cmd
+		return x.Args
 	}
 	return ""
+}
+
+func (x *CapExecAssembly) GetBlob() []byte {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
 }
 
 // Spoof process PID capability:
@@ -1176,28 +1168,30 @@ func (x *CapPpid) GetPpid() uint64 {
 	return 0
 }
 
-// Exit capability:
-// Stop agent's process
-type CapExit struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+// File download capability:
+// Download file from target FS specified by path
+type CapDownload struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Path to file or directory
+	Path          string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CapExit) Reset() {
-	*x = CapExit{}
+func (x *CapDownload) Reset() {
+	*x = CapDownload{}
 	mi := &file_common_v1_common_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CapExit) String() string {
+func (x *CapDownload) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CapExit) ProtoMessage() {}
+func (*CapDownload) ProtoMessage() {}
 
-func (x *CapExit) ProtoReflect() protoreflect.Message {
+func (x *CapDownload) ProtoReflect() protoreflect.Message {
 	mi := &file_common_v1_common_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1209,9 +1203,464 @@ func (x *CapExit) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CapExit.ProtoReflect.Descriptor instead.
-func (*CapExit) Descriptor() ([]byte, []int) {
+// Deprecated: Use CapDownload.ProtoReflect.Descriptor instead.
+func (*CapDownload) Descriptor() ([]byte, []int) {
 	return file_common_v1_common_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *CapDownload) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+// Reserved23
+// Reserved capability to use on your own
+type CapReserved23 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved23) Reset() {
+	*x = CapReserved23{}
+	mi := &file_common_v1_common_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved23) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved23) ProtoMessage() {}
+
+func (x *CapReserved23) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved23.ProtoReflect.Descriptor instead.
+func (*CapReserved23) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *CapReserved23) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved23) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved24
+// Reserved capability to use on your own
+type CapReserved24 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved24) Reset() {
+	*x = CapReserved24{}
+	mi := &file_common_v1_common_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved24) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved24) ProtoMessage() {}
+
+func (x *CapReserved24) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved24.ProtoReflect.Descriptor instead.
+func (*CapReserved24) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *CapReserved24) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved24) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved25
+// Reserved capability to use on your own
+type CapReserved25 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved25) Reset() {
+	*x = CapReserved25{}
+	mi := &file_common_v1_common_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved25) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved25) ProtoMessage() {}
+
+func (x *CapReserved25) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved25.ProtoReflect.Descriptor instead.
+func (*CapReserved25) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *CapReserved25) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved25) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved26
+// Reserved capability to use on your own
+type CapReserved26 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved26) Reset() {
+	*x = CapReserved26{}
+	mi := &file_common_v1_common_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved26) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved26) ProtoMessage() {}
+
+func (x *CapReserved26) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved26.ProtoReflect.Descriptor instead.
+func (*CapReserved26) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *CapReserved26) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved26) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved27
+// Reserved capability to use on your own
+type CapReserved27 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved27) Reset() {
+	*x = CapReserved27{}
+	mi := &file_common_v1_common_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved27) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved27) ProtoMessage() {}
+
+func (x *CapReserved27) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved27.ProtoReflect.Descriptor instead.
+func (*CapReserved27) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *CapReserved27) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved27) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved28
+// Reserved capability to use on your own
+type CapReserved28 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved28) Reset() {
+	*x = CapReserved28{}
+	mi := &file_common_v1_common_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved28) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved28) ProtoMessage() {}
+
+func (x *CapReserved28) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved28.ProtoReflect.Descriptor instead.
+func (*CapReserved28) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *CapReserved28) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved28) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved29
+// Reserved capability to use on your own
+type CapReserved29 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved29) Reset() {
+	*x = CapReserved29{}
+	mi := &file_common_v1_common_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved29) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved29) ProtoMessage() {}
+
+func (x *CapReserved29) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved29.ProtoReflect.Descriptor instead.
+func (*CapReserved29) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *CapReserved29) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved29) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+// Reserved30
+// Reserved capability to use on your own
+type CapReserved30 struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// optional arguments
+	Args *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=args,proto3" json:"args,omitempty"`
+	// optional blob
+	Blob          *wrapperspb.BytesValue `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CapReserved30) Reset() {
+	*x = CapReserved30{}
+	mi := &file_common_v1_common_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CapReserved30) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CapReserved30) ProtoMessage() {}
+
+func (x *CapReserved30) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_common_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CapReserved30.ProtoReflect.Descriptor instead.
+func (*CapReserved30) Descriptor() ([]byte, []int) {
+	return file_common_v1_common_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *CapReserved30) GetArgs() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *CapReserved30) GetBlob() *wrapperspb.BytesValue {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
 }
 
 var File_common_v1_common_proto protoreflect.FileDescriptor
@@ -1219,59 +1668,119 @@ var File_common_v1_common_proto protoreflect.FileDescriptor
 var file_common_v1_common_proto_rawDesc = string([]byte{
 	0x0a, 0x16, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6d, 0x6d,
 	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x76, 0x31, 0x22, 0x38, 0x0a, 0x08, 0x43, 0x61, 0x70, 0x53, 0x6c, 0x65, 0x65, 0x70, 0x12,
-	0x14, 0x0a, 0x05, 0x73, 0x6c, 0x65, 0x65, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05,
-	0x73, 0x6c, 0x65, 0x65, 0x70, 0x12, 0x16, 0x0a, 0x06, 0x6a, 0x69, 0x74, 0x74, 0x65, 0x72, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x6a, 0x69, 0x74, 0x74, 0x65, 0x72, 0x22, 0x1b, 0x0a,
-	0x05, 0x43, 0x61, 0x70, 0x4c, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x08, 0x0a, 0x06, 0x43, 0x61,
-	0x70, 0x50, 0x77, 0x64, 0x22, 0x1b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x43, 0x64, 0x12, 0x12, 0x0a,
-	0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74,
-	0x68, 0x22, 0x0b, 0x0a, 0x09, 0x43, 0x61, 0x70, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x22, 0x07,
-	0x0a, 0x05, 0x43, 0x61, 0x70, 0x50, 0x73, 0x22, 0x1c, 0x0a, 0x06, 0x43, 0x61, 0x70, 0x43, 0x61,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x2f, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63,
-	0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x63,
-	0x6d, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x2b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x43, 0x70, 0x12,
-	0x10, 0x0a, 0x03, 0x73, 0x72, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x72,
-	0x63, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
-	0x64, 0x73, 0x74, 0x22, 0x09, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62, 0x73, 0x22, 0x1c,
-	0x0a, 0x0a, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22, 0x1b, 0x0a, 0x07,
-	0x43, 0x61, 0x70, 0x4b, 0x69, 0x6c, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x70, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x03, 0x70, 0x69, 0x64, 0x22, 0x2b, 0x0a, 0x05, 0x43, 0x61, 0x70,
-	0x4d, 0x76, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x72, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x73, 0x72, 0x63, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x64, 0x73, 0x74, 0x22, 0x1e, 0x0a, 0x08, 0x43, 0x61, 0x70, 0x4d, 0x6b, 0x64,
-	0x69, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x1b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x52, 0x6d, 0x12,
-	0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70,
-	0x61, 0x74, 0x68, 0x22, 0x39, 0x0a, 0x0f, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x41, 0x73,
-	0x73, 0x65, 0x6d, 0x62, 0x6c, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6c,
-	0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x3d,
-	0x0a, 0x15, 0x43, 0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64, 0x65, 0x49, 0x6e,
-	0x6a, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x70, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x03, 0x70, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6c, 0x6f,
-	0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x21, 0x0a,
-	0x0b, 0x43, 0x61, 0x70, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x12, 0x0a, 0x04,
-	0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68,
-	0x22, 0x33, 0x0a, 0x09, 0x43, 0x61, 0x70, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x12, 0x0a,
-	0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74,
-	0x68, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52,
-	0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x20, 0x0a, 0x08, 0x43, 0x61, 0x70, 0x50, 0x61, 0x75, 0x73,
-	0x65, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d,
-	0x52, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x22, 0x0c, 0x0a, 0x0a, 0x43, 0x61, 0x70, 0x44, 0x65,
-	0x73, 0x74, 0x72, 0x6f, 0x79, 0x22, 0x35, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63,
-	0x44, 0x65, 0x74, 0x61, 0x63, 0x68, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18, 0x01, 0x20,
+	0x2e, 0x76, 0x31, 0x1a, 0x1e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2f, 0x77, 0x72, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x22, 0x09, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x45, 0x78, 0x69, 0x74, 0x22, 0x38,
+	0x0a, 0x08, 0x43, 0x61, 0x70, 0x53, 0x6c, 0x65, 0x65, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x6c,
+	0x65, 0x65, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x73, 0x6c, 0x65, 0x65, 0x70,
+	0x12, 0x16, 0x0a, 0x06, 0x6a, 0x69, 0x74, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x06, 0x6a, 0x69, 0x74, 0x74, 0x65, 0x72, 0x22, 0x2b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x43,
+	0x70, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x72, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x73, 0x72, 0x63, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x64, 0x73, 0x74, 0x22, 0x1b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x43, 0x64, 0x12, 0x12,
+	0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61,
+	0x74, 0x68, 0x22, 0x0b, 0x0a, 0x09, 0x43, 0x61, 0x70, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x22,
+	0x1c, 0x0a, 0x0a, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22, 0x1c, 0x0a,
+	0x06, 0x43, 0x61, 0x70, 0x43, 0x61, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x2f, 0x0a, 0x07, 0x43,
+	0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x03, 0x63, 0x6d, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x1c, 0x0a, 0x08,
-	0x43, 0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x63, 0x6d, 0x64, 0x22, 0x1d, 0x0a, 0x07, 0x43, 0x61,
-	0x70, 0x50, 0x70, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x70, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x04, 0x70, 0x70, 0x69, 0x64, 0x22, 0x09, 0x0a, 0x07, 0x43, 0x61, 0x70,
-	0x45, 0x78, 0x69, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x08, 0x0a, 0x06,
+	0x43, 0x61, 0x70, 0x50, 0x77, 0x64, 0x22, 0x09, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62,
+	0x73, 0x22, 0x07, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x50, 0x73, 0x22, 0x1b, 0x0a, 0x05, 0x43, 0x61,
+	0x70, 0x4c, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x20, 0x0a, 0x08, 0x43, 0x61, 0x70, 0x50, 0x61,
+	0x75, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x22, 0x1e, 0x0a, 0x08, 0x43, 0x61, 0x70,
+	0x4d, 0x6b, 0x64, 0x69, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x1b, 0x0a, 0x05, 0x43, 0x61, 0x70,
+	0x52, 0x6d, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x22, 0x1c, 0x0a, 0x08, 0x43, 0x61, 0x70, 0x53, 0x68, 0x65,
+	0x6c, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x63, 0x6d, 0x64, 0x22, 0x3d, 0x0a, 0x15, 0x43, 0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c,
+	0x63, 0x6f, 0x64, 0x65, 0x49, 0x6e, 0x6a, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a,
+	0x03, 0x70, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x03, 0x70, 0x69, 0x64, 0x12,
+	0x12, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62,
+	0x6c, 0x6f, 0x62, 0x22, 0x33, 0x0a, 0x09, 0x43, 0x61, 0x70, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64,
+	0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x70, 0x61, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0c, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x1b, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x4b,
+	0x69, 0x6c, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x70, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x03, 0x70, 0x69, 0x64, 0x22, 0x2b, 0x0a, 0x05, 0x43, 0x61, 0x70, 0x4d, 0x76, 0x12, 0x10,
+	0x0a, 0x03, 0x73, 0x72, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x72, 0x63,
+	0x12, 0x10, 0x0a, 0x03, 0x64, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64,
+	0x73, 0x74, 0x22, 0x0c, 0x0a, 0x0a, 0x43, 0x61, 0x70, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79,
+	0x22, 0x35, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x44, 0x65, 0x74, 0x61, 0x63,
+	0x68, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x6d, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x63, 0x6d, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x39, 0x0a, 0x0f, 0x43, 0x61, 0x70, 0x45, 0x78,
+	0x65, 0x63, 0x41, 0x73, 0x73, 0x65, 0x6d, 0x62, 0x6c, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x72,
+	0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x12,
+	0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6c,
+	0x6f, 0x62, 0x22, 0x1d, 0x0a, 0x07, 0x43, 0x61, 0x70, 0x50, 0x70, 0x69, 0x64, 0x12, 0x12, 0x0a,
+	0x04, 0x70, 0x70, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x70, 0x70, 0x69,
+	0x64, 0x22, 0x21, 0x0a, 0x0b, 0x43, 0x61, 0x70, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64,
+	0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x70, 0x61, 0x74, 0x68, 0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x64, 0x32, 0x33, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52,
+	0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x34, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62,
+	0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65,
+	0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x72, 0x0a, 0x0d,
+	0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x35, 0x12, 0x30, 0x0a,
+	0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74,
+	0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12,
+	0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62,
+	0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32,
+	0x36, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61,
+	0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04,
+	0x62, 0x6c, 0x6f, 0x62, 0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x64, 0x32, 0x37, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52,
+	0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x38, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62,
+	0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65,
+	0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x22, 0x72, 0x0a, 0x0d,
+	0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x39, 0x12, 0x30, 0x0a,
+	0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74,
+	0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x12,
+	0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e,
+	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x62,
+	0x22, 0x72, 0x0a, 0x0d, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x33,
+	0x30, 0x12, 0x30, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04, 0x61,
+	0x72, 0x67, 0x73, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1b, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x04,
+	0x62, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -1286,40 +1795,66 @@ func file_common_v1_common_proto_rawDescGZIP() []byte {
 	return file_common_v1_common_proto_rawDescData
 }
 
-var file_common_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_common_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_common_v1_common_proto_goTypes = []any{
-	(*CapSleep)(nil),              // 0: common.v1.CapSleep
-	(*CapLs)(nil),                 // 1: common.v1.CapLs
-	(*CapPwd)(nil),                // 2: common.v1.CapPwd
-	(*CapCd)(nil),                 // 3: common.v1.CapCd
-	(*CapWhoami)(nil),             // 4: common.v1.CapWhoami
-	(*CapPs)(nil),                 // 5: common.v1.CapPs
-	(*CapCat)(nil),                // 6: common.v1.CapCat
-	(*CapExec)(nil),               // 7: common.v1.CapExec
-	(*CapCp)(nil),                 // 8: common.v1.CapCp
-	(*CapJobs)(nil),               // 9: common.v1.CapJobs
-	(*CapJobkill)(nil),            // 10: common.v1.CapJobkill
-	(*CapKill)(nil),               // 11: common.v1.CapKill
-	(*CapMv)(nil),                 // 12: common.v1.CapMv
-	(*CapMkdir)(nil),              // 13: common.v1.CapMkdir
-	(*CapRm)(nil),                 // 14: common.v1.CapRm
-	(*CapExecAssembly)(nil),       // 15: common.v1.CapExecAssembly
-	(*CapShellcodeInjection)(nil), // 16: common.v1.CapShellcodeInjection
-	(*CapDownload)(nil),           // 17: common.v1.CapDownload
-	(*CapUpload)(nil),             // 18: common.v1.CapUpload
-	(*CapPause)(nil),              // 19: common.v1.CapPause
-	(*CapDestroy)(nil),            // 20: common.v1.CapDestroy
-	(*CapExecDetach)(nil),         // 21: common.v1.CapExecDetach
-	(*CapShell)(nil),              // 22: common.v1.CapShell
-	(*CapPpid)(nil),               // 23: common.v1.CapPpid
-	(*CapExit)(nil),               // 24: common.v1.CapExit
+	(*CapExit)(nil),                // 0: common.v1.CapExit
+	(*CapSleep)(nil),               // 1: common.v1.CapSleep
+	(*CapCp)(nil),                  // 2: common.v1.CapCp
+	(*CapCd)(nil),                  // 3: common.v1.CapCd
+	(*CapWhoami)(nil),              // 4: common.v1.CapWhoami
+	(*CapJobkill)(nil),             // 5: common.v1.CapJobkill
+	(*CapCat)(nil),                 // 6: common.v1.CapCat
+	(*CapExec)(nil),                // 7: common.v1.CapExec
+	(*CapPwd)(nil),                 // 8: common.v1.CapPwd
+	(*CapJobs)(nil),                // 9: common.v1.CapJobs
+	(*CapPs)(nil),                  // 10: common.v1.CapPs
+	(*CapLs)(nil),                  // 11: common.v1.CapLs
+	(*CapPause)(nil),               // 12: common.v1.CapPause
+	(*CapMkdir)(nil),               // 13: common.v1.CapMkdir
+	(*CapRm)(nil),                  // 14: common.v1.CapRm
+	(*CapShell)(nil),               // 15: common.v1.CapShell
+	(*CapShellcodeInjection)(nil),  // 16: common.v1.CapShellcodeInjection
+	(*CapUpload)(nil),              // 17: common.v1.CapUpload
+	(*CapKill)(nil),                // 18: common.v1.CapKill
+	(*CapMv)(nil),                  // 19: common.v1.CapMv
+	(*CapDestroy)(nil),             // 20: common.v1.CapDestroy
+	(*CapExecDetach)(nil),          // 21: common.v1.CapExecDetach
+	(*CapExecAssembly)(nil),        // 22: common.v1.CapExecAssembly
+	(*CapPpid)(nil),                // 23: common.v1.CapPpid
+	(*CapDownload)(nil),            // 24: common.v1.CapDownload
+	(*CapReserved23)(nil),          // 25: common.v1.CapReserved23
+	(*CapReserved24)(nil),          // 26: common.v1.CapReserved24
+	(*CapReserved25)(nil),          // 27: common.v1.CapReserved25
+	(*CapReserved26)(nil),          // 28: common.v1.CapReserved26
+	(*CapReserved27)(nil),          // 29: common.v1.CapReserved27
+	(*CapReserved28)(nil),          // 30: common.v1.CapReserved28
+	(*CapReserved29)(nil),          // 31: common.v1.CapReserved29
+	(*CapReserved30)(nil),          // 32: common.v1.CapReserved30
+	(*wrapperspb.StringValue)(nil), // 33: google.protobuf.StringValue
+	(*wrapperspb.BytesValue)(nil),  // 34: google.protobuf.BytesValue
 }
 var file_common_v1_common_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	33, // 0: common.v1.CapReserved23.args:type_name -> google.protobuf.StringValue
+	34, // 1: common.v1.CapReserved23.blob:type_name -> google.protobuf.BytesValue
+	33, // 2: common.v1.CapReserved24.args:type_name -> google.protobuf.StringValue
+	34, // 3: common.v1.CapReserved24.blob:type_name -> google.protobuf.BytesValue
+	33, // 4: common.v1.CapReserved25.args:type_name -> google.protobuf.StringValue
+	34, // 5: common.v1.CapReserved25.blob:type_name -> google.protobuf.BytesValue
+	33, // 6: common.v1.CapReserved26.args:type_name -> google.protobuf.StringValue
+	34, // 7: common.v1.CapReserved26.blob:type_name -> google.protobuf.BytesValue
+	33, // 8: common.v1.CapReserved27.args:type_name -> google.protobuf.StringValue
+	34, // 9: common.v1.CapReserved27.blob:type_name -> google.protobuf.BytesValue
+	33, // 10: common.v1.CapReserved28.args:type_name -> google.protobuf.StringValue
+	34, // 11: common.v1.CapReserved28.blob:type_name -> google.protobuf.BytesValue
+	33, // 12: common.v1.CapReserved29.args:type_name -> google.protobuf.StringValue
+	34, // 13: common.v1.CapReserved29.blob:type_name -> google.protobuf.BytesValue
+	33, // 14: common.v1.CapReserved30.args:type_name -> google.protobuf.StringValue
+	34, // 15: common.v1.CapReserved30.blob:type_name -> google.protobuf.BytesValue
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_common_v1_common_proto_init() }
@@ -1333,7 +1868,7 @@ func file_common_v1_common_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_v1_common_proto_rawDesc), len(file_common_v1_common_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

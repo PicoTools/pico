@@ -1388,56 +1388,72 @@ func (s *server) NewCommand(ss operatorv1.OperatorService_NewCommandServer) erro
 			var raw []byte
 			cap := shared.Capability(msg.GetTask().GetCap())
 			switch cap {
+			case shared.CapExit:
+				raw, err = cap.Marshal(msg.GetTask().GetExit())
 			case shared.CapSleep:
 				raw, err = cap.Marshal(msg.GetTask().GetSleep())
-			case shared.CapLs:
-				raw, err = cap.Marshal(msg.GetTask().GetLs())
-			case shared.CapPwd:
-				raw, err = cap.Marshal(msg.GetTask().GetPwd())
+			case shared.CapCp:
+				raw, err = cap.Marshal(msg.GetTask().GetCp())
 			case shared.CapCd:
 				raw, err = cap.Marshal(msg.GetTask().GetCd())
 			case shared.CapWhoami:
 				raw, err = cap.Marshal(msg.GetTask().GetWhoami())
-			case shared.CapPs:
-				raw, err = cap.Marshal(msg.GetTask().GetPs())
+			case shared.CapJobkill:
+				raw, err = cap.Marshal(msg.GetTask().GetJobkill())
 			case shared.CapCat:
 				raw, err = cap.Marshal(msg.GetTask().GetCat())
 			case shared.CapExec:
 				raw, err = cap.Marshal(msg.GetTask().GetExec())
-			case shared.CapCp:
-				raw, err = cap.Marshal(msg.GetTask().GetCp())
+			case shared.CapPwd:
+				raw, err = cap.Marshal(msg.GetTask().GetPwd())
 			case shared.CapJobs:
 				raw, err = cap.Marshal(msg.GetTask().GetJobs())
-			case shared.CapJobkill:
-				raw, err = cap.Marshal(msg.GetTask().GetJobkill())
-			case shared.CapKill:
-				raw, err = cap.Marshal(msg.GetTask().GetKill())
-			case shared.CapMv:
-				raw, err = cap.Marshal(msg.GetTask().GetMv())
+			case shared.CapPs:
+				raw, err = cap.Marshal(msg.GetTask().GetPs())
+			case shared.CapLs:
+				raw, err = cap.Marshal(msg.GetTask().GetLs())
+			case shared.CapPause:
+				raw, err = cap.Marshal(msg.GetTask().GetPause())
 			case shared.CapMkdir:
 				raw, err = cap.Marshal(msg.GetTask().GetMkdir())
 			case shared.CapRm:
 				raw, err = cap.Marshal(msg.GetTask().GetRm())
-			case shared.CapExecAssembly:
-				raw, err = cap.Marshal(msg.GetTask().GetExecAssembly())
+			case shared.CapShell:
+				raw, err = cap.Marshal(msg.GetTask().GetShell())
 			case shared.CapShellcodeInjection:
 				raw, err = cap.Marshal(msg.GetTask().GetShellcodeInjection())
-			case shared.CapDownload:
-				raw, err = cap.Marshal(msg.GetTask().GetDownload())
 			case shared.CapUpload:
 				raw, err = cap.Marshal(msg.GetTask().GetUpload())
-			case shared.CapPause:
-				raw, err = cap.Marshal(msg.GetTask().GetPause())
+			case shared.CapKill:
+				raw, err = cap.Marshal(msg.GetTask().GetKill())
+			case shared.CapMv:
+				raw, err = cap.Marshal(msg.GetTask().GetMv())
 			case shared.CapDestroy:
 				raw, err = cap.Marshal(msg.GetTask().GetDestroy())
 			case shared.CapExecDetach:
 				raw, err = cap.Marshal(msg.GetTask().GetExecDetach())
-			case shared.CapShell:
-				raw, err = cap.Marshal(msg.GetTask().GetShell())
+			case shared.CapExecAssembly:
+				raw, err = cap.Marshal(msg.GetTask().GetExecAssembly())
 			case shared.CapPpid:
 				raw, err = cap.Marshal(msg.GetTask().GetPpid())
-			case shared.CapExit:
-				raw, err = cap.Marshal(msg.GetTask().GetExit())
+			case shared.CapDownload:
+				raw, err = cap.Marshal(msg.GetTask().GetDownload())
+			case shared.CapReserved23:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved23())
+			case shared.CapReserved24:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved24())
+			case shared.CapReserved25:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved25())
+			case shared.CapReserved26:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved26())
+			case shared.CapReserved27:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved27())
+			case shared.CapReserved28:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved28())
+			case shared.CapReserved29:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved29())
+			case shared.CapReserved30:
+				raw, err = cap.Marshal(msg.GetTask().GetReserved30())
 			default:
 				err = fmt.Errorf("unknown capability %d", cap)
 			}

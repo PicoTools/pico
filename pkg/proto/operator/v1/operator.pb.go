@@ -4466,31 +4466,39 @@ type CreateTaskRequest struct {
 	Cap uint32 `protobuf:"varint,1,opt,name=cap,proto3" json:"cap,omitempty"`
 	// Types that are valid to be assigned to Args:
 	//
+	//	*CreateTaskRequest_Exit
 	//	*CreateTaskRequest_Sleep
-	//	*CreateTaskRequest_Ls
-	//	*CreateTaskRequest_Pwd
+	//	*CreateTaskRequest_Cp
 	//	*CreateTaskRequest_Cd
 	//	*CreateTaskRequest_Whoami
-	//	*CreateTaskRequest_Ps
+	//	*CreateTaskRequest_Jobkill
 	//	*CreateTaskRequest_Cat
 	//	*CreateTaskRequest_Exec
-	//	*CreateTaskRequest_Cp
+	//	*CreateTaskRequest_Pwd
 	//	*CreateTaskRequest_Jobs
-	//	*CreateTaskRequest_Jobkill
-	//	*CreateTaskRequest_Kill
-	//	*CreateTaskRequest_Mv
+	//	*CreateTaskRequest_Ps
+	//	*CreateTaskRequest_Ls
+	//	*CreateTaskRequest_Pause
 	//	*CreateTaskRequest_Mkdir
 	//	*CreateTaskRequest_Rm
-	//	*CreateTaskRequest_ExecAssembly
+	//	*CreateTaskRequest_Shell
 	//	*CreateTaskRequest_ShellcodeInjection
-	//	*CreateTaskRequest_Download
 	//	*CreateTaskRequest_Upload
-	//	*CreateTaskRequest_Pause
+	//	*CreateTaskRequest_Kill
+	//	*CreateTaskRequest_Mv
 	//	*CreateTaskRequest_Destroy
 	//	*CreateTaskRequest_ExecDetach
-	//	*CreateTaskRequest_Shell
+	//	*CreateTaskRequest_ExecAssembly
 	//	*CreateTaskRequest_Ppid
-	//	*CreateTaskRequest_Exit
+	//	*CreateTaskRequest_Download
+	//	*CreateTaskRequest_Reserved23
+	//	*CreateTaskRequest_Reserved24
+	//	*CreateTaskRequest_Reserved25
+	//	*CreateTaskRequest_Reserved26
+	//	*CreateTaskRequest_Reserved27
+	//	*CreateTaskRequest_Reserved28
+	//	*CreateTaskRequest_Reserved29
+	//	*CreateTaskRequest_Reserved30
 	Args          isCreateTaskRequest_Args `protobuf_oneof:"args"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -4540,6 +4548,15 @@ func (x *CreateTaskRequest) GetArgs() isCreateTaskRequest_Args {
 	return nil
 }
 
+func (x *CreateTaskRequest) GetExit() *v1.CapExit {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Exit); ok {
+			return x.Exit
+		}
+	}
+	return nil
+}
+
 func (x *CreateTaskRequest) GetSleep() *v1.CapSleep {
 	if x != nil {
 		if x, ok := x.Args.(*CreateTaskRequest_Sleep); ok {
@@ -4549,19 +4566,10 @@ func (x *CreateTaskRequest) GetSleep() *v1.CapSleep {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetLs() *v1.CapLs {
+func (x *CreateTaskRequest) GetCp() *v1.CapCp {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Ls); ok {
-			return x.Ls
-		}
-	}
-	return nil
-}
-
-func (x *CreateTaskRequest) GetPwd() *v1.CapPwd {
-	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Pwd); ok {
-			return x.Pwd
+		if x, ok := x.Args.(*CreateTaskRequest_Cp); ok {
+			return x.Cp
 		}
 	}
 	return nil
@@ -4585,10 +4593,10 @@ func (x *CreateTaskRequest) GetWhoami() *v1.CapWhoami {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetPs() *v1.CapPs {
+func (x *CreateTaskRequest) GetJobkill() *v1.CapJobkill {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Ps); ok {
-			return x.Ps
+		if x, ok := x.Args.(*CreateTaskRequest_Jobkill); ok {
+			return x.Jobkill
 		}
 	}
 	return nil
@@ -4612,10 +4620,10 @@ func (x *CreateTaskRequest) GetExec() *v1.CapExec {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetCp() *v1.CapCp {
+func (x *CreateTaskRequest) GetPwd() *v1.CapPwd {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Cp); ok {
-			return x.Cp
+		if x, ok := x.Args.(*CreateTaskRequest_Pwd); ok {
+			return x.Pwd
 		}
 	}
 	return nil
@@ -4630,28 +4638,28 @@ func (x *CreateTaskRequest) GetJobs() *v1.CapJobs {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetJobkill() *v1.CapJobkill {
+func (x *CreateTaskRequest) GetPs() *v1.CapPs {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Jobkill); ok {
-			return x.Jobkill
+		if x, ok := x.Args.(*CreateTaskRequest_Ps); ok {
+			return x.Ps
 		}
 	}
 	return nil
 }
 
-func (x *CreateTaskRequest) GetKill() *v1.CapKill {
+func (x *CreateTaskRequest) GetLs() *v1.CapLs {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Kill); ok {
-			return x.Kill
+		if x, ok := x.Args.(*CreateTaskRequest_Ls); ok {
+			return x.Ls
 		}
 	}
 	return nil
 }
 
-func (x *CreateTaskRequest) GetMv() *v1.CapMv {
+func (x *CreateTaskRequest) GetPause() *v1.CapPause {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Mv); ok {
-			return x.Mv
+		if x, ok := x.Args.(*CreateTaskRequest_Pause); ok {
+			return x.Pause
 		}
 	}
 	return nil
@@ -4675,10 +4683,10 @@ func (x *CreateTaskRequest) GetRm() *v1.CapRm {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetExecAssembly() *v1.CapExecAssembly {
+func (x *CreateTaskRequest) GetShell() *v1.CapShell {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_ExecAssembly); ok {
-			return x.ExecAssembly
+		if x, ok := x.Args.(*CreateTaskRequest_Shell); ok {
+			return x.Shell
 		}
 	}
 	return nil
@@ -4693,15 +4701,6 @@ func (x *CreateTaskRequest) GetShellcodeInjection() *v1.CapShellcodeInjection {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetDownload() *v1.CapDownload {
-	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Download); ok {
-			return x.Download
-		}
-	}
-	return nil
-}
-
 func (x *CreateTaskRequest) GetUpload() *v1.CapUpload {
 	if x != nil {
 		if x, ok := x.Args.(*CreateTaskRequest_Upload); ok {
@@ -4711,10 +4710,19 @@ func (x *CreateTaskRequest) GetUpload() *v1.CapUpload {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetPause() *v1.CapPause {
+func (x *CreateTaskRequest) GetKill() *v1.CapKill {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Pause); ok {
-			return x.Pause
+		if x, ok := x.Args.(*CreateTaskRequest_Kill); ok {
+			return x.Kill
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetMv() *v1.CapMv {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Mv); ok {
+			return x.Mv
 		}
 	}
 	return nil
@@ -4738,10 +4746,10 @@ func (x *CreateTaskRequest) GetExecDetach() *v1.CapExecDetach {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetShell() *v1.CapShell {
+func (x *CreateTaskRequest) GetExecAssembly() *v1.CapExecAssembly {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Shell); ok {
-			return x.Shell
+		if x, ok := x.Args.(*CreateTaskRequest_ExecAssembly); ok {
+			return x.ExecAssembly
 		}
 	}
 	return nil
@@ -4756,10 +4764,82 @@ func (x *CreateTaskRequest) GetPpid() *v1.CapPpid {
 	return nil
 }
 
-func (x *CreateTaskRequest) GetExit() *v1.CapExit {
+func (x *CreateTaskRequest) GetDownload() *v1.CapDownload {
 	if x != nil {
-		if x, ok := x.Args.(*CreateTaskRequest_Exit); ok {
-			return x.Exit
+		if x, ok := x.Args.(*CreateTaskRequest_Download); ok {
+			return x.Download
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved23() *v1.CapReserved23 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved23); ok {
+			return x.Reserved23
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved24() *v1.CapReserved24 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved24); ok {
+			return x.Reserved24
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved25() *v1.CapReserved25 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved25); ok {
+			return x.Reserved25
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved26() *v1.CapReserved26 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved26); ok {
+			return x.Reserved26
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved27() *v1.CapReserved27 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved27); ok {
+			return x.Reserved27
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved28() *v1.CapReserved28 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved28); ok {
+			return x.Reserved28
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved29() *v1.CapReserved29 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved29); ok {
+			return x.Reserved29
+		}
+	}
+	return nil
+}
+
+func (x *CreateTaskRequest) GetReserved30() *v1.CapReserved30 {
+	if x != nil {
+		if x, ok := x.Args.(*CreateTaskRequest_Reserved30); ok {
+			return x.Reserved30
 		}
 	}
 	return nil
@@ -4769,16 +4849,16 @@ type isCreateTaskRequest_Args interface {
 	isCreateTaskRequest_Args()
 }
 
+type CreateTaskRequest_Exit struct {
+	Exit *v1.CapExit `protobuf:"bytes,2,opt,name=exit,proto3,oneof"`
+}
+
 type CreateTaskRequest_Sleep struct {
-	Sleep *v1.CapSleep `protobuf:"bytes,2,opt,name=sleep,proto3,oneof"`
+	Sleep *v1.CapSleep `protobuf:"bytes,3,opt,name=sleep,proto3,oneof"`
 }
 
-type CreateTaskRequest_Ls struct {
-	Ls *v1.CapLs `protobuf:"bytes,3,opt,name=ls,proto3,oneof"`
-}
-
-type CreateTaskRequest_Pwd struct {
-	Pwd *v1.CapPwd `protobuf:"bytes,4,opt,name=pwd,proto3,oneof"`
+type CreateTaskRequest_Cp struct {
+	Cp *v1.CapCp `protobuf:"bytes,4,opt,name=cp,proto3,oneof"`
 }
 
 type CreateTaskRequest_Cd struct {
@@ -4789,8 +4869,8 @@ type CreateTaskRequest_Whoami struct {
 	Whoami *v1.CapWhoami `protobuf:"bytes,6,opt,name=whoami,proto3,oneof"`
 }
 
-type CreateTaskRequest_Ps struct {
-	Ps *v1.CapPs `protobuf:"bytes,7,opt,name=ps,proto3,oneof"`
+type CreateTaskRequest_Jobkill struct {
+	Jobkill *v1.CapJobkill `protobuf:"bytes,7,opt,name=jobkill,proto3,oneof"`
 }
 
 type CreateTaskRequest_Cat struct {
@@ -4801,24 +4881,24 @@ type CreateTaskRequest_Exec struct {
 	Exec *v1.CapExec `protobuf:"bytes,9,opt,name=exec,proto3,oneof"`
 }
 
-type CreateTaskRequest_Cp struct {
-	Cp *v1.CapCp `protobuf:"bytes,10,opt,name=cp,proto3,oneof"`
+type CreateTaskRequest_Pwd struct {
+	Pwd *v1.CapPwd `protobuf:"bytes,10,opt,name=pwd,proto3,oneof"`
 }
 
 type CreateTaskRequest_Jobs struct {
 	Jobs *v1.CapJobs `protobuf:"bytes,11,opt,name=jobs,proto3,oneof"`
 }
 
-type CreateTaskRequest_Jobkill struct {
-	Jobkill *v1.CapJobkill `protobuf:"bytes,12,opt,name=jobkill,proto3,oneof"`
+type CreateTaskRequest_Ps struct {
+	Ps *v1.CapPs `protobuf:"bytes,12,opt,name=ps,proto3,oneof"`
 }
 
-type CreateTaskRequest_Kill struct {
-	Kill *v1.CapKill `protobuf:"bytes,13,opt,name=kill,proto3,oneof"`
+type CreateTaskRequest_Ls struct {
+	Ls *v1.CapLs `protobuf:"bytes,13,opt,name=ls,proto3,oneof"`
 }
 
-type CreateTaskRequest_Mv struct {
-	Mv *v1.CapMv `protobuf:"bytes,14,opt,name=mv,proto3,oneof"`
+type CreateTaskRequest_Pause struct {
+	Pause *v1.CapPause `protobuf:"bytes,14,opt,name=pause,proto3,oneof"`
 }
 
 type CreateTaskRequest_Mkdir struct {
@@ -4829,24 +4909,24 @@ type CreateTaskRequest_Rm struct {
 	Rm *v1.CapRm `protobuf:"bytes,16,opt,name=rm,proto3,oneof"`
 }
 
-type CreateTaskRequest_ExecAssembly struct {
-	ExecAssembly *v1.CapExecAssembly `protobuf:"bytes,17,opt,name=exec_assembly,json=execAssembly,proto3,oneof"`
+type CreateTaskRequest_Shell struct {
+	Shell *v1.CapShell `protobuf:"bytes,17,opt,name=shell,proto3,oneof"`
 }
 
 type CreateTaskRequest_ShellcodeInjection struct {
 	ShellcodeInjection *v1.CapShellcodeInjection `protobuf:"bytes,18,opt,name=shellcode_injection,json=shellcodeInjection,proto3,oneof"`
 }
 
-type CreateTaskRequest_Download struct {
-	Download *v1.CapDownload `protobuf:"bytes,19,opt,name=download,proto3,oneof"`
-}
-
 type CreateTaskRequest_Upload struct {
-	Upload *v1.CapUpload `protobuf:"bytes,20,opt,name=upload,proto3,oneof"`
+	Upload *v1.CapUpload `protobuf:"bytes,19,opt,name=upload,proto3,oneof"`
 }
 
-type CreateTaskRequest_Pause struct {
-	Pause *v1.CapPause `protobuf:"bytes,21,opt,name=pause,proto3,oneof"`
+type CreateTaskRequest_Kill struct {
+	Kill *v1.CapKill `protobuf:"bytes,20,opt,name=kill,proto3,oneof"`
+}
+
+type CreateTaskRequest_Mv struct {
+	Mv *v1.CapMv `protobuf:"bytes,21,opt,name=mv,proto3,oneof"`
 }
 
 type CreateTaskRequest_Destroy struct {
@@ -4857,67 +4937,115 @@ type CreateTaskRequest_ExecDetach struct {
 	ExecDetach *v1.CapExecDetach `protobuf:"bytes,23,opt,name=exec_detach,json=execDetach,proto3,oneof"`
 }
 
-type CreateTaskRequest_Shell struct {
-	Shell *v1.CapShell `protobuf:"bytes,24,opt,name=shell,proto3,oneof"`
+type CreateTaskRequest_ExecAssembly struct {
+	ExecAssembly *v1.CapExecAssembly `protobuf:"bytes,24,opt,name=exec_assembly,json=execAssembly,proto3,oneof"`
 }
 
 type CreateTaskRequest_Ppid struct {
 	Ppid *v1.CapPpid `protobuf:"bytes,25,opt,name=ppid,proto3,oneof"`
 }
 
-type CreateTaskRequest_Exit struct {
-	Exit *v1.CapExit `protobuf:"bytes,26,opt,name=exit,proto3,oneof"`
+type CreateTaskRequest_Download struct {
+	Download *v1.CapDownload `protobuf:"bytes,26,opt,name=download,proto3,oneof"`
 }
+
+type CreateTaskRequest_Reserved23 struct {
+	Reserved23 *v1.CapReserved23 `protobuf:"bytes,27,opt,name=reserved23,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved24 struct {
+	Reserved24 *v1.CapReserved24 `protobuf:"bytes,28,opt,name=reserved24,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved25 struct {
+	Reserved25 *v1.CapReserved25 `protobuf:"bytes,29,opt,name=reserved25,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved26 struct {
+	Reserved26 *v1.CapReserved26 `protobuf:"bytes,30,opt,name=reserved26,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved27 struct {
+	Reserved27 *v1.CapReserved27 `protobuf:"bytes,31,opt,name=reserved27,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved28 struct {
+	Reserved28 *v1.CapReserved28 `protobuf:"bytes,32,opt,name=reserved28,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved29 struct {
+	Reserved29 *v1.CapReserved29 `protobuf:"bytes,33,opt,name=reserved29,proto3,oneof"`
+}
+
+type CreateTaskRequest_Reserved30 struct {
+	Reserved30 *v1.CapReserved30 `protobuf:"bytes,34,opt,name=reserved30,proto3,oneof"`
+}
+
+func (*CreateTaskRequest_Exit) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Sleep) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Ls) isCreateTaskRequest_Args() {}
-
-func (*CreateTaskRequest_Pwd) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Cp) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Cd) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Whoami) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Ps) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Jobkill) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Cat) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Exec) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Cp) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Pwd) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Jobs) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Jobkill) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Ps) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Kill) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Ls) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Mv) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Pause) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Mkdir) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Rm) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_ExecAssembly) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Shell) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_ShellcodeInjection) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Download) isCreateTaskRequest_Args() {}
-
 func (*CreateTaskRequest_Upload) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Pause) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Kill) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Mv) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Destroy) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_ExecDetach) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Shell) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_ExecAssembly) isCreateTaskRequest_Args() {}
 
 func (*CreateTaskRequest_Ppid) isCreateTaskRequest_Args() {}
 
-func (*CreateTaskRequest_Exit) isCreateTaskRequest_Args() {}
+func (*CreateTaskRequest_Download) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved23) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved24) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved25) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved26) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved27) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved28) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved29) isCreateTaskRequest_Args() {}
+
+func (*CreateTaskRequest_Reserved30) isCreateTaskRequest_Args() {}
 
 type NewCommandResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -6472,81 +6600,111 @@ var file_operator_v1_operator_proto_rawDesc = string([]byte{
 	0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70,
 	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x10, 0x0a,
 	0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22,
-	0xaa, 0x09, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
+	0x8a, 0x0d, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x61, 0x70, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0d, 0x52, 0x03, 0x63, 0x61, 0x70, 0x12, 0x2b, 0x0a, 0x05, 0x73, 0x6c, 0x65, 0x65, 0x70,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
-	0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x53, 0x6c, 0x65, 0x65, 0x70, 0x48, 0x00, 0x52, 0x05, 0x73,
-	0x6c, 0x65, 0x65, 0x70, 0x12, 0x22, 0x0a, 0x02, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
-	0x4c, 0x73, 0x48, 0x00, 0x52, 0x02, 0x6c, 0x73, 0x12, 0x25, 0x0a, 0x03, 0x70, 0x77, 0x64, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76,
-	0x31, 0x2e, 0x43, 0x61, 0x70, 0x50, 0x77, 0x64, 0x48, 0x00, 0x52, 0x03, 0x70, 0x77, 0x64, 0x12,
-	0x22, 0x0a, 0x02, 0x63, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x43, 0x64, 0x48, 0x00, 0x52,
-	0x02, 0x63, 0x64, 0x12, 0x2e, 0x0a, 0x06, 0x77, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e,
-	0x43, 0x61, 0x70, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x48, 0x00, 0x52, 0x06, 0x77, 0x68, 0x6f,
-	0x61, 0x6d, 0x69, 0x12, 0x22, 0x0a, 0x02, 0x70, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x50,
-	0x73, 0x48, 0x00, 0x52, 0x02, 0x70, 0x73, 0x12, 0x25, 0x0a, 0x03, 0x63, 0x61, 0x74, 0x18, 0x08,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
-	0x2e, 0x43, 0x61, 0x70, 0x43, 0x61, 0x74, 0x48, 0x00, 0x52, 0x03, 0x63, 0x61, 0x74, 0x12, 0x28,
-	0x0a, 0x04, 0x65, 0x78, 0x65, 0x63, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63,
-	0x48, 0x00, 0x52, 0x04, 0x65, 0x78, 0x65, 0x63, 0x12, 0x22, 0x0a, 0x02, 0x63, 0x70, 0x18, 0x0a,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
-	0x2e, 0x43, 0x61, 0x70, 0x43, 0x70, 0x48, 0x00, 0x52, 0x02, 0x63, 0x70, 0x12, 0x28, 0x0a, 0x04,
-	0x6a, 0x6f, 0x62, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d,
-	0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62, 0x73, 0x48, 0x00,
-	0x52, 0x04, 0x6a, 0x6f, 0x62, 0x73, 0x12, 0x31, 0x0a, 0x07, 0x6a, 0x6f, 0x62, 0x6b, 0x69, 0x6c,
-	0x6c, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x28, 0x0d, 0x52, 0x03, 0x63, 0x61, 0x70, 0x12, 0x28, 0x0a, 0x04, 0x65, 0x78, 0x69, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76,
+	0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x69, 0x74, 0x48, 0x00, 0x52, 0x04, 0x65, 0x78, 0x69,
+	0x74, 0x12, 0x2b, 0x0a, 0x05, 0x73, 0x6c, 0x65, 0x65, 0x70, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
+	0x53, 0x6c, 0x65, 0x65, 0x70, 0x48, 0x00, 0x52, 0x05, 0x73, 0x6c, 0x65, 0x65, 0x70, 0x12, 0x22,
+	0x0a, 0x02, 0x63, 0x70, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x43, 0x70, 0x48, 0x00, 0x52, 0x02,
+	0x63, 0x70, 0x12, 0x22, 0x0a, 0x02, 0x63, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10,
+	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x43, 0x64,
+	0x48, 0x00, 0x52, 0x02, 0x63, 0x64, 0x12, 0x2e, 0x0a, 0x06, 0x77, 0x68, 0x6f, 0x61, 0x6d, 0x69,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x57, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x48, 0x00, 0x52, 0x06,
+	0x77, 0x68, 0x6f, 0x61, 0x6d, 0x69, 0x12, 0x31, 0x0a, 0x07, 0x6a, 0x6f, 0x62, 0x6b, 0x69, 0x6c,
+	0x6c, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
 	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4a, 0x6f, 0x62, 0x6b, 0x69, 0x6c, 0x6c, 0x48, 0x00,
-	0x52, 0x07, 0x6a, 0x6f, 0x62, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x28, 0x0a, 0x04, 0x6b, 0x69, 0x6c,
-	0x6c, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4b, 0x69, 0x6c, 0x6c, 0x48, 0x00, 0x52, 0x04, 0x6b,
-	0x69, 0x6c, 0x6c, 0x12, 0x22, 0x0a, 0x02, 0x6d, 0x76, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4d,
-	0x76, 0x48, 0x00, 0x52, 0x02, 0x6d, 0x76, 0x12, 0x2b, 0x0a, 0x05, 0x6d, 0x6b, 0x64, 0x69, 0x72,
-	0x18, 0x0f, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
-	0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4d, 0x6b, 0x64, 0x69, 0x72, 0x48, 0x00, 0x52, 0x05, 0x6d,
-	0x6b, 0x64, 0x69, 0x72, 0x12, 0x22, 0x0a, 0x02, 0x72, 0x6d, 0x18, 0x10, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
-	0x52, 0x6d, 0x48, 0x00, 0x52, 0x02, 0x72, 0x6d, 0x12, 0x41, 0x0a, 0x0d, 0x65, 0x78, 0x65, 0x63,
-	0x5f, 0x61, 0x73, 0x73, 0x65, 0x6d, 0x62, 0x6c, 0x79, 0x18, 0x11, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x1a, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45,
-	0x78, 0x65, 0x63, 0x41, 0x73, 0x73, 0x65, 0x6d, 0x62, 0x6c, 0x79, 0x48, 0x00, 0x52, 0x0c, 0x65,
-	0x78, 0x65, 0x63, 0x41, 0x73, 0x73, 0x65, 0x6d, 0x62, 0x6c, 0x79, 0x12, 0x53, 0x0a, 0x13, 0x73,
-	0x68, 0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64, 0x65, 0x5f, 0x69, 0x6e, 0x6a, 0x65, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x18, 0x12, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
-	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64,
-	0x65, 0x49, 0x6e, 0x6a, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x12, 0x73, 0x68,
-	0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64, 0x65, 0x49, 0x6e, 0x6a, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x34, 0x0a, 0x08, 0x64, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x13, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43,
-	0x61, 0x70, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x48, 0x00, 0x52, 0x08, 0x64, 0x6f,
-	0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x2e, 0x0a, 0x06, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64,
-	0x18, 0x14, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
-	0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x48, 0x00, 0x52, 0x06,
-	0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x2b, 0x0a, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x18,
-	0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76,
-	0x31, 0x2e, 0x43, 0x61, 0x70, 0x50, 0x61, 0x75, 0x73, 0x65, 0x48, 0x00, 0x52, 0x05, 0x70, 0x61,
-	0x75, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x07, 0x64, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x18, 0x16,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
-	0x2e, 0x43, 0x61, 0x70, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x48, 0x00, 0x52, 0x07, 0x64,
-	0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x12, 0x3b, 0x0a, 0x0b, 0x65, 0x78, 0x65, 0x63, 0x5f, 0x64,
-	0x65, 0x74, 0x61, 0x63, 0x68, 0x18, 0x17, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x44,
-	0x65, 0x74, 0x61, 0x63, 0x68, 0x48, 0x00, 0x52, 0x0a, 0x65, 0x78, 0x65, 0x63, 0x44, 0x65, 0x74,
-	0x61, 0x63, 0x68, 0x12, 0x2b, 0x0a, 0x05, 0x73, 0x68, 0x65, 0x6c, 0x6c, 0x18, 0x18, 0x20, 0x01,
+	0x52, 0x07, 0x6a, 0x6f, 0x62, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x25, 0x0a, 0x03, 0x63, 0x61, 0x74,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x43, 0x61, 0x74, 0x48, 0x00, 0x52, 0x03, 0x63, 0x61, 0x74,
+	0x12, 0x28, 0x0a, 0x04, 0x65, 0x78, 0x65, 0x63, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12,
+	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78,
+	0x65, 0x63, 0x48, 0x00, 0x52, 0x04, 0x65, 0x78, 0x65, 0x63, 0x12, 0x25, 0x0a, 0x03, 0x70, 0x77,
+	0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x50, 0x77, 0x64, 0x48, 0x00, 0x52, 0x03, 0x70, 0x77,
+	0x64, 0x12, 0x28, 0x0a, 0x04, 0x6a, 0x6f, 0x62, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4a,
+	0x6f, 0x62, 0x73, 0x48, 0x00, 0x52, 0x04, 0x6a, 0x6f, 0x62, 0x73, 0x12, 0x22, 0x0a, 0x02, 0x70,
+	0x73, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x50, 0x73, 0x48, 0x00, 0x52, 0x02, 0x70, 0x73, 0x12,
+	0x22, 0x0a, 0x02, 0x6c, 0x73, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f,
+	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4c, 0x73, 0x48, 0x00, 0x52,
+	0x02, 0x6c, 0x73, 0x12, 0x2b, 0x0a, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65, 0x18, 0x0e, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43,
-	0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c, 0x48, 0x00, 0x52, 0x05, 0x73, 0x68, 0x65, 0x6c, 0x6c,
-	0x12, 0x28, 0x0a, 0x04, 0x70, 0x70, 0x69, 0x64, 0x18, 0x19, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12,
-	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x50, 0x70,
-	0x69, 0x64, 0x48, 0x00, 0x52, 0x04, 0x70, 0x70, 0x69, 0x64, 0x12, 0x28, 0x0a, 0x04, 0x65, 0x78,
-	0x69, 0x74, 0x18, 0x1a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
-	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x69, 0x74, 0x48, 0x00, 0x52, 0x04,
-	0x65, 0x78, 0x69, 0x74, 0x42, 0x06, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x14, 0x0a, 0x12,
+	0x61, 0x70, 0x50, 0x61, 0x75, 0x73, 0x65, 0x48, 0x00, 0x52, 0x05, 0x70, 0x61, 0x75, 0x73, 0x65,
+	0x12, 0x2b, 0x0a, 0x05, 0x6d, 0x6b, 0x64, 0x69, 0x72, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4d,
+	0x6b, 0x64, 0x69, 0x72, 0x48, 0x00, 0x52, 0x05, 0x6d, 0x6b, 0x64, 0x69, 0x72, 0x12, 0x22, 0x0a,
+	0x02, 0x72, 0x6d, 0x18, 0x10, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x52, 0x6d, 0x48, 0x00, 0x52, 0x02, 0x72,
+	0x6d, 0x12, 0x2b, 0x0a, 0x05, 0x73, 0x68, 0x65, 0x6c, 0x6c, 0x18, 0x11, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
+	0x53, 0x68, 0x65, 0x6c, 0x6c, 0x48, 0x00, 0x52, 0x05, 0x73, 0x68, 0x65, 0x6c, 0x6c, 0x12, 0x53,
+	0x0a, 0x13, 0x73, 0x68, 0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64, 0x65, 0x5f, 0x69, 0x6e, 0x6a, 0x65,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x12, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6f,
+	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x53, 0x68, 0x65, 0x6c, 0x6c,
+	0x63, 0x6f, 0x64, 0x65, 0x49, 0x6e, 0x6a, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52,
+	0x12, 0x73, 0x68, 0x65, 0x6c, 0x6c, 0x63, 0x6f, 0x64, 0x65, 0x49, 0x6e, 0x6a, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a, 0x06, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x13, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e,
+	0x43, 0x61, 0x70, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x48, 0x00, 0x52, 0x06, 0x75, 0x70, 0x6c,
+	0x6f, 0x61, 0x64, 0x12, 0x28, 0x0a, 0x04, 0x6b, 0x69, 0x6c, 0x6c, 0x18, 0x14, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61,
+	0x70, 0x4b, 0x69, 0x6c, 0x6c, 0x48, 0x00, 0x52, 0x04, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x22, 0x0a,
+	0x02, 0x6d, 0x76, 0x18, 0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x4d, 0x76, 0x48, 0x00, 0x52, 0x02, 0x6d,
+	0x76, 0x12, 0x31, 0x0a, 0x07, 0x64, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x18, 0x16, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43,
+	0x61, 0x70, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6f, 0x79, 0x48, 0x00, 0x52, 0x07, 0x64, 0x65, 0x73,
+	0x74, 0x72, 0x6f, 0x79, 0x12, 0x3b, 0x0a, 0x0b, 0x65, 0x78, 0x65, 0x63, 0x5f, 0x64, 0x65, 0x74,
+	0x61, 0x63, 0x68, 0x18, 0x17, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x44, 0x65, 0x74,
+	0x61, 0x63, 0x68, 0x48, 0x00, 0x52, 0x0a, 0x65, 0x78, 0x65, 0x63, 0x44, 0x65, 0x74, 0x61, 0x63,
+	0x68, 0x12, 0x41, 0x0a, 0x0d, 0x65, 0x78, 0x65, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x6d, 0x62,
+	0x6c, 0x79, 0x18, 0x18, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x45, 0x78, 0x65, 0x63, 0x41, 0x73, 0x73, 0x65,
+	0x6d, 0x62, 0x6c, 0x79, 0x48, 0x00, 0x52, 0x0c, 0x65, 0x78, 0x65, 0x63, 0x41, 0x73, 0x73, 0x65,
+	0x6d, 0x62, 0x6c, 0x79, 0x12, 0x28, 0x0a, 0x04, 0x70, 0x70, 0x69, 0x64, 0x18, 0x19, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43,
+	0x61, 0x70, 0x50, 0x70, 0x69, 0x64, 0x48, 0x00, 0x52, 0x04, 0x70, 0x70, 0x69, 0x64, 0x12, 0x34,
+	0x0a, 0x08, 0x64, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x1a, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x16, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
+	0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x48, 0x00, 0x52, 0x08, 0x64, 0x6f, 0x77, 0x6e,
+	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64,
+	0x32, 0x33, 0x18, 0x1b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64,
+	0x32, 0x33, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x33,
+	0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x34, 0x18, 0x1c,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
+	0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x34, 0x48, 0x00,
+	0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x34, 0x12, 0x3a, 0x0a, 0x0a,
+	0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x35, 0x18, 0x1d, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
+	0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x35, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65,
+	0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x35, 0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x64, 0x32, 0x36, 0x18, 0x1e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x64, 0x32, 0x36, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76,
+	0x65, 0x64, 0x32, 0x36, 0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64,
+	0x32, 0x37, 0x18, 0x1f, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64,
+	0x32, 0x37, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x37,
+	0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x38, 0x18, 0x20,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
+	0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x38, 0x48, 0x00,
+	0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x38, 0x12, 0x3a, 0x0a, 0x0a,
+	0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x39, 0x18, 0x21, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70,
+	0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x39, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65,
+	0x73, 0x65, 0x72, 0x76, 0x65, 0x64, 0x32, 0x39, 0x12, 0x3a, 0x0a, 0x0a, 0x72, 0x65, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x64, 0x33, 0x30, 0x18, 0x22, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x70, 0x52, 0x65, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x64, 0x33, 0x30, 0x48, 0x00, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76,
+	0x65, 0x64, 0x33, 0x30, 0x42, 0x06, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22, 0x14, 0x0a, 0x12,
 	0x4e, 0x65, 0x77, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
 	0x73, 0x65, 0x22, 0x89, 0x02, 0x0a, 0x15, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65,
 	0x54, 0x61, 0x73, 0x6b, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x32, 0x0a, 0x06,
@@ -6927,32 +7085,40 @@ var file_operator_v1_operator_proto_goTypes = []any{
 	(*timestamppb.Timestamp)(nil),        // 89: google.protobuf.Timestamp
 	(*wrapperspb.BoolValue)(nil),         // 90: google.protobuf.BoolValue
 	(*wrapperspb.UInt64Value)(nil),       // 91: google.protobuf.UInt64Value
-	(*v1.CapSleep)(nil),                  // 92: common.v1.CapSleep
-	(*v1.CapLs)(nil),                     // 93: common.v1.CapLs
-	(*v1.CapPwd)(nil),                    // 94: common.v1.CapPwd
+	(*v1.CapExit)(nil),                   // 92: common.v1.CapExit
+	(*v1.CapSleep)(nil),                  // 93: common.v1.CapSleep
+	(*v1.CapCp)(nil),                     // 94: common.v1.CapCp
 	(*v1.CapCd)(nil),                     // 95: common.v1.CapCd
 	(*v1.CapWhoami)(nil),                 // 96: common.v1.CapWhoami
-	(*v1.CapPs)(nil),                     // 97: common.v1.CapPs
+	(*v1.CapJobkill)(nil),                // 97: common.v1.CapJobkill
 	(*v1.CapCat)(nil),                    // 98: common.v1.CapCat
 	(*v1.CapExec)(nil),                   // 99: common.v1.CapExec
-	(*v1.CapCp)(nil),                     // 100: common.v1.CapCp
+	(*v1.CapPwd)(nil),                    // 100: common.v1.CapPwd
 	(*v1.CapJobs)(nil),                   // 101: common.v1.CapJobs
-	(*v1.CapJobkill)(nil),                // 102: common.v1.CapJobkill
-	(*v1.CapKill)(nil),                   // 103: common.v1.CapKill
-	(*v1.CapMv)(nil),                     // 104: common.v1.CapMv
+	(*v1.CapPs)(nil),                     // 102: common.v1.CapPs
+	(*v1.CapLs)(nil),                     // 103: common.v1.CapLs
+	(*v1.CapPause)(nil),                  // 104: common.v1.CapPause
 	(*v1.CapMkdir)(nil),                  // 105: common.v1.CapMkdir
 	(*v1.CapRm)(nil),                     // 106: common.v1.CapRm
-	(*v1.CapExecAssembly)(nil),           // 107: common.v1.CapExecAssembly
+	(*v1.CapShell)(nil),                  // 107: common.v1.CapShell
 	(*v1.CapShellcodeInjection)(nil),     // 108: common.v1.CapShellcodeInjection
-	(*v1.CapDownload)(nil),               // 109: common.v1.CapDownload
-	(*v1.CapUpload)(nil),                 // 110: common.v1.CapUpload
-	(*v1.CapPause)(nil),                  // 111: common.v1.CapPause
+	(*v1.CapUpload)(nil),                 // 109: common.v1.CapUpload
+	(*v1.CapKill)(nil),                   // 110: common.v1.CapKill
+	(*v1.CapMv)(nil),                     // 111: common.v1.CapMv
 	(*v1.CapDestroy)(nil),                // 112: common.v1.CapDestroy
 	(*v1.CapExecDetach)(nil),             // 113: common.v1.CapExecDetach
-	(*v1.CapShell)(nil),                  // 114: common.v1.CapShell
+	(*v1.CapExecAssembly)(nil),           // 114: common.v1.CapExecAssembly
 	(*v1.CapPpid)(nil),                   // 115: common.v1.CapPpid
-	(*v1.CapExit)(nil),                   // 116: common.v1.CapExit
-	(*wrapperspb.BytesValue)(nil),        // 117: google.protobuf.BytesValue
+	(*v1.CapDownload)(nil),               // 116: common.v1.CapDownload
+	(*v1.CapReserved23)(nil),             // 117: common.v1.CapReserved23
+	(*v1.CapReserved24)(nil),             // 118: common.v1.CapReserved24
+	(*v1.CapReserved25)(nil),             // 119: common.v1.CapReserved25
+	(*v1.CapReserved26)(nil),             // 120: common.v1.CapReserved26
+	(*v1.CapReserved27)(nil),             // 121: common.v1.CapReserved27
+	(*v1.CapReserved28)(nil),             // 122: common.v1.CapReserved28
+	(*v1.CapReserved29)(nil),             // 123: common.v1.CapReserved29
+	(*v1.CapReserved30)(nil),             // 124: common.v1.CapReserved30
+	(*wrapperspb.BytesValue)(nil),        // 125: google.protobuf.BytesValue
 }
 var file_operator_v1_operator_proto_depIdxs = []int32{
 	0,   // 0: operator.v1.CancelTasksRequest.cookie:type_name -> operator.v1.SessionCookie
@@ -7066,104 +7232,112 @@ var file_operator_v1_operator_proto_depIdxs = []int32{
 	71,  // 108: operator.v1.NewCommandRequest.command:type_name -> operator.v1.CreateCommandRequest
 	72,  // 109: operator.v1.NewCommandRequest.message:type_name -> operator.v1.CreateMessageRequest
 	73,  // 110: operator.v1.NewCommandRequest.task:type_name -> operator.v1.CreateTaskRequest
-	92,  // 111: operator.v1.CreateTaskRequest.sleep:type_name -> common.v1.CapSleep
-	93,  // 112: operator.v1.CreateTaskRequest.ls:type_name -> common.v1.CapLs
-	94,  // 113: operator.v1.CreateTaskRequest.pwd:type_name -> common.v1.CapPwd
+	92,  // 111: operator.v1.CreateTaskRequest.exit:type_name -> common.v1.CapExit
+	93,  // 112: operator.v1.CreateTaskRequest.sleep:type_name -> common.v1.CapSleep
+	94,  // 113: operator.v1.CreateTaskRequest.cp:type_name -> common.v1.CapCp
 	95,  // 114: operator.v1.CreateTaskRequest.cd:type_name -> common.v1.CapCd
 	96,  // 115: operator.v1.CreateTaskRequest.whoami:type_name -> common.v1.CapWhoami
-	97,  // 116: operator.v1.CreateTaskRequest.ps:type_name -> common.v1.CapPs
+	97,  // 116: operator.v1.CreateTaskRequest.jobkill:type_name -> common.v1.CapJobkill
 	98,  // 117: operator.v1.CreateTaskRequest.cat:type_name -> common.v1.CapCat
 	99,  // 118: operator.v1.CreateTaskRequest.exec:type_name -> common.v1.CapExec
-	100, // 119: operator.v1.CreateTaskRequest.cp:type_name -> common.v1.CapCp
+	100, // 119: operator.v1.CreateTaskRequest.pwd:type_name -> common.v1.CapPwd
 	101, // 120: operator.v1.CreateTaskRequest.jobs:type_name -> common.v1.CapJobs
-	102, // 121: operator.v1.CreateTaskRequest.jobkill:type_name -> common.v1.CapJobkill
-	103, // 122: operator.v1.CreateTaskRequest.kill:type_name -> common.v1.CapKill
-	104, // 123: operator.v1.CreateTaskRequest.mv:type_name -> common.v1.CapMv
+	102, // 121: operator.v1.CreateTaskRequest.ps:type_name -> common.v1.CapPs
+	103, // 122: operator.v1.CreateTaskRequest.ls:type_name -> common.v1.CapLs
+	104, // 123: operator.v1.CreateTaskRequest.pause:type_name -> common.v1.CapPause
 	105, // 124: operator.v1.CreateTaskRequest.mkdir:type_name -> common.v1.CapMkdir
 	106, // 125: operator.v1.CreateTaskRequest.rm:type_name -> common.v1.CapRm
-	107, // 126: operator.v1.CreateTaskRequest.exec_assembly:type_name -> common.v1.CapExecAssembly
+	107, // 126: operator.v1.CreateTaskRequest.shell:type_name -> common.v1.CapShell
 	108, // 127: operator.v1.CreateTaskRequest.shellcode_injection:type_name -> common.v1.CapShellcodeInjection
-	109, // 128: operator.v1.CreateTaskRequest.download:type_name -> common.v1.CapDownload
-	110, // 129: operator.v1.CreateTaskRequest.upload:type_name -> common.v1.CapUpload
-	111, // 130: operator.v1.CreateTaskRequest.pause:type_name -> common.v1.CapPause
+	109, // 128: operator.v1.CreateTaskRequest.upload:type_name -> common.v1.CapUpload
+	110, // 129: operator.v1.CreateTaskRequest.kill:type_name -> common.v1.CapKill
+	111, // 130: operator.v1.CreateTaskRequest.mv:type_name -> common.v1.CapMv
 	112, // 131: operator.v1.CreateTaskRequest.destroy:type_name -> common.v1.CapDestroy
 	113, // 132: operator.v1.CreateTaskRequest.exec_detach:type_name -> common.v1.CapExecDetach
-	114, // 133: operator.v1.CreateTaskRequest.shell:type_name -> common.v1.CapShell
+	114, // 133: operator.v1.CreateTaskRequest.exec_assembly:type_name -> common.v1.CapExecAssembly
 	115, // 134: operator.v1.CreateTaskRequest.ppid:type_name -> common.v1.CapPpid
-	116, // 135: operator.v1.CreateTaskRequest.exit:type_name -> common.v1.CapExit
-	0,   // 136: operator.v1.SubscribeTasksRequest.cookie:type_name -> operator.v1.SessionCookie
-	76,  // 137: operator.v1.SubscribeTasksRequest.hello:type_name -> operator.v1.SubscribeTasksHelloRequest
-	77,  // 138: operator.v1.SubscribeTasksRequest.start:type_name -> operator.v1.StartPollAgentRequest
-	78,  // 139: operator.v1.SubscribeTasksRequest.stop:type_name -> operator.v1.StopPollAgentRequest
-	89,  // 140: operator.v1.CommandResponse.created:type_name -> google.protobuf.Timestamp
-	89,  // 141: operator.v1.MessageResponse.created:type_name -> google.protobuf.Timestamp
-	117, // 142: operator.v1.TaskResponse.output:type_name -> google.protobuf.BytesValue
-	89,  // 143: operator.v1.TaskResponse.created:type_name -> google.protobuf.Timestamp
-	117, // 144: operator.v1.TaskDoneResponse.output:type_name -> google.protobuf.BytesValue
-	79,  // 145: operator.v1.SubscribeTasksResponse.command:type_name -> operator.v1.CommandResponse
-	80,  // 146: operator.v1.SubscribeTasksResponse.message:type_name -> operator.v1.MessageResponse
-	81,  // 147: operator.v1.SubscribeTasksResponse.task:type_name -> operator.v1.TaskResponse
-	82,  // 148: operator.v1.SubscribeTasksResponse.task_status:type_name -> operator.v1.TaskStatusResponse
-	83,  // 149: operator.v1.SubscribeTasksResponse.task_done:type_name -> operator.v1.TaskDoneResponse
-	0,   // 150: operator.v1.GetTaskOutputRequest.cookie:type_name -> operator.v1.SessionCookie
-	117, // 151: operator.v1.GetTaskOutputResponse.output:type_name -> google.protobuf.BytesValue
-	35,  // 152: operator.v1.OperatorService.Hello:input_type -> operator.v1.HelloRequest
-	38,  // 153: operator.v1.OperatorService.SubscribeListeners:input_type -> operator.v1.SubscribeListenersRequest
-	46,  // 154: operator.v1.OperatorService.SubscribeAgents:input_type -> operator.v1.SubscribeAgentsRequest
-	54,  // 155: operator.v1.OperatorService.SubscribeOperators:input_type -> operator.v1.SubscribeOperatorsRequest
-	60,  // 156: operator.v1.OperatorService.SubscribeChat:input_type -> operator.v1.SubscribeChatRequest
-	64,  // 157: operator.v1.OperatorService.SubscribeCredentials:input_type -> operator.v1.SubscribeCredentialsRequest
-	75,  // 158: operator.v1.OperatorService.SubscribeTasks:input_type -> operator.v1.SubscribeTasksRequest
-	33,  // 159: operator.v1.OperatorService.SetListenerColor:input_type -> operator.v1.SetListenerColorRequest
-	31,  // 160: operator.v1.OperatorService.SetListenersColor:input_type -> operator.v1.SetListenersColorRequest
-	19,  // 161: operator.v1.OperatorService.SetListenerNote:input_type -> operator.v1.SetListenerNoteRequest
-	29,  // 162: operator.v1.OperatorService.SetListenersNote:input_type -> operator.v1.SetListenersNoteRequest
-	27,  // 163: operator.v1.OperatorService.SetAgentColor:input_type -> operator.v1.SetAgentColorRequest
-	25,  // 164: operator.v1.OperatorService.SetAgentsColor:input_type -> operator.v1.SetAgentsColorRequest
-	23,  // 165: operator.v1.OperatorService.SetAgentNote:input_type -> operator.v1.SetAgentNoteRequest
-	21,  // 166: operator.v1.OperatorService.SetAgentsNote:input_type -> operator.v1.SetAgentsNoteRequest
-	17,  // 167: operator.v1.OperatorService.SetOperatorColor:input_type -> operator.v1.SetOperatorColorRequest
-	15,  // 168: operator.v1.OperatorService.SetOperatorsColor:input_type -> operator.v1.SetOperatorsColorRequest
-	13,  // 169: operator.v1.OperatorService.NewChatMessage:input_type -> operator.v1.NewChatMessageRequest
-	11,  // 170: operator.v1.OperatorService.NewCredential:input_type -> operator.v1.NewCredentialRequest
-	9,   // 171: operator.v1.OperatorService.SetCredentialColor:input_type -> operator.v1.SetCredentialColorRequest
-	7,   // 172: operator.v1.OperatorService.SetCredentialsColor:input_type -> operator.v1.SetCredentialsColorRequest
-	5,   // 173: operator.v1.OperatorService.SetCredentialNote:input_type -> operator.v1.SetCredentialNoteRequest
-	3,   // 174: operator.v1.OperatorService.SetCredentialsNote:input_type -> operator.v1.SetCredentialsNoteRequest
-	70,  // 175: operator.v1.OperatorService.NewCommand:input_type -> operator.v1.NewCommandRequest
-	1,   // 176: operator.v1.OperatorService.CancelTasks:input_type -> operator.v1.CancelTasksRequest
-	85,  // 177: operator.v1.OperatorService.GetTaskOutput:input_type -> operator.v1.GetTaskOutputRequest
-	37,  // 178: operator.v1.OperatorService.Hello:output_type -> operator.v1.HelloResponse
-	45,  // 179: operator.v1.OperatorService.SubscribeListeners:output_type -> operator.v1.SubscribeListenersResponse
-	53,  // 180: operator.v1.OperatorService.SubscribeAgents:output_type -> operator.v1.SubscribeAgentsResponse
-	59,  // 181: operator.v1.OperatorService.SubscribeOperators:output_type -> operator.v1.SubscribeOperatorsResponse
-	63,  // 182: operator.v1.OperatorService.SubscribeChat:output_type -> operator.v1.SubscribeChatResponse
-	69,  // 183: operator.v1.OperatorService.SubscribeCredentials:output_type -> operator.v1.SubscribeCredentialsResponse
-	84,  // 184: operator.v1.OperatorService.SubscribeTasks:output_type -> operator.v1.SubscribeTasksResponse
-	34,  // 185: operator.v1.OperatorService.SetListenerColor:output_type -> operator.v1.SetListenerColorResponse
-	32,  // 186: operator.v1.OperatorService.SetListenersColor:output_type -> operator.v1.SetListenersColorResponse
-	20,  // 187: operator.v1.OperatorService.SetListenerNote:output_type -> operator.v1.SetListenerNoteResponse
-	30,  // 188: operator.v1.OperatorService.SetListenersNote:output_type -> operator.v1.SetListenersNoteResponse
-	28,  // 189: operator.v1.OperatorService.SetAgentColor:output_type -> operator.v1.SetAgentColorResponse
-	26,  // 190: operator.v1.OperatorService.SetAgentsColor:output_type -> operator.v1.SetAgentsColorResponse
-	24,  // 191: operator.v1.OperatorService.SetAgentNote:output_type -> operator.v1.SetAgentNoteResponse
-	22,  // 192: operator.v1.OperatorService.SetAgentsNote:output_type -> operator.v1.SetAgentsNoteResponse
-	18,  // 193: operator.v1.OperatorService.SetOperatorColor:output_type -> operator.v1.SetOperatorColorResponse
-	16,  // 194: operator.v1.OperatorService.SetOperatorsColor:output_type -> operator.v1.SetOperatorsColorResponse
-	14,  // 195: operator.v1.OperatorService.NewChatMessage:output_type -> operator.v1.NewChatMessageResponse
-	12,  // 196: operator.v1.OperatorService.NewCredential:output_type -> operator.v1.NewCredentialResponse
-	10,  // 197: operator.v1.OperatorService.SetCredentialColor:output_type -> operator.v1.SetCredentialColorResponse
-	8,   // 198: operator.v1.OperatorService.SetCredentialsColor:output_type -> operator.v1.SetCredentialsColorResponse
-	6,   // 199: operator.v1.OperatorService.SetCredentialNote:output_type -> operator.v1.SetCredentialNoteResponse
-	4,   // 200: operator.v1.OperatorService.SetCredentialsNote:output_type -> operator.v1.SetCredentialsNoteResponse
-	74,  // 201: operator.v1.OperatorService.NewCommand:output_type -> operator.v1.NewCommandResponse
-	2,   // 202: operator.v1.OperatorService.CancelTasks:output_type -> operator.v1.CancelTasksResponse
-	86,  // 203: operator.v1.OperatorService.GetTaskOutput:output_type -> operator.v1.GetTaskOutputResponse
-	178, // [178:204] is the sub-list for method output_type
-	152, // [152:178] is the sub-list for method input_type
-	152, // [152:152] is the sub-list for extension type_name
-	152, // [152:152] is the sub-list for extension extendee
-	0,   // [0:152] is the sub-list for field type_name
+	116, // 135: operator.v1.CreateTaskRequest.download:type_name -> common.v1.CapDownload
+	117, // 136: operator.v1.CreateTaskRequest.reserved23:type_name -> common.v1.CapReserved23
+	118, // 137: operator.v1.CreateTaskRequest.reserved24:type_name -> common.v1.CapReserved24
+	119, // 138: operator.v1.CreateTaskRequest.reserved25:type_name -> common.v1.CapReserved25
+	120, // 139: operator.v1.CreateTaskRequest.reserved26:type_name -> common.v1.CapReserved26
+	121, // 140: operator.v1.CreateTaskRequest.reserved27:type_name -> common.v1.CapReserved27
+	122, // 141: operator.v1.CreateTaskRequest.reserved28:type_name -> common.v1.CapReserved28
+	123, // 142: operator.v1.CreateTaskRequest.reserved29:type_name -> common.v1.CapReserved29
+	124, // 143: operator.v1.CreateTaskRequest.reserved30:type_name -> common.v1.CapReserved30
+	0,   // 144: operator.v1.SubscribeTasksRequest.cookie:type_name -> operator.v1.SessionCookie
+	76,  // 145: operator.v1.SubscribeTasksRequest.hello:type_name -> operator.v1.SubscribeTasksHelloRequest
+	77,  // 146: operator.v1.SubscribeTasksRequest.start:type_name -> operator.v1.StartPollAgentRequest
+	78,  // 147: operator.v1.SubscribeTasksRequest.stop:type_name -> operator.v1.StopPollAgentRequest
+	89,  // 148: operator.v1.CommandResponse.created:type_name -> google.protobuf.Timestamp
+	89,  // 149: operator.v1.MessageResponse.created:type_name -> google.protobuf.Timestamp
+	125, // 150: operator.v1.TaskResponse.output:type_name -> google.protobuf.BytesValue
+	89,  // 151: operator.v1.TaskResponse.created:type_name -> google.protobuf.Timestamp
+	125, // 152: operator.v1.TaskDoneResponse.output:type_name -> google.protobuf.BytesValue
+	79,  // 153: operator.v1.SubscribeTasksResponse.command:type_name -> operator.v1.CommandResponse
+	80,  // 154: operator.v1.SubscribeTasksResponse.message:type_name -> operator.v1.MessageResponse
+	81,  // 155: operator.v1.SubscribeTasksResponse.task:type_name -> operator.v1.TaskResponse
+	82,  // 156: operator.v1.SubscribeTasksResponse.task_status:type_name -> operator.v1.TaskStatusResponse
+	83,  // 157: operator.v1.SubscribeTasksResponse.task_done:type_name -> operator.v1.TaskDoneResponse
+	0,   // 158: operator.v1.GetTaskOutputRequest.cookie:type_name -> operator.v1.SessionCookie
+	125, // 159: operator.v1.GetTaskOutputResponse.output:type_name -> google.protobuf.BytesValue
+	35,  // 160: operator.v1.OperatorService.Hello:input_type -> operator.v1.HelloRequest
+	38,  // 161: operator.v1.OperatorService.SubscribeListeners:input_type -> operator.v1.SubscribeListenersRequest
+	46,  // 162: operator.v1.OperatorService.SubscribeAgents:input_type -> operator.v1.SubscribeAgentsRequest
+	54,  // 163: operator.v1.OperatorService.SubscribeOperators:input_type -> operator.v1.SubscribeOperatorsRequest
+	60,  // 164: operator.v1.OperatorService.SubscribeChat:input_type -> operator.v1.SubscribeChatRequest
+	64,  // 165: operator.v1.OperatorService.SubscribeCredentials:input_type -> operator.v1.SubscribeCredentialsRequest
+	75,  // 166: operator.v1.OperatorService.SubscribeTasks:input_type -> operator.v1.SubscribeTasksRequest
+	33,  // 167: operator.v1.OperatorService.SetListenerColor:input_type -> operator.v1.SetListenerColorRequest
+	31,  // 168: operator.v1.OperatorService.SetListenersColor:input_type -> operator.v1.SetListenersColorRequest
+	19,  // 169: operator.v1.OperatorService.SetListenerNote:input_type -> operator.v1.SetListenerNoteRequest
+	29,  // 170: operator.v1.OperatorService.SetListenersNote:input_type -> operator.v1.SetListenersNoteRequest
+	27,  // 171: operator.v1.OperatorService.SetAgentColor:input_type -> operator.v1.SetAgentColorRequest
+	25,  // 172: operator.v1.OperatorService.SetAgentsColor:input_type -> operator.v1.SetAgentsColorRequest
+	23,  // 173: operator.v1.OperatorService.SetAgentNote:input_type -> operator.v1.SetAgentNoteRequest
+	21,  // 174: operator.v1.OperatorService.SetAgentsNote:input_type -> operator.v1.SetAgentsNoteRequest
+	17,  // 175: operator.v1.OperatorService.SetOperatorColor:input_type -> operator.v1.SetOperatorColorRequest
+	15,  // 176: operator.v1.OperatorService.SetOperatorsColor:input_type -> operator.v1.SetOperatorsColorRequest
+	13,  // 177: operator.v1.OperatorService.NewChatMessage:input_type -> operator.v1.NewChatMessageRequest
+	11,  // 178: operator.v1.OperatorService.NewCredential:input_type -> operator.v1.NewCredentialRequest
+	9,   // 179: operator.v1.OperatorService.SetCredentialColor:input_type -> operator.v1.SetCredentialColorRequest
+	7,   // 180: operator.v1.OperatorService.SetCredentialsColor:input_type -> operator.v1.SetCredentialsColorRequest
+	5,   // 181: operator.v1.OperatorService.SetCredentialNote:input_type -> operator.v1.SetCredentialNoteRequest
+	3,   // 182: operator.v1.OperatorService.SetCredentialsNote:input_type -> operator.v1.SetCredentialsNoteRequest
+	70,  // 183: operator.v1.OperatorService.NewCommand:input_type -> operator.v1.NewCommandRequest
+	1,   // 184: operator.v1.OperatorService.CancelTasks:input_type -> operator.v1.CancelTasksRequest
+	85,  // 185: operator.v1.OperatorService.GetTaskOutput:input_type -> operator.v1.GetTaskOutputRequest
+	37,  // 186: operator.v1.OperatorService.Hello:output_type -> operator.v1.HelloResponse
+	45,  // 187: operator.v1.OperatorService.SubscribeListeners:output_type -> operator.v1.SubscribeListenersResponse
+	53,  // 188: operator.v1.OperatorService.SubscribeAgents:output_type -> operator.v1.SubscribeAgentsResponse
+	59,  // 189: operator.v1.OperatorService.SubscribeOperators:output_type -> operator.v1.SubscribeOperatorsResponse
+	63,  // 190: operator.v1.OperatorService.SubscribeChat:output_type -> operator.v1.SubscribeChatResponse
+	69,  // 191: operator.v1.OperatorService.SubscribeCredentials:output_type -> operator.v1.SubscribeCredentialsResponse
+	84,  // 192: operator.v1.OperatorService.SubscribeTasks:output_type -> operator.v1.SubscribeTasksResponse
+	34,  // 193: operator.v1.OperatorService.SetListenerColor:output_type -> operator.v1.SetListenerColorResponse
+	32,  // 194: operator.v1.OperatorService.SetListenersColor:output_type -> operator.v1.SetListenersColorResponse
+	20,  // 195: operator.v1.OperatorService.SetListenerNote:output_type -> operator.v1.SetListenerNoteResponse
+	30,  // 196: operator.v1.OperatorService.SetListenersNote:output_type -> operator.v1.SetListenersNoteResponse
+	28,  // 197: operator.v1.OperatorService.SetAgentColor:output_type -> operator.v1.SetAgentColorResponse
+	26,  // 198: operator.v1.OperatorService.SetAgentsColor:output_type -> operator.v1.SetAgentsColorResponse
+	24,  // 199: operator.v1.OperatorService.SetAgentNote:output_type -> operator.v1.SetAgentNoteResponse
+	22,  // 200: operator.v1.OperatorService.SetAgentsNote:output_type -> operator.v1.SetAgentsNoteResponse
+	18,  // 201: operator.v1.OperatorService.SetOperatorColor:output_type -> operator.v1.SetOperatorColorResponse
+	16,  // 202: operator.v1.OperatorService.SetOperatorsColor:output_type -> operator.v1.SetOperatorsColorResponse
+	14,  // 203: operator.v1.OperatorService.NewChatMessage:output_type -> operator.v1.NewChatMessageResponse
+	12,  // 204: operator.v1.OperatorService.NewCredential:output_type -> operator.v1.NewCredentialResponse
+	10,  // 205: operator.v1.OperatorService.SetCredentialColor:output_type -> operator.v1.SetCredentialColorResponse
+	8,   // 206: operator.v1.OperatorService.SetCredentialsColor:output_type -> operator.v1.SetCredentialsColorResponse
+	6,   // 207: operator.v1.OperatorService.SetCredentialNote:output_type -> operator.v1.SetCredentialNoteResponse
+	4,   // 208: operator.v1.OperatorService.SetCredentialsNote:output_type -> operator.v1.SetCredentialsNoteResponse
+	74,  // 209: operator.v1.OperatorService.NewCommand:output_type -> operator.v1.NewCommandResponse
+	2,   // 210: operator.v1.OperatorService.CancelTasks:output_type -> operator.v1.CancelTasksResponse
+	86,  // 211: operator.v1.OperatorService.GetTaskOutput:output_type -> operator.v1.GetTaskOutputResponse
+	186, // [186:212] is the sub-list for method output_type
+	160, // [160:186] is the sub-list for method input_type
+	160, // [160:160] is the sub-list for extension type_name
+	160, // [160:160] is the sub-list for extension extendee
+	0,   // [0:160] is the sub-list for field type_name
 }
 
 func init() { file_operator_v1_operator_proto_init() }
@@ -7212,31 +7386,39 @@ func file_operator_v1_operator_proto_init() {
 		(*NewCommandRequest_Task)(nil),
 	}
 	file_operator_v1_operator_proto_msgTypes[73].OneofWrappers = []any{
+		(*CreateTaskRequest_Exit)(nil),
 		(*CreateTaskRequest_Sleep)(nil),
-		(*CreateTaskRequest_Ls)(nil),
-		(*CreateTaskRequest_Pwd)(nil),
+		(*CreateTaskRequest_Cp)(nil),
 		(*CreateTaskRequest_Cd)(nil),
 		(*CreateTaskRequest_Whoami)(nil),
-		(*CreateTaskRequest_Ps)(nil),
+		(*CreateTaskRequest_Jobkill)(nil),
 		(*CreateTaskRequest_Cat)(nil),
 		(*CreateTaskRequest_Exec)(nil),
-		(*CreateTaskRequest_Cp)(nil),
+		(*CreateTaskRequest_Pwd)(nil),
 		(*CreateTaskRequest_Jobs)(nil),
-		(*CreateTaskRequest_Jobkill)(nil),
-		(*CreateTaskRequest_Kill)(nil),
-		(*CreateTaskRequest_Mv)(nil),
+		(*CreateTaskRequest_Ps)(nil),
+		(*CreateTaskRequest_Ls)(nil),
+		(*CreateTaskRequest_Pause)(nil),
 		(*CreateTaskRequest_Mkdir)(nil),
 		(*CreateTaskRequest_Rm)(nil),
-		(*CreateTaskRequest_ExecAssembly)(nil),
+		(*CreateTaskRequest_Shell)(nil),
 		(*CreateTaskRequest_ShellcodeInjection)(nil),
-		(*CreateTaskRequest_Download)(nil),
 		(*CreateTaskRequest_Upload)(nil),
-		(*CreateTaskRequest_Pause)(nil),
+		(*CreateTaskRequest_Kill)(nil),
+		(*CreateTaskRequest_Mv)(nil),
 		(*CreateTaskRequest_Destroy)(nil),
 		(*CreateTaskRequest_ExecDetach)(nil),
-		(*CreateTaskRequest_Shell)(nil),
+		(*CreateTaskRequest_ExecAssembly)(nil),
 		(*CreateTaskRequest_Ppid)(nil),
-		(*CreateTaskRequest_Exit)(nil),
+		(*CreateTaskRequest_Download)(nil),
+		(*CreateTaskRequest_Reserved23)(nil),
+		(*CreateTaskRequest_Reserved24)(nil),
+		(*CreateTaskRequest_Reserved25)(nil),
+		(*CreateTaskRequest_Reserved26)(nil),
+		(*CreateTaskRequest_Reserved27)(nil),
+		(*CreateTaskRequest_Reserved28)(nil),
+		(*CreateTaskRequest_Reserved29)(nil),
+		(*CreateTaskRequest_Reserved30)(nil),
 	}
 	file_operator_v1_operator_proto_msgTypes[75].OneofWrappers = []any{
 		(*SubscribeTasksRequest_Hello)(nil),
