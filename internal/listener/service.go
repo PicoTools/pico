@@ -308,6 +308,15 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 		Cap: uint32(task.Cap),
 	}
 	switch task.Cap {
+	case shared.CapExit:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Exit{
+				Exit: v.(*commonv1.CapExit),
+			}
+		}
 	case shared.CapSleep:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
@@ -317,22 +326,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Sleep: v.(*commonv1.CapSleep),
 			}
 		}
-	case shared.CapLs:
+	case shared.CapCp:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Ls{
-				Ls: v.(*commonv1.CapLs),
-			}
-		}
-	case shared.CapPwd:
-		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
-			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
-			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			response.Body = &listenerv1.GetTaskResponse_Pwd{
-				Pwd: v.(*commonv1.CapPwd),
+			response.Body = &listenerv1.GetTaskResponse_Cp{
+				Cp: v.(*commonv1.CapCp),
 			}
 		}
 	case shared.CapCd:
@@ -353,13 +353,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Whoami: v.(*commonv1.CapWhoami),
 			}
 		}
-	case shared.CapPs:
+	case shared.CapJobkill:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Ps{
-				Ps: v.(*commonv1.CapPs),
+			response.Body = &listenerv1.GetTaskResponse_Jobkill{
+				Jobkill: v.(*commonv1.CapJobkill),
 			}
 		}
 	case shared.CapCat:
@@ -380,13 +380,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Exec: v.(*commonv1.CapExec),
 			}
 		}
-	case shared.CapCp:
+	case shared.CapPwd:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Cp{
-				Cp: v.(*commonv1.CapCp),
+			response.Body = &listenerv1.GetTaskResponse_Pwd{
+				Pwd: v.(*commonv1.CapPwd),
 			}
 		}
 	case shared.CapJobs:
@@ -398,31 +398,31 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Jobs: v.(*commonv1.CapJobs),
 			}
 		}
-	case shared.CapJobkill:
+	case shared.CapPs:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Jobkill{
-				Jobkill: v.(*commonv1.CapJobkill),
+			response.Body = &listenerv1.GetTaskResponse_Ps{
+				Ps: v.(*commonv1.CapPs),
 			}
 		}
-	case shared.CapKill:
+	case shared.CapLs:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Kill{
-				Kill: v.(*commonv1.CapKill),
+			response.Body = &listenerv1.GetTaskResponse_Ls{
+				Ls: v.(*commonv1.CapLs),
 			}
 		}
-	case shared.CapMv:
+	case shared.CapPause:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Mv{
-				Mv: v.(*commonv1.CapMv),
+			response.Body = &listenerv1.GetTaskResponse_Pause{
+				Pause: v.(*commonv1.CapPause),
 			}
 		}
 	case shared.CapMkdir:
@@ -443,13 +443,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Rm: v.(*commonv1.CapRm),
 			}
 		}
-	case shared.CapExecAssembly:
+	case shared.CapShell:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_ExecAssembly{
-				ExecAssembly: v.(*commonv1.CapExecAssembly),
+			response.Body = &listenerv1.GetTaskResponse_Shell{
+				Shell: v.(*commonv1.CapShell),
 			}
 		}
 	case shared.CapShellcodeInjection:
@@ -461,15 +461,6 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				ShellcodeInjection: v.(*commonv1.CapShellcodeInjection),
 			}
 		}
-	case shared.CapDownload:
-		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
-			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
-			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			response.Body = &listenerv1.GetTaskResponse_Download{
-				Download: v.(*commonv1.CapDownload),
-			}
-		}
 	case shared.CapUpload:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
@@ -479,13 +470,22 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Upload: v.(*commonv1.CapUpload),
 			}
 		}
-	case shared.CapPause:
+	case shared.CapKill:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Pause{
-				Pause: v.(*commonv1.CapPause),
+			response.Body = &listenerv1.GetTaskResponse_Kill{
+				Kill: v.(*commonv1.CapKill),
+			}
+		}
+	case shared.CapMv:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Mv{
+				Mv: v.(*commonv1.CapMv),
 			}
 		}
 	case shared.CapDestroy:
@@ -506,13 +506,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				ExecDetach: v.(*commonv1.CapExecDetach),
 			}
 		}
-	case shared.CapShell:
+	case shared.CapExecAssembly:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Shell{
-				Shell: v.(*commonv1.CapShell),
+			response.Body = &listenerv1.GetTaskResponse_ExecAssembly{
+				ExecAssembly: v.(*commonv1.CapExecAssembly),
 			}
 		}
 	case shared.CapPpid:
@@ -524,13 +524,85 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Ppid: v.(*commonv1.CapPpid),
 			}
 		}
-	case shared.CapExit:
+	case shared.CapDownload:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Exit{
-				Exit: v.(*commonv1.CapExit),
+			response.Body = &listenerv1.GetTaskResponse_Download{
+				Download: v.(*commonv1.CapDownload),
+			}
+		}
+	case shared.CapReserved23:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved23{
+				Reserved23: v.(*commonv1.CapReserved23),
+			}
+		}
+	case shared.CapReserved24:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved24{
+				Reserved24: v.(*commonv1.CapReserved24),
+			}
+		}
+	case shared.CapReserved25:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved25{
+				Reserved25: v.(*commonv1.CapReserved25),
+			}
+		}
+	case shared.CapReserved26:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved26{
+				Reserved26: v.(*commonv1.CapReserved26),
+			}
+		}
+	case shared.CapReserved27:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved27{
+				Reserved27: v.(*commonv1.CapReserved27),
+			}
+		}
+	case shared.CapReserved28:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved28{
+				Reserved28: v.(*commonv1.CapReserved28),
+			}
+		}
+	case shared.CapReserved29:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved29{
+				Reserved29: v.(*commonv1.CapReserved29),
+			}
+		}
+	case shared.CapReserved30:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved30{
+				Reserved30: v.(*commonv1.CapReserved30),
 			}
 		}
 	default:
