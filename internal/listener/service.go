@@ -180,9 +180,17 @@ func (s *server) RegisterAgent(ctx context.Context, req *listenerv1.RegisterAgen
 	// arch
 	agent.SetArch(shared.AgentArch(req.GetArch()))
 	// sleep
-	agent.SetSleep(req.GetSleep())
+	if req.GetSleep() != nil {
+		agent.SetSleep(req.GetSleep().GetValue())
+	} else {
+		agent.SetSleep(0)
+	}
 	// jitter
-	agent.SetJitter(uint8(req.GetJitter()))
+	if req.GetSleep() != nil {
+		agent.SetJitter(uint8(req.GetJitter().GetValue()))
+	} else {
+		agent.SetJitter(0)
+	}
 	// caps
 	agent.SetCaps(req.GetCaps())
 
