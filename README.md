@@ -55,11 +55,13 @@ pico-operator
 
 ## Agent & Listener Development
 
-TODO...
+Check source code of [example agent](https://github.com/PicoTools/example-agent) and [example listener](https://github.com/PicoTools/example-listener)
+
+*TODO...*
 
 ## Contributing
 
-TODO...
+*TODO...*
 
 ## Note
 
