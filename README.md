@@ -14,7 +14,44 @@ Also, Pico includes its own programming language, [PLAN](https://github.com/Pico
 
 ## Quick Start
 
-TODO...
+1. Download **Pico** from [latest release](https://github.com/PicoTools/pico/releases) or build it yourself (`make build`).
+2. Create a server configuration file [(Example)](https://github.com/PicoTools/pico/blob/master/config/config.yml).
+3. Start the server:
+
+```sh
+$ ./pico --config config.yml run
+000.01 I listener start serving {"ip": "0.0.0.0", "port": 51235, "fingerprint": "ecc67e3a0b6db4ecee4ff6aa195fec0719a62bdc"}
+000.01 I operator start serving {"ip": "0.0.0.0", "port": 51234, "fingerprint": "db4505125dbdb8c84667a17ecd7c50dda7dfb6f6"}
+000.01 I management start serving {"ip": "0.0.0.0", "port": 51233, "fingerprint": "b21620d6457d107b06e03ab9128cead5ae61aacd", "token": "bo4wro8CEvWzlsJtQgrHdkgIgw9lIPd0"}
+...
+```
+
+4. Download **Pico-ctl** from [latest release](https://github.com/PicoTools/pico/releases) or build it yourself (`make build-ctl`).
+5. Use **Pico-ctl** to generate tokens for the operator and listener. You can find the management token in the server logs.
+
+```sh
+$ ./pico-ctl -H 127.0.0.1:51233 -t bo4wro8CEvWzlsJtQgrHdkgIgw9lIPd0
+[pico-ctl] > operator add pico-operator
+Username:  pico-operator
+Token:     Y24IQl9Wp2COnV8lIDHyucIuX2Z5VJlP
+Last:      [never]
+
+[pico-ctl] > listener add
+ID:        2
+Token:     DrbqGN7Ulfu0qpYMpLDR74BemE2WtXFP
+Name:      [none]
+IP:        [none]
+Port:      [none]
+Last:      [none]
+```
+
+6. You can use [Pico-cli](https://github.com/PicoTools/pico-cli) to connect the operator to the server.
+
+```sh
+$ ./pico-cli -H 127.0.0.1:51234 -t Y24IQl9Wp2COnV8lIDHyucIuX2Z5VJlP
+pico > whoami
+pico-operator
+```
 
 ## Agent & Listener Development
 
