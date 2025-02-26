@@ -63,4 +63,6 @@ TODO...
 
 ## Note
 
-TODO...
+**This software is developed for educational and research purposes only.**
+
+*The author does not endorse, promote, or condone any illegal activities. By using this tool, you agree that you are solely responsible for any actions performed with it. The author assumes no liability for any misuse, damages, or legal consequences resulting from the use of this software. Use this tool only in environments where you have explicit permission, such as security research, penetration testing, or red team operations authorized by the target organization. Ensure compliance with all applicable laws and regulations.*
