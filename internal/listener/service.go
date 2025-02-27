@@ -642,7 +642,7 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 // Save task's result from agent
 func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest) (*listenerv1.PutResultResponse, error) {
 	listenerId := grpcauth.ListenerFromCtx(ctx)
-	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()))
+	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()), zap.Int64("task-id", req.GetTid()))
 
 	// get agent by ID
 	agent, err := s.db.Agent.Get(ctx, req.GetId())
@@ -696,7 +696,15 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 	if shared.TaskStatus(req.GetStatus()) == shared.StatusInProgress {
 		// if agent's task status is "IN PROGRESS" -> save output in temporary file
 		if req.GetOutput() != nil {
-			if err := os.WriteFile(n, req.GetOutput().GetValue(), os.FileMode(os.O_CREATE|os.O_APPEND|os.O_WRONLY)); err != nil {
+			// open file
+			fd, err := os.OpenFile(n, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+			if err != nil {
+				lg.Error("unable open temp file", zap.Error(err))
+				return nil, status.Error(codes.Internal, picoErrors.Internal)
+			}
+			defer fd.Close()
+			// write to file
+			if _, err := fd.Write(req.Output.GetValue()); err != nil {
 				lg.Error("unable write output in temp file", zap.Error(err))
 				return nil, status.Error(codes.Internal, picoErrors.Internal)
 			}
