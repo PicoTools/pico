@@ -725,6 +725,10 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 			if req.GetOutput() != nil {
 				data = append(data, req.GetOutput().GetValue()...)
 			}
+			// remove temp file
+			if err := os.Remove(n); err != nil {
+				lg.Warn("unable delete temp file with old output", zap.Error(err))
+			}
 		}
 		// avoid "NOT NULL constraint" error
 		if data == nil {
