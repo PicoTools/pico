@@ -7,8 +7,8 @@ GOFILES=`go list ./...`
 GOFILESNOTEST=`go list ./... | grep -v test`
 VERSION=$(shell git describe --abbrev=0 --tags 2>/dev/null || echo "v0.0.0")
 BUILD=$(shell git rev-parse HEAD)
-GOARCH=`go env -json | jq -r .GOARCH`
-GOOS=`go env -json | jq -r .GOOS`
+GOARCH=`go env GOARCH`
+GOOS=`go env GOOS`
 LDFLAGS=-ldflags="-s -w -X github.com/PicoTools/pico/internal/version.gitCommit=${BUILD} -X github.com/PicoTools/pico/internal/version.gitVersion=${VERSION}"
 TAGS=sqlite_foreign_keys
 
