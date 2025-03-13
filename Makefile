@@ -27,25 +27,25 @@ build-ctl: go-lint
 
 build-all: darwin-arm64 darwin-amd64 linux-arm64 linux-amd64 ctl-darwin-arm64 ctl-darwin-amd64 ctl-linux-arm64 ctl-linux-amd64
 
-darwin-arm64: proto-gen ent-gen go-lint
+darwin-arm64: go-lint
 	@mkdir -p ${BIN_DIR}
 	@echo "Building server darwin/arm64 ${VERSION}"
 	@GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.darwin.arm64 ${PICO_DIR}
 	@strip ${BIN_DIR}/pico.darwin.arm64 2>/dev/null || true
 
-darwin-amd64: proto-gen ent-gen go-lint
+darwin-amd64: go-lint
 	@mkdir -p ${BIN_DIR}
 	@echo "Building server darwin/amd64 ${VERSION}"
 	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.darwin.amd64 ${PICO_DIR}
 	@strip ${BIN_DIR}/pico.darwin.amd64 2>/dev/null || true
 
-linux-arm64: proto-gen ent-gen go-lint
+linux-arm64: go-lint
 	@mkdir -p ${BIN_DIR}
 	@echo "Building server linux/arm64 ${VERSION}" 
 	@GOOS=linux GOARCH=arm64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.linux.arm64 ${PICO_DIR}
 	@strip ${BIN_DIR}/pico.linux.arm64 2>/dev/null || true
 
-linux-amd64: proto-gen ent-gen go-lint
+linux-amd64: go-lint
 	@mkdir -p ${BIN_DIR}
 	@echo "Building server linux/amd64 ${VERSION}"
 	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 CC=${CC} CXX=${CXX} go build -trimpath ${LDFLAGS} -tags="${TAGS}" -o ${BIN_DIR}/pico.linux.amd64 ${PICO_DIR}
