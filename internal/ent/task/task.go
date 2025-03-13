@@ -119,7 +119,7 @@ func StatusValidator(s shared.TaskStatus) error {
 // CapValidator is a validator for the "cap" field enum values. It is called by the builders before save.
 func CapValidator(c shared.Capability) error {
 	switch c.String() {
-	case "cap_sleep", "cap_ls", "cap_pwd", "cap_cd", "cap_whoami", "cap_ps", "cap_cat", "cap_exec", "cap_cp", "cap_jobs", "cap_jobkill", "cap_kill", "cap_mv", "cap_mkdir", "cap_rm", "cap_exec_assembly", "cap_shell", "cap_ppid", "cap_exec_detach", "cap_shellcode_injection", "cap_download", "cap_upload", "cap_pause", "cap_destroy", "cap_exit":
+	case "cap_exit", "cap_sleep", "cap_cp", "cap_cd", "cap_whoami", "cap_jobkill", "cap_cat", "cap_exec", "cap_pwd", "cap_jobs", "cap_ps", "cap_ls", "cap_pause", "cap_mkdir", "cap_rm", "cap_shell", "cap_shellcode_injection", "cap_upload", "cap_kill", "cap_mv", "cap_destroy", "cap_exec_detach", "cap_exec_assembly", "cap_ppid", "cap_download", "cap_reserved23", "cap_reserved24", "cap_reserved25", "cap_reserved26", "cap_reserved27", "cap_reserved28", "cap_reserved29", "cap_reserved30":
 		return nil
 	default:
 		return fmt.Errorf("task: invalid enum value for cap field: %q", c)

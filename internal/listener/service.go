@@ -180,9 +180,17 @@ func (s *server) RegisterAgent(ctx context.Context, req *listenerv1.RegisterAgen
 	// arch
 	agent.SetArch(shared.AgentArch(req.GetArch()))
 	// sleep
-	agent.SetSleep(req.GetSleep())
+	if req.GetSleep() != nil {
+		agent.SetSleep(req.GetSleep().GetValue())
+	} else {
+		agent.SetSleep(0)
+	}
 	// jitter
-	agent.SetJitter(uint8(req.GetJitter()))
+	if req.GetSleep() != nil {
+		agent.SetJitter(uint8(req.GetJitter().GetValue()))
+	} else {
+		agent.SetJitter(0)
+	}
 	// caps
 	agent.SetCaps(req.GetCaps())
 
@@ -308,6 +316,15 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 		Cap: uint32(task.Cap),
 	}
 	switch task.Cap {
+	case shared.CapExit:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Exit{
+				Exit: v.(*commonv1.CapExit),
+			}
+		}
 	case shared.CapSleep:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
@@ -317,22 +334,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Sleep: v.(*commonv1.CapSleep),
 			}
 		}
-	case shared.CapLs:
+	case shared.CapCp:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Ls{
-				Ls: v.(*commonv1.CapLs),
-			}
-		}
-	case shared.CapPwd:
-		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
-			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
-			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			response.Body = &listenerv1.GetTaskResponse_Pwd{
-				Pwd: v.(*commonv1.CapPwd),
+			response.Body = &listenerv1.GetTaskResponse_Cp{
+				Cp: v.(*commonv1.CapCp),
 			}
 		}
 	case shared.CapCd:
@@ -353,13 +361,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Whoami: v.(*commonv1.CapWhoami),
 			}
 		}
-	case shared.CapPs:
+	case shared.CapJobkill:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Ps{
-				Ps: v.(*commonv1.CapPs),
+			response.Body = &listenerv1.GetTaskResponse_Jobkill{
+				Jobkill: v.(*commonv1.CapJobkill),
 			}
 		}
 	case shared.CapCat:
@@ -380,13 +388,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Exec: v.(*commonv1.CapExec),
 			}
 		}
-	case shared.CapCp:
+	case shared.CapPwd:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Cp{
-				Cp: v.(*commonv1.CapCp),
+			response.Body = &listenerv1.GetTaskResponse_Pwd{
+				Pwd: v.(*commonv1.CapPwd),
 			}
 		}
 	case shared.CapJobs:
@@ -398,31 +406,31 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Jobs: v.(*commonv1.CapJobs),
 			}
 		}
-	case shared.CapJobkill:
+	case shared.CapPs:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Jobkill{
-				Jobkill: v.(*commonv1.CapJobkill),
+			response.Body = &listenerv1.GetTaskResponse_Ps{
+				Ps: v.(*commonv1.CapPs),
 			}
 		}
-	case shared.CapKill:
+	case shared.CapLs:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Kill{
-				Kill: v.(*commonv1.CapKill),
+			response.Body = &listenerv1.GetTaskResponse_Ls{
+				Ls: v.(*commonv1.CapLs),
 			}
 		}
-	case shared.CapMv:
+	case shared.CapPause:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Mv{
-				Mv: v.(*commonv1.CapMv),
+			response.Body = &listenerv1.GetTaskResponse_Pause{
+				Pause: v.(*commonv1.CapPause),
 			}
 		}
 	case shared.CapMkdir:
@@ -443,13 +451,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Rm: v.(*commonv1.CapRm),
 			}
 		}
-	case shared.CapExecAssembly:
+	case shared.CapShell:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_ExecAssembly{
-				ExecAssembly: v.(*commonv1.CapExecAssembly),
+			response.Body = &listenerv1.GetTaskResponse_Shell{
+				Shell: v.(*commonv1.CapShell),
 			}
 		}
 	case shared.CapShellcodeInjection:
@@ -461,15 +469,6 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				ShellcodeInjection: v.(*commonv1.CapShellcodeInjection),
 			}
 		}
-	case shared.CapDownload:
-		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
-			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
-			return nil, status.Error(codes.Internal, picoErrors.Internal)
-		} else {
-			response.Body = &listenerv1.GetTaskResponse_Download{
-				Download: v.(*commonv1.CapDownload),
-			}
-		}
 	case shared.CapUpload:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
@@ -479,13 +478,22 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Upload: v.(*commonv1.CapUpload),
 			}
 		}
-	case shared.CapPause:
+	case shared.CapKill:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Pause{
-				Pause: v.(*commonv1.CapPause),
+			response.Body = &listenerv1.GetTaskResponse_Kill{
+				Kill: v.(*commonv1.CapKill),
+			}
+		}
+	case shared.CapMv:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Mv{
+				Mv: v.(*commonv1.CapMv),
 			}
 		}
 	case shared.CapDestroy:
@@ -506,13 +514,13 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				ExecDetach: v.(*commonv1.CapExecDetach),
 			}
 		}
-	case shared.CapShell:
+	case shared.CapExecAssembly:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Shell{
-				Shell: v.(*commonv1.CapShell),
+			response.Body = &listenerv1.GetTaskResponse_ExecAssembly{
+				ExecAssembly: v.(*commonv1.CapExecAssembly),
 			}
 		}
 	case shared.CapPpid:
@@ -524,13 +532,85 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 				Ppid: v.(*commonv1.CapPpid),
 			}
 		}
-	case shared.CapExit:
+	case shared.CapDownload:
 		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
 			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
 			return nil, status.Error(codes.Internal, picoErrors.Internal)
 		} else {
-			response.Body = &listenerv1.GetTaskResponse_Exit{
-				Exit: v.(*commonv1.CapExit),
+			response.Body = &listenerv1.GetTaskResponse_Download{
+				Download: v.(*commonv1.CapDownload),
+			}
+		}
+	case shared.CapReserved23:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved23{
+				Reserved23: v.(*commonv1.CapReserved23),
+			}
+		}
+	case shared.CapReserved24:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved24{
+				Reserved24: v.(*commonv1.CapReserved24),
+			}
+		}
+	case shared.CapReserved25:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved25{
+				Reserved25: v.(*commonv1.CapReserved25),
+			}
+		}
+	case shared.CapReserved26:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved26{
+				Reserved26: v.(*commonv1.CapReserved26),
+			}
+		}
+	case shared.CapReserved27:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved27{
+				Reserved27: v.(*commonv1.CapReserved27),
+			}
+		}
+	case shared.CapReserved28:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved28{
+				Reserved28: v.(*commonv1.CapReserved28),
+			}
+		}
+	case shared.CapReserved29:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved29{
+				Reserved29: v.(*commonv1.CapReserved29),
+			}
+		}
+	case shared.CapReserved30:
+		if v, err := task.Cap.Unmarshal(taskBlob.Blob); err != nil {
+			lg.Error(picoErrors.UnmarshalCapability, zap.Error(err))
+			return nil, status.Error(codes.Internal, picoErrors.Internal)
+		} else {
+			response.Body = &listenerv1.GetTaskResponse_Reserved30{
+				Reserved30: v.(*commonv1.CapReserved30),
 			}
 		}
 	default:
@@ -562,7 +642,7 @@ func (s *server) GetTask(ctx context.Context, req *listenerv1.GetTaskRequest) (*
 // Save task's result from agent
 func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest) (*listenerv1.PutResultResponse, error) {
 	listenerId := grpcauth.ListenerFromCtx(ctx)
-	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()))
+	lg := s.lg.Named("PutResult").With(zap.Int64("listener-id", listenerId), zap.Uint32("agent-id", req.GetId()), zap.Int64("task-id", req.GetTid()))
 
 	// get agent by ID
 	agent, err := s.db.Agent.Get(ctx, req.GetId())
@@ -616,7 +696,15 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 	if shared.TaskStatus(req.GetStatus()) == shared.StatusInProgress {
 		// if agent's task status is "IN PROGRESS" -> save output in temporary file
 		if req.GetOutput() != nil {
-			if err := os.WriteFile(n, req.GetOutput().GetValue(), os.FileMode(os.O_CREATE|os.O_APPEND|os.O_WRONLY)); err != nil {
+			// open file
+			fd, err := os.OpenFile(n, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+			if err != nil {
+				lg.Error("unable open temp file", zap.Error(err))
+				return nil, status.Error(codes.Internal, picoErrors.Internal)
+			}
+			defer fd.Close()
+			// write to file
+			if _, err := fd.Write(req.Output.GetValue()); err != nil {
 				lg.Error("unable write output in temp file", zap.Error(err))
 				return nil, status.Error(codes.Internal, picoErrors.Internal)
 			}
@@ -636,6 +724,10 @@ func (s *server) PutResult(ctx context.Context, req *listenerv1.PutResultRequest
 		} else {
 			if req.GetOutput() != nil {
 				data = append(data, req.GetOutput().GetValue()...)
+			}
+			// remove temp file
+			if err := os.Remove(n); err != nil {
+				lg.Warn("unable delete temp file with old output", zap.Error(err))
 			}
 		}
 		// avoid "NOT NULL constraint" error

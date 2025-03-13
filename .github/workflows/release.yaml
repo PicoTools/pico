@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Go 1.23.4
+      - name: Go 1.24.0
         uses: actions/setup-go@v5
         with:
-          go-version: "^1.23.4"
+          go-version: "^1.24.0"
 
       - name: Packages
         run: |
@@ -44,13 +44,16 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: Create artifacts directory
-        run: mkdir -p files/ && mkdir -p artifacts/
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          path: files/
+          name: artifacts
+
+      - name: Generate checksum.txt
+        uses: jmgilman/actions-generate-checksum@v1
+        with:
+          patterns: |
+            ./*
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -58,10 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           files: |
-            files/artifacts/pico.darwin.arm64
-            files/artifacts/pico.darwin.amd64
-            files/artifacts/pico.linux.arm64
-            files/artifacts/pico.linux.amd64
+            ./*
           draft: true
           prerelease: false
           fail_on_unmatched_files: true

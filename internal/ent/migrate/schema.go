@@ -218,7 +218,7 @@ var (
 		{Name: "pushed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "done_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"new", "in-progress", "cancelled", "success", "error"}},
-		{Name: "cap", Type: field.TypeEnum, Enums: []string{"cap_sleep", "cap_ls", "cap_pwd", "cap_cd", "cap_whoami", "cap_ps", "cap_cat", "cap_exec", "cap_cp", "cap_jobs", "cap_jobkill", "cap_kill", "cap_mv", "cap_mkdir", "cap_rm", "cap_exec_assembly", "cap_shell", "cap_ppid", "cap_exec_detach", "cap_shellcode_injection", "cap_download", "cap_upload", "cap_pause", "cap_destroy", "cap_exit"}},
+		{Name: "cap", Type: field.TypeEnum, Enums: []string{"cap_exit", "cap_sleep", "cap_cp", "cap_cd", "cap_whoami", "cap_jobkill", "cap_cat", "cap_exec", "cap_pwd", "cap_jobs", "cap_ps", "cap_ls", "cap_pause", "cap_mkdir", "cap_rm", "cap_shell", "cap_shellcode_injection", "cap_upload", "cap_kill", "cap_mv", "cap_destroy", "cap_exec_detach", "cap_exec_assembly", "cap_ppid", "cap_download", "cap_reserved23", "cap_reserved24", "cap_reserved25", "cap_reserved26", "cap_reserved27", "cap_reserved28", "cap_reserved29", "cap_reserved30"}},
 		{Name: "output_big", Type: field.TypeBool, Nullable: true},
 		{Name: "agent_id", Type: field.TypeUint32},
 		{Name: "args_id", Type: field.TypeInt},
