@@ -594,17 +594,26 @@ type driver struct {
 var drivers = func(v string) map[string]driver {
 	return map[string]driver{
 		entdialect.SQLite: {
-			&SQLite{WithForeignKeys: true},
+			&SQLite{
+				WithForeignKeys: true,
+				Driver:          nopDriver{dialect: entdialect.SQLite},
+			},
 			sqlite.DefaultDiff,
 			sqlite.DefaultPlan,
 		},
 		entdialect.MySQL: {
-			&MySQL{version: v},
+			&MySQL{
+				version: v,
+				Driver:  nopDriver{dialect: entdialect.MySQL},
+			},
 			mysql.DefaultDiff,
 			mysql.DefaultPlan,
 		},
 		entdialect.Postgres: {
-			&Postgres{version: v},
+			&Postgres{
+				version: v,
+				Driver:  nopDriver{dialect: entdialect.Postgres},
+			},
 			postgres.DefaultDiff,
 			postgres.DefaultPlan,
 		},
@@ -621,9 +630,16 @@ func Dump(ctx context.Context, dialect, version string, tables []*Table, opts ..
 	if !ok {
 		return "", fmt.Errorf("unsupported dialect %q", dialect)
 	}
-	r, err := (&Atlas{sqlDialect: d}).StateReader(tables...).ReadState(ctx)
+	r, err := (&Atlas{sqlDialect: d, dialect: dialect}).StateReader(tables...).ReadState(ctx)
 	if err != nil {
 		return "", err
+	}
+	// Since the Atlas version bundled with Ent does not support view management,
+	// simply spit out the definition instead of letting Atlas plan them.
+	var vs []*schema.View
+	for _, s := range r.Schemas {
+		vs = append(vs, s.Views...)
+		s.Views = nil
 	}
 	var c schema.Changes
 	if slices.ContainsFunc(tables, func(t *Table) bool { return t.Schema != "" }) {
@@ -637,6 +653,23 @@ func Dump(ctx context.Context, dialect, version string, tables []*Table, opts ..
 	p, err := d.PlanChanges(ctx, "dump", c, opts...)
 	if err != nil {
 		return "", err
+	}
+	for _, v := range vs {
+		q, _ := sql.Dialect(dialect).
+			CreateView(v.Name).
+			Schema(v.Schema.Name).
+			Columns(func(cols []*schema.Column) (bs []*sql.ColumnBuilder) {
+				for _, c := range cols {
+					bs = append(bs, sql.Dialect(dialect).Column(c.Name).Type(c.Type.Raw))
+				}
+				return
+			}(v.Columns)...).
+			As(sql.Raw(v.Def)).
+			Query()
+		p.Changes = append(p.Changes, &migrate.Change{
+			Cmd:     q,
+			Comment: fmt.Sprintf("Add %q view", v.Name),
+		})
 	}
 	f, err := migrate.DefaultFormatter.FormatFile(p)
 	if err != nil {

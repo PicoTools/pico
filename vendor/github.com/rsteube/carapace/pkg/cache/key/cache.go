@@ -1,9 +1,10 @@
 // Package cache provides cache keys
-package cache
+package key
 
 import (
 	"crypto/sha1"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -42,5 +43,25 @@ func FileStats(file string) Key {
 			}
 		}
 		return
+	}
+}
+
+func FolderStats(folder string) Key {
+	return func() (string, error) {
+		sums := make([]string, 0)
+		err := filepath.Walk(folder, func(path string, info fs.FileInfo, err error) error {
+			if !info.IsDir() {
+				sum, err := String(info.Name(), strconv.FormatInt(info.Size(), 10), info.ModTime().String())()
+				if err != nil {
+					return err
+				}
+				sums = append(sums, sum)
+			}
+			return nil
+		})
+		if err != nil {
+			return "", err
+		}
+		return strings.Join(sums, "\n"), nil
 	}
 }
